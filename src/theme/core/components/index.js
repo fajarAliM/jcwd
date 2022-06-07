@@ -4,7 +4,7 @@ import Button from "./Button";
 import Box from "./Box";
 
 const ComponentsOverrides = (theme) => {
-  return merge(Button(), Box(theme));
+  return merge(Button(theme), Box(theme));
 };
 
 export default ComponentsOverrides;

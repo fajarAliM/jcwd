@@ -18,7 +18,7 @@ const Nav = () => {
         alignItems: "center",
         borderBottom: 1,
         borderColor: "white",
-        boxShadow: "0 0 15px 1px #009B90",
+        boxShadow: "0 0 15px -3px #FF6600",
         paddingX: 5,
         paddingY: 3,
       }}
@@ -30,7 +30,7 @@ const Nav = () => {
           width: 300,
           mr: 4,
         }}
-        src="https://upload.wikimedia.org/wikipedia/en/thumb/4/40/McLean_Hospital_logo.svg/2560px-McLean_Hospital_logo.svg.png"
+        src="https://www.freepnglogos.com/uploads/shopee-logo/logo-shopee-png-images-download-shopee-1.png"
       />
       <FormControl
         sx={{
@@ -48,7 +48,7 @@ const Nav = () => {
           endAdornment={
             <InputAdornment position="end">
               <IconButton edge="end" sx={{ mr: 1 }}>
-                {<BsSearch />}
+                <BsSearch />
               </IconButton>
             </InputAdornment>
           }
@@ -60,33 +60,20 @@ const Nav = () => {
         sx={{
           mr: 3,
           ml: 3,
-          color: "#009B90",
-          borderColor: "#009B90",
           width: 150,
           height: 50,
-          borderRadius: 3,
-          textTransform: "none",
-          "&:hover": {
-            borderColor: "white",
-            color: "white",
-            backgroundColor: "#009B90",
-          },
         }}
       >
         Masuk
       </Button>
       <Button
+        variant="contained"
         sx={{
-          color: "white",
-          backgroundColor: "#009B90",
           width: 150,
           height: 50,
-          borderRadius: 3,
-          textTransform: "none",
+          boxShadow: 0,
           "&:hover": {
-            border: 1,
-            borderColor: "#009B90",
-            color: "#009B90",
+            boxShadow: 0,
           },
         }}
       >

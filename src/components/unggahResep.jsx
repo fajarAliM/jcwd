@@ -1,6 +1,4 @@
 import { Box, Button, Container, Typography } from "@mui/material";
-import Image from "next/image";
-import Group from "../public/Group.jpg";
 
 const UnggahResep = () => {
   return (
@@ -39,20 +37,21 @@ const UnggahResep = () => {
           </Typography>
         </Box>
         <Button
+          variant="contained"
           sx={{
             width: 400,
             height: 50,
-            color: "white",
-            backgroundColor: "#009B90",
+            // color: "white",
+            // backgroundColor: "#009B90",
             ml: 14,
             mr: 7,
-            borderRadius: 3,
-            textTransform: "none",
-            "&:hover": {
-              border: 1,
-              borderColor: "#009B90",
-              color: "#009B90",
-            },
+            // borderRadius: 3,
+            // textTransform: "none",
+            // "&:hover": {
+            //   border: 1,
+            //   borderColor: "#009B90",
+            //   color: "#009B90",
+            // },
           }}
         >
           Unggah Resep
