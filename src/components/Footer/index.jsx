@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { FaTwitter, FaFacebookF } from "react-icons/fa";
-import { RiInstagramFill } from "react-icons/ri";
+import { RiInstagramFill, RiWhatsappFill } from "react-icons/ri";
 import { Grid, Typography, Box, Stack } from "@mui/material";
 import Healthymed from "../../public/Images/Healthymed.png";
-import Frame219 from "../../public/Images/Frame219.png";
+import MailIcon from "@mui/icons-material/Mail";
+import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 
 const Footer = () => {
   return (
@@ -14,8 +15,44 @@ const Footer = () => {
             <Box width="240px" height="50px" marginBottom="35px">
               <Image src={Healthymed} />
             </Box>
-            <Box width="300px" height="168px">
-              <Image src={Frame219} />
+            <Box display="flex" flexDirection="row" width="300px" height="48px">
+              <RiWhatsappFill fontSize="48px" />
+              <Box marginLeft="20px">
+                <Typography fontSize="14px" fontWeight="bold">
+                  Chat Whatsapp
+                </Typography>
+                <Typography fontSize="16px">+62-0123-4567</Typography>
+              </Box>
+            </Box>
+            <Box
+              marginTop="12px"
+              display="flex"
+              flexDirection="row"
+              width="300px"
+              height="48px"
+            >
+              <MailIcon sx={{ height: "48px", width: "48px" }} />
+              <Box marginLeft="20px">
+                <Typography fontSize="14px" fontWeight="bold">
+                  Email
+                </Typography>
+                <Typography fontSize="16px">contact@healthymed.com</Typography>
+              </Box>
+            </Box>
+            <Box
+              marginTop="12px"
+              display="flex"
+              flexDirection="row"
+              width="300px"
+              height="48px"
+            >
+              <PhoneInTalkIcon sx={{ height: "48px", width: "48px" }} />
+              <Box marginLeft="20px">
+                <Typography fontSize="14px" fontWeight="bold">
+                  Call Center
+                </Typography>
+                <Typography fontSize="16px">+62-0123-4567</Typography>
+              </Box>
             </Box>
           </Grid>
           <Grid marginLeft="150px" marginRight="160px">
@@ -55,7 +92,7 @@ const Footer = () => {
           </Grid>
         </Grid>
       </Box>
-      <Box height="95px" sx={{ backgroundColor: "#4F618E" }}>
+      <Box height="95px" sx={{ backgroundColor: "Brand.500" }}>
         <Typography
           variant="h6"
           marginY="35px"

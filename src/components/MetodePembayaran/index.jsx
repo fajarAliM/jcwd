@@ -18,7 +18,7 @@ const MetodePembayaran = () => {
       >
         Metode Pembayaran
       </Typography>
-      <Box display="flex" justifyContent="center">
+      <Box display="flex" alignContent="center" justifyContent="center">
         <Box marginRight="46px">
           <Image layout="fixed" src={BCA} />
         </Box>
@@ -34,7 +34,7 @@ const MetodePembayaran = () => {
         <Box marginRight="59px">
           <Image layout="fixed" src={Gopay} />
         </Box>
-        <Box>
+        <Box marginTop="-13px">
           <Image layout="fixed" src={ShopeePay} />
         </Box>
       </Box>
