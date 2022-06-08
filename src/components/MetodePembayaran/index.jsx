@@ -1,3 +1,4 @@
+/* eslint-disable import/newline-after-import */
 import Image from "next/image";
 import { Typography, Box } from "@mui/material";
 import ShopeePay from "../../public/Images/ShopeePay.png";
