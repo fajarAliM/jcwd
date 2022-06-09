@@ -58,7 +58,6 @@ const ProductCard = () => {
             {productName.length > 34
               ? `${productName.slice(0, 33)}...`
               : productName}
-            {console.log(productName.length)}
           </Typography>
         </Box>
         <Box display="flex" alignItems="center" mt="5px">
