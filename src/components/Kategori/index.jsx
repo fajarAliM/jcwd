@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+// import Image from "next/image";
 import KategoriBox from "./KategoriBox";
 import Obat from "../../public/Images/Obat.png";
 import Herbal from "../../public/Images/Herbal.png";

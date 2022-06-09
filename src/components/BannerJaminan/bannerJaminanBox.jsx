@@ -1,13 +1,5 @@
 import { Paper, Box, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
-
-const Image = styled("img")({
-  maxWidth: "100px",
-  maxHeight: "92px",
-  minHeight: "60px",
-  minWidth: "66px",
-  objectFit: "scale-down",
-});
+import Image from "next/image";
 
 const BannerJaminanBox = ({ imgUrl, imgAlt, title, caption }) => {
   return (
@@ -29,7 +21,13 @@ const BannerJaminanBox = ({ imgUrl, imgAlt, title, caption }) => {
         alignItems="center"
         ml="46px"
       >
-        <Image src={imgUrl} alt={imgAlt} />
+        <Image
+          src={imgUrl}
+          alt={imgAlt}
+          width="100px"
+          height="92px"
+          objectFit="scale-down"
+        />
       </Box>
       <Box mx="45px">
         <Typography variant="subtitle1" fontWeight="bold">
