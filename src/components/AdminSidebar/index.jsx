@@ -9,8 +9,10 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import { MdHomeFilled } from "react-icons/md";
 import { GiMedicines } from "react-icons/gi";
 import { BsGraphUp } from "react-icons/bs";
+import SubMenu from "./SubMenu";
+import MainMenu from "./MainMenu";
 /* eslint-disable react/jsx-no-useless-fragment */
-const Sidebar = () => {
+const AdminSidebar = () => {
   const [menu, setMenu] = useState("dashboard");
   const [subMenu, setSubMenu] = useState("");
   const handleChange = (event, newMenu, newSubMenu) => {
@@ -134,6 +136,8 @@ const Sidebar = () => {
             >
               Tambah Produk
             </MenuItem>
+            <SubMenu title="Produk" href="/product" />
+            <SubMenu title="Apalagi" href="/product" />
           </Box>
         )}
 
@@ -366,9 +370,27 @@ const Sidebar = () => {
             </MenuItem>
           </Box>
         )}
+
+        <MainMenu
+          title="Produk"
+          iconTag={<GiMedicines fontSize="27px" />}
+          subMenus={[
+            { submenuTitle: "Daftar Produk", href: "#" },
+            { submenuTitle: "Tambah Produk", href: "#" },
+          ]}
+        />
+        <MainMenu
+          title="Sales & Revenue"
+          iconTag={<BsGraphUp fontSize="27px" />}
+          subMenus={[
+            { submenuTitle: "Ringkasan Statistik", href: "#" },
+            { submenuTitle: "Buku Kas", href: "#" },
+            { submenuTitle: "Laba & Rugi", href: "#" },
+          ]}
+        />
       </Box>
     </Drawer>
   );
 };
 
-export default Sidebar;
+export default AdminSidebar;

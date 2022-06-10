@@ -11,6 +11,11 @@ const Brand = {
   900: "#331400",
 };
 
+const Sidebar = {
+  500: "#B4B9C7"
+}
+
 export default {
   Brand,
+  Sidebar
 };

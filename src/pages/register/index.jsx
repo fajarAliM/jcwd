@@ -23,11 +23,14 @@ import LockIcon from "@mui/icons-material/Lock";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import AdminSidebar from "components/AdminSidebar";
+import Link from "next/link";
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState("false");
   return (
     <>
+      {/* <AdminSidebar /> */}
       <Stack direction="row">
         <Box>
           <Image src={Frame} layout="fixed" />
@@ -36,11 +39,17 @@ const RegisterPage = () => {
           <Typography fontWeight="bold" variant="h4" component="h4">
             Mari Kita Mulai
           </Typography>
-          <Typography m={0} sx={{ color: "gray" }}>
-            Sudah punya akun ?{" "}
-            <Typography component="span" sx={{ color: "Brand.500" }}>
-              <u>Masuk</u>
-            </Typography>
+          <Typography>
+            Sudah Punya Akun ?{" "}
+            <Link href="/login">
+              <Typography
+                sx={{ ":hover": { cursor: "pointer" } }}
+                component="span"
+                color="Brand.500"
+              >
+                Daftar
+              </Typography>
+            </Link>{" "}
           </Typography>
           <Stack direction="row" spacing={2} marginY="32px">
             <Button
