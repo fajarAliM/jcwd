@@ -10,11 +10,13 @@ import {
   Typography,
 } from "@mui/material";
 import UserCart from "components/Cart";
+import Link from "next/link";
 import { useState } from "react";
 
 const cartDummy = [1, 2, 3, 4, 5];
 
 const KeranjangPage = () => {
+  // eslint-disable-next-line no-unused-vars
   const [cartItems, setCartItems] = useState(cartDummy);
   const [checkedItems, setCheckedItems] = useState([]);
 
@@ -123,18 +125,20 @@ const KeranjangPage = () => {
                   <Typography sx={{ fontWeight: 700 }}>Rp 25.000</Typography>
                 </Grid>
               </Grid>
-              <Button
-                variant="contained"
-                sx={{
-                  width: "100%",
-                  mt: "30px",
-                  "&:hover": {
-                    border: 0,
-                  },
-                }}
-              >
-                Bayar(4)
-              </Button>
+              <Link href="/alamat">
+                <Button
+                  variant="contained"
+                  sx={{
+                    width: "100%",
+                    mt: "30px",
+                    "&:hover": {
+                      border: 0,
+                    },
+                  }}
+                >
+                  Bayar(4)
+                </Button>
+              </Link>
             </Box>
           </Grid>
         </Grid>

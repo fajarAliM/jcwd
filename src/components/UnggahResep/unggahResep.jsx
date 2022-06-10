@@ -1,4 +1,5 @@
 import { Box, Button, Container, Typography } from "@mui/material";
+import Link from "next/link";
 
 const UnggahResep = () => {
   return (
@@ -35,20 +36,22 @@ const UnggahResep = () => {
             tidak boleh lebih dari 10 MB
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          sx={{
-            width: 400,
-            height: 50,
-            ml: 14,
-            mr: 7,
-            "&:hover": {
-              border: 0,
-            },
-          }}
-        >
-          Unggah Resep
-        </Button>
+        <Link href="/upload_resep">
+          <Button
+            variant="contained"
+            sx={{
+              width: 400,
+              height: 50,
+              ml: 14,
+              mr: 7,
+              "&:hover": {
+                border: 0,
+              },
+            }}
+          >
+            Unggah Resep
+          </Button>
+        </Link>
       </Box>
     </Container>
   );
