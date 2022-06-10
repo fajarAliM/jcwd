@@ -16,7 +16,6 @@ const UnggahResep = () => {
           alignItems: "center",
         }}
       >
-        {/* <Image src={Group} width="600px" height="250px"/> */}
         <Box
           component="img"
           sx={{
@@ -41,17 +40,11 @@ const UnggahResep = () => {
           sx={{
             width: 400,
             height: 50,
-            // color: "white",
-            // backgroundColor: "#009B90",
             ml: 14,
             mr: 7,
-            // borderRadius: 3,
-            // textTransform: "none",
-            // "&:hover": {
-            //   border: 1,
-            //   borderColor: "#009B90",
-            //   color: "#009B90",
-            // },
+            "&:hover": {
+              border: 0,
+            },
           }}
         >
           Unggah Resep
