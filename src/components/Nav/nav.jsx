@@ -1,15 +1,24 @@
 import {
+  Avatar,
   Box,
-  Button,
+  // Button,
   FormControl,
   IconButton,
   InputAdornment,
   InputLabel,
   OutlinedInput,
+  Typography,
 } from "@mui/material";
+import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import Link from "next/link";
+import shopee from "../../public/Images/shopee.png";
 
 const Nav = () => {
+  const userName = "Elon Musk";
+
   return (
     <Box
       sx={{
@@ -20,18 +29,14 @@ const Nav = () => {
         borderColor: "white",
         boxShadow: "0 0 15px -3px #FF6600",
         paddingX: 5,
-        paddingY: 3,
+        paddingY: 1,
+        position: "sticky",
+        top: 0,
+        zIndex: 999,
+        background: "rgb(255, 255, 255, 0.9)",
       }}
     >
-      <Box
-        component="img"
-        sx={{
-          height: "100%",
-          width: 300,
-          mr: 4,
-        }}
-        src="https://www.freepnglogos.com/uploads/shopee-logo/logo-shopee-png-images-download-shopee-1.png"
-      />
+      <Image src={shopee} height="80px" width="210px" />
       <FormControl
         sx={{
           m: 1,
@@ -55,7 +60,10 @@ const Nav = () => {
           label="Cari Obat, Suplemen, Vitamin, produk Kesehatan yuk"
         />
       </FormControl>
-      <Button
+
+      {/* USER NOT LOGGED IN */}
+
+      {/* <Button
         variant="outlined"
         sx={{
           mr: 3,
@@ -78,7 +86,23 @@ const Nav = () => {
         }}
       >
         Daftar
-      </Button>
+      </Button> */}
+
+      {/* USER LOGGED IN */}
+      <Link href="/keranjang">
+        <IconButton sx={{ ml: "50px" }}>
+          <ShoppingCartIcon sx={{ color: "Brand.500" }} />
+        </IconButton>
+      </Link>
+      <IconButton sx={{ ml: "50px" }}>
+        <NotificationsIcon sx={{ color: "Brand.500" }} />
+      </IconButton>
+      <Box sx={{ display: "flex", alignItems: "center", ml: "52px" }}>
+        <Avatar src="https://upload.wikimedia.org/wikipedia/commons/3/34/Elon_Musk_Royal_Society_%28crop2%29.jpg" />
+        <Typography sx={{ ml: "14px" }}>
+          {userName.length > 5 ? `${userName.slice(0, 4)}...` : userName}
+        </Typography>
+      </Box>
     </Box>
   );
 };

@@ -1,6 +1,6 @@
 import { Box, Container } from "@mui/material";
-import Nav from "components/nav";
-import UnggahResep from "components/unggahResep";
+import Nav from "components/Nav/nav";
+import UnggahResep from "components/UnggahResep/unggahResep";
 import Footer from "components/Footer";
 import MetodePembayaran from "components/MetodePembayaran";
 import ProductCard from "components/ProductCard";
