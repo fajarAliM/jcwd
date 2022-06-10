@@ -29,5 +29,6 @@ module.exports = {
     "import/no-unresolved": 0,
     "import/extensions": 0,
     "no-console": 1,
+    "react/no-children-prop": 0
   },
 };

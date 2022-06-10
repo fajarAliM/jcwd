@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-/* eslint-disable no-unused-vars */
 /* eslint-disable no-dupe-keys */
 import Image from "next/image";
 import Frame from "public/Images/Frame.png";
@@ -23,7 +22,6 @@ import LockIcon from "@mui/icons-material/Lock";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import AdminSidebar from "components/AdminSidebar";
 import Link from "next/link";
 
 const RegisterPage = () => {

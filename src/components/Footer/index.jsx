@@ -1,4 +1,3 @@
-/* eslint-disable import/order */
 import Image from "next/image";
 import { FaTwitter, FaFacebookF } from "react-icons/fa";
 import { RiInstagramFill, RiWhatsappFill } from "react-icons/ri";

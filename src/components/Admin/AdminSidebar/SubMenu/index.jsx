@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { MenuItem } from "@mui/material";
+import { useRouter } from "next/router";
 
-const SubMenu = ({ submenuTitle, href, isClick }) => {
+const SubMenu = ({ submenuTitle, href }) => {
+  const router = useRouter();
+
   return (
     <Link href={href}>
       <MenuItem
         sx={{
           marginBottom: "1px",
-          color:
-            { isClick } === `${submenuTitle}` ? "Brand.500" : "Sidebar.500",
+          color: router.pathname === `${href}` ? "Brand.500" : "Sidebar.500",
           ":hover": {
             cursor: "pointer",
             borderColor: "Brand.500",
