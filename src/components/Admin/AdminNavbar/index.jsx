@@ -4,7 +4,12 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 
 const AdminNavbar = () => {
   return (
-    <Drawer container="container" variant="permanent" anchor="top">
+    <Drawer
+      sx={{ height: "64px" }}
+      container="container"
+      variant="permanent"
+      anchor="top"
+    >
       <Box
         sx={{
           paddingX: "48px",
@@ -12,7 +17,6 @@ const AdminNavbar = () => {
           display: "flex",
           justifyContent: "flex-end",
           color: "Brand.500",
-          maxHeight: "64px",
         }}
       >
         <NotificationsIcon />

@@ -23,7 +23,7 @@ const MainMenu = ({ title, iconTag, subMenus = [] }) => {
           flexDirection: "row",
           justifyContent: "space-between",
           marginBottom: "14px",
-          paddingX: "20px",
+          // paddingX: "20px",
           paddingY: 1,
           color: expand ? "Brand.500" : "Sidebar.500",
         }}
