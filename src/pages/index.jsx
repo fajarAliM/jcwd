@@ -10,6 +10,8 @@ import Kategori from "components/Kategori";
 const Home = () => {
   return (
     <Box>
+      {/* <AdminNavbar />
+      <AdminSidebar /> */}
       <Nav />
       <Container>
         <ProductCard />

@@ -11,7 +11,7 @@ const UploadResep = () => {
         <Typography>
           Tak perlu antre & obat langsung dikirimkan ke lokasi anda!
         </Typography>
-        <Typography fontWeight="bold">
+        <Typography fontWeight="bold" marginLeft="5px">
           Foto tidak boleh lebih dari 10 MB.
         </Typography>
       </Box>
