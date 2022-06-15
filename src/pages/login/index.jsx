@@ -22,9 +22,37 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { login } from "redux/reducer/auth";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState("false");
+
+  const dispatch = useDispatch();
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object().shape({
+      email: Yup.string().required().email(),
+      password: Yup.string().required("Password is required"),
+    }),
+    onSubmit: (values) => {
+      // ini nanti bedasarkan fetchingan dari API, hrus ada alamat and no tlpon
+      const userInfo = {
+        id: 1,
+        email: values.email,
+        name: "john doe",
+        password: values.password,
+      };
+      dispatch(login(userInfo));
+    },
+  });
+
   return (
     <>
       <Stack width="100%" direction="row">
@@ -62,6 +90,7 @@ const LoginPage = () => {
           </Typography>
           <InputLabel>Email</InputLabel>
           <OutlinedInput
+            onChange={(e) => formik.setFieldValue("email", e.target.value)}
             placeholder="JohnDoe@gmail.com"
             startAdornment={
               <MailIcon sx={{ marginRight: "17px" }} htmlColor="#02114f" />
@@ -71,6 +100,7 @@ const LoginPage = () => {
           />
           <InputLabel>Password</InputLabel>
           <OutlinedInput
+            onChange={(e) => formik.setFieldValue("password", e.target.value)}
             type={showPassword ? "password" : "text"}
             placeholder="Password123@"
             startAdornment={
@@ -104,6 +134,7 @@ const LoginPage = () => {
             }}
             variant="contained"
             fullWidth
+            onClick={formik.handleSubmit}
           >
             Masuk
           </Button>
