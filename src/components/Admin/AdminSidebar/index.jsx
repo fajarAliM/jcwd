@@ -65,7 +65,7 @@ const AdminSidebar = () => {
           title="Produk"
           iconTag={<GiMedicines fontSize="27px" />}
           subMenus={[
-            { submenuTitle: "Daftar Produk", href: "/product" },
+            { submenuTitle: "Daftar Produk", href: "/admin/daftar_obat" },
             { submenuTitle: "Tambah Produk", href: "#" },
           ]}
         />
@@ -86,7 +86,7 @@ const AdminSidebar = () => {
           iconTag={<BsGraphUp fontSize="27px" />}
           subMenus={[
             { submenuTitle: "Ringkasan Statistik", href: "#" },
-            { submenuTitle: "Buku Kas", href: "#" },
+            { submenuTitle: "Buku Kas", href: "/admin/buku_kas" },
             { submenuTitle: "Laba & Rugi", href: "#" },
           ]}
         />
