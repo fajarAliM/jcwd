@@ -15,7 +15,7 @@ const AdminPageContainer = ({ children }) => {
           item
           sx={{
             background:
-              "linear-gradient(155.7deg, #D6F5F3 -45.88%, #F7FCFC 45.77%, #F1F5FC 117.72%)",
+              "linear-gradient(155.7deg, #fce9d9 -45.88%, #ffede0 45.77%, #faf0e8 117.72%)",
             minHeight: "calc(100vh - 64px)",
             minWidth: "calc(100% - 256px)",
           }}

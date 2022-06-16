@@ -28,7 +28,9 @@ const AdminSidebar = () => {
     >
       <Box sx={{ paddingX: "20px", paddingY: "30px" }}>
         <Box display="flex" justifyContent="center" marginBottom="20px">
-          <Image src={Healthymed} width="135px" height="29px" />
+          <Link href="/admin/dashboard">
+            <Image src={Healthymed} width="135px" height="29px" />
+          </Link>
         </Box>
 
         {/* Dashboard */}
@@ -61,6 +63,7 @@ const AdminSidebar = () => {
           </Box>
         </Box>
 
+        {/* Menu Produk */}
         <MainMenu
           title="Produk"
           iconTag={<GiMedicines fontSize="27px" />}
@@ -69,11 +72,12 @@ const AdminSidebar = () => {
             { submenuTitle: "Tambah Produk", href: "#" },
           ]}
         />
+        {/* Menu Transaksi */}
         <MainMenu
           title="Transaksi"
           iconTag={<ReceiptIcon />}
           subMenus={[
-            { submenuTitle: "Semua Pesanan", href: "#" },
+            { submenuTitle: "Semua Pesanan", href: "/admin/semua-pesanan" },
             { submenuTitle: "Pesanan Baru", href: "#" },
             { submenuTitle: "Siap Dikirim", href: "#" },
             { submenuTitle: "Dalam Pengiriman", href: "#" },
@@ -81,6 +85,7 @@ const AdminSidebar = () => {
             { submenuTitle: "Dibatalkan", href: "#" },
           ]}
         />
+        {/* Menu Sales & Revenue */}
         <MainMenu
           title="Sales & Revenue"
           iconTag={<BsGraphUp fontSize="27px" />}

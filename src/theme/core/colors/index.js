@@ -12,7 +12,9 @@ const Brand = {
 };
 
 const Sidebar = {
-  500: "#B4B9C7"
+  500: "#B4B9C7",
+  600: "#bdc0c7",
+  700: "#e8eaed"
 }
 
 export default {
