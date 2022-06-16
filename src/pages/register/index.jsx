@@ -5,7 +5,6 @@ import Frame from "public/Images/Frame.png";
 import GoogleIcon from "public/Images/google-icon.png";
 import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 import {
-  InputLabel,
   OutlinedInput,
   Box,
   Stack,
@@ -15,6 +14,8 @@ import {
   Checkbox,
   IconButton,
   Typography,
+  FormControl,
+  FormLabel,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
@@ -25,7 +26,14 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import Link from "next/link";
 
 const RegisterPage = () => {
-  const [showPassword, setShowPassword] = useState("false");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+  const [term, setTerm] = useState(false);
+
+  const termHandle = () => {
+    setTerm(!term);
+  };
+
   return (
     <>
       {/* <AdminSidebar /> */}
@@ -81,48 +89,90 @@ const RegisterPage = () => {
             </Button>
           </Stack>
           <Divider>atau</Divider>
-          <InputLabel>Name</InputLabel>
-          <OutlinedInput
-            placeholder="John Doe"
-            startAdornment={
-              <AccountCircleIcon
-                sx={{ marginRight: "17px" }}
-                htmlColor="#02114f"
-              />
-            }
-            fullWidth
-            sx={{ borderRadius: "10px", marginBottom: "16px" }}
-          />
-          <InputLabel>Email Address</InputLabel>
-          <OutlinedInput
-            placeholder="JohnDoe@gmail.com"
-            startAdornment={
-              <MailIcon sx={{ marginRight: "17px" }} htmlColor="#02114f" />
-            }
-            fullWidth
-            sx={{ borderRadius: "10px", marginBottom: "16px" }}
-          />
-          <InputLabel>Password</InputLabel>
-          <OutlinedInput
-            type={showPassword ? "password" : "text"}
-            placeholder="Password123@"
-            startAdornment={
-              <LockIcon sx={{ marginRight: "17px" }} htmlColor="#02114f" />
-            }
-            fullWidth
-            sx={{ borderRadius: "10px", marginBottom: "16px" }}
-            endAdornment={
-              <IconButton onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? (
-                  <VisibilityIcon htmlColor="#02114f" sx={{}} />
-                ) : (
-                  <VisibilityOffIcon htmlColor="#02114f" />
-                )}
-              </IconButton>
-            }
-          />
+          <FormControl fullWidth>
+            <FormLabel>Name</FormLabel>
+            <OutlinedInput
+              placeholder="John Doe"
+              startAdornment={
+                <AccountCircleIcon
+                  sx={{ marginRight: "17px" }}
+                  htmlColor="#02114f"
+                />
+              }
+              sx={{ borderRadius: "10px", marginBottom: "16px" }}
+            />
+          </FormControl>
+          <FormControl fullWidth>
+            <FormLabel>Username</FormLabel>
+            <OutlinedInput
+              placeholder="johndoe"
+              startAdornment={
+                <AccountCircleIcon
+                  sx={{ marginRight: "17px" }}
+                  htmlColor="#02114f"
+                />
+              }
+              fullWidth
+              sx={{ borderRadius: "10px", marginBottom: "16px" }}
+            />
+          </FormControl>
+          <FormControl fullWidth>
+            <FormLabel>Email Address</FormLabel>
+            <OutlinedInput
+              placeholder="JohnDoe@gmail.com"
+              startAdornment={
+                <MailIcon sx={{ marginRight: "17px" }} htmlColor="#02114f" />
+              }
+              fullWidth
+              sx={{ borderRadius: "10px", marginBottom: "16px" }}
+            />
+          </FormControl>
+          <FormControl fullWidth>
+            <FormLabel>Password</FormLabel>
+            <OutlinedInput
+              type={showPassword ? "password" : "text"}
+              placeholder="Password123@"
+              startAdornment={
+                <LockIcon sx={{ marginRight: "17px" }} htmlColor="#02114f" />
+              }
+              fullWidth
+              sx={{ borderRadius: "10px", marginBottom: "16px" }}
+              endAdornment={
+                <IconButton onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? (
+                    <VisibilityIcon htmlColor="#02114f" sx={{}} />
+                  ) : (
+                    <VisibilityOffIcon htmlColor="#02114f" />
+                  )}
+                </IconButton>
+              }
+            />
+          </FormControl>
+          <FormControl fullWidth>
+            <FormLabel>Repeat Password</FormLabel>
+            <OutlinedInput
+              type={showRepeatPassword ? "password" : "text"}
+              placeholder="Password123@"
+              startAdornment={
+                <LockIcon sx={{ marginRight: "17px" }} htmlColor="#02114f" />
+              }
+              fullWidth
+              sx={{ borderRadius: "10px", marginBottom: "16px" }}
+              endAdornment={
+                <IconButton
+                  onClick={() => setShowRepeatPassword(!showRepeatPassword)}
+                >
+                  {showRepeatPassword ? (
+                    <VisibilityIcon htmlColor="#02114f" sx={{}} />
+                  ) : (
+                    <VisibilityOffIcon htmlColor="#02114f" />
+                  )}
+                </IconButton>
+              }
+            />
+          </FormControl>
           <FormControlLabel
-            control={<Checkbox />}
+            control={<Checkbox checked={term} onChange={termHandle} />}
             label={
               <Typography>
                 Saya setuju dengan{" "}
@@ -143,6 +193,7 @@ const RegisterPage = () => {
             }}
             variant="contained"
             fullWidth
+            disabled={!term}
           >
             Register
           </Button>

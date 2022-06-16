@@ -1,18 +1,10 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-import {
-  Box,
-  Typography,
-  Grid,
-  Select,
-  MenuItem,
-  FormControl,
-} from "@mui/material";
+import { Box, Typography, Grid } from "@mui/material";
 import CardCategory from "components/Admin/CardCategory";
 import CardWithCircularBar from "components/Admin/CardWithCircularBar";
-import dynamic from "next/dynamic";
 import { useState } from "react";
+import CardStatistik from "components/Admin/CardStatistik";
 
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 const DashboardPage = () => {
   const penjualanObatOption = {
     stroke: { width: 2, curve: "smooth" },
@@ -117,7 +109,7 @@ const DashboardPage = () => {
       </Grid>
 
       {/* Container 2 */}
-      <Grid container spacing={2} sx={{ marginBottom: "32px" }}>
+      <Grid container spacing={2}>
         <Grid item xs={6}>
           <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
             Penting Hari Ini
@@ -132,12 +124,12 @@ const DashboardPage = () => {
               flexDirection: "row",
             }}
           >
-            <CardCategory title="Pesanan Baru" value={7} />
-            <CardCategory title="Siap Dikirim" value={3} />
-            <CardCategory title="Sedang Dikirim" value={0} />
-            <CardCategory title="Selesai" value={7} />
-            <CardCategory title="Dibatalkan" value={3} />
-            <CardCategory title="Chat Baru" value={0} />
+            <CardCategory title="Pesanan Baru" value={7} column={3} />
+            <CardCategory title="Siap Dikirim" value={3} column={3} />
+            <CardCategory title="Sedang Dikirim" value={0} column={3} />
+            <CardCategory title="Selesai" value={7} column={3} />
+            <CardCategory title="Dibatalkan" value={3} column={3} />
+            <CardCategory title="Chat Baru" value={0} column={3} />
           </Grid>
         </Grid>
         <Grid item xs={6}>
@@ -234,77 +226,39 @@ const DashboardPage = () => {
         </Grid>
       </Grid>
       {/* Container 3 Graph */}
-      <Grid container alignItems="stretch" spacing={2}>
+      <Grid container spacing={2}>
         {/* Statistik Profit */}
-        <Grid item xs={6}>
-          <Box
-            sx={{
-              paddingX: "16px",
-              paddingY: "32px",
-              backgroundColor: "white",
-              borderRadius: 2,
-              boxShadow: 2,
-            }}
-          >
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Box>
-                <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
-                  Profit
-                </Typography>
-                <Typography sx={{ fontSize: "12px", color: "Sidebar.500" }}>
-                  Data dinyatakan dalam jutaan rupiah
-                </Typography>
-              </Box>
-              <FormControl>
-                <Select
-                  sx={{ width: "141px", height: "24px" }}
-                  onChange={handleChange}
-                  value={sort}
-                >
-                  <MenuItem value="Mingguan">Mingguan</MenuItem>
-                  <MenuItem value="Bulanan">Bulanan</MenuItem>
-                  <MenuItem value="Tahunan">Tahunan</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-            <Chart type="bar" options={profitOption} series={profitSeries} />
-          </Box>
-        </Grid>
 
-        {/* Statistik Penjualan Obat */}
-        <Grid item xs={6}>
-          <Box
-            sx={{
-              paddingX: "16px",
-              paddingY: "32px",
-              backgroundColor: "white",
-              borderRadius: 2,
-              boxShadow: 2,
-            }}
-          >
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
-                Penjualan Obat
-              </Typography>
-              <FormControl>
-                <Select
-                  sx={{ width: "141px", height: "24px" }}
-                  onChange={handleChange}
-                  value={sort}
-                >
-                  <MenuItem value="Mingguan">Mingguan</MenuItem>
-                  <MenuItem value="Bulanan">Bulanan</MenuItem>
-                  <MenuItem value="Tahunan">Tahunan</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-            <Chart
-              type="line"
-              options={penjualanObatOption}
-              series={penjualanObatSeries}
-            />
-          </Box>
-        </Grid>
+        <CardStatistik
+          cardTitle="Profit"
+          cardCaption="Data dinyatakan dalam jutaan rupiah"
+          column={6}
+          chartOption={profitOption}
+          chartSeries={profitSeries}
+          selectHandle={handleChange}
+          selectValue={sort}
+          chartSort={[
+            { sortValue: "Mingguan", sortTitle: "Mingguan" },
+            { sortValue: "Bulanan", sortTitle: "Bulanan" },
+            { sortValue: "Tahunan", sortTitle: "Tahunan" },
+          ]}
+          chartType="bar"
+        />
+
+        <CardStatistik
+          cardTitle="Penjualan Obat"
+          column={6}
+          chartOption={penjualanObatOption}
+          chartSeries={penjualanObatSeries}
+          selectHandle={handleChange}
+          selectValue={sort}
+          chartSort={[
+            { sortValue: "Mingguan", sortTitle: "Mingguan" },
+            { sortValue: "Bulanan", sortTitle: "Bulanan" },
+            { sortValue: "Tahunan", sortTitle: "Tahunan" },
+          ]}
+          chartType="line"
+        />
       </Grid>
     </Grid>
   );

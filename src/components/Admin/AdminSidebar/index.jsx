@@ -85,7 +85,10 @@ const AdminSidebar = () => {
           title="Sales & Revenue"
           iconTag={<BsGraphUp fontSize="27px" />}
           subMenus={[
-            { submenuTitle: "Ringkasan Statistik", href: "#" },
+            {
+              submenuTitle: "Ringkasan Statistik",
+              href: "/admin/ringkasan-statistik",
+            },
             { submenuTitle: "Buku Kas", href: "/admin/buku_kas" },
             { submenuTitle: "Laba & Rugi", href: "#" },
           ]}

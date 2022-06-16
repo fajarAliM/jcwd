@@ -4,7 +4,7 @@ import Image from "next/image";
 import Frame from "public/Images/Frame.png";
 import GoogleIcon from "public/Images/google-icon.png";
 import {
-  InputLabel,
+  FormLabel,
   OutlinedInput,
   Box,
   Stack,
@@ -15,6 +15,7 @@ import {
   IconButton,
   Typography,
   ButtonGroup,
+  FormControl,
 } from "@mui/material";
 import MailIcon from "@mui/icons-material/Mail";
 import LockIcon from "@mui/icons-material/Lock";
@@ -88,36 +89,40 @@ const LoginPage = () => {
           >
             Masuk
           </Typography>
-          <InputLabel>Email</InputLabel>
-          <OutlinedInput
-            onChange={(e) => formik.setFieldValue("email", e.target.value)}
-            placeholder="JohnDoe@gmail.com"
-            startAdornment={
-              <MailIcon sx={{ marginRight: "17px" }} htmlColor="#02114f" />
-            }
-            fullWidth
-            sx={{ borderRadius: "10px", marginBottom: "16px" }}
-          />
-          <InputLabel>Password</InputLabel>
-          <OutlinedInput
-            onChange={(e) => formik.setFieldValue("password", e.target.value)}
-            type={showPassword ? "password" : "text"}
-            placeholder="Password123@"
-            startAdornment={
-              <LockIcon sx={{ marginRight: "17px" }} htmlColor="#02114f" />
-            }
-            fullWidth
-            sx={{ borderRadius: "10px", marginBottom: "10px" }}
-            endAdornment={
-              <IconButton onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? (
-                  <VisibilityIcon htmlColor="#02114f" sx={{}} />
-                ) : (
-                  <VisibilityOffIcon htmlColor="#02114f" />
-                )}
-              </IconButton>
-            }
-          />
+          <FormControl fullWidth>
+            <FormLabel>Email or Username</FormLabel>
+            <OutlinedInput
+              onChange={(e) => formik.setFieldValue("email", e.target.value)}
+              placeholder="JohnDoe@gmail.com"
+              startAdornment={
+                <MailIcon sx={{ marginRight: "17px" }} htmlColor="#02114f" />
+              }
+              fullWidth
+              sx={{ borderRadius: "10px", marginBottom: "16px" }}
+            />
+          </FormControl>
+          <FormControl fullWidth>
+            <FormLabel>Password</FormLabel>
+            <OutlinedInput
+              onChange={(e) => formik.setFieldValue("password", e.target.value)}
+              type={showPassword ? "password" : "text"}
+              placeholder="Password123@"
+              startAdornment={
+                <LockIcon sx={{ marginRight: "17px" }} htmlColor="#02114f" />
+              }
+              fullWidth
+              sx={{ borderRadius: "10px", marginBottom: "10px" }}
+              endAdornment={
+                <IconButton onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? (
+                    <VisibilityIcon htmlColor="#02114f" sx={{}} />
+                  ) : (
+                    <VisibilityOffIcon htmlColor="#02114f" />
+                  )}
+                </IconButton>
+              }
+            />
+          </FormControl>
           <Stack direction="row" justifyContent="space-between">
             <FormControlLabel
               sx={{ marginTop: "-10px" }}

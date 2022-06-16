@@ -1,8 +1,8 @@
 import { Box, Typography, Grid } from "@mui/material";
 
-const CardCategory = ({ title, value }) => {
+const CardCategory = ({ title, value, column }) => {
   return (
-    <Grid xs={3} item sx={{ marginRight: "16px", marginTop: "16px" }}>
+    <Grid xs={column} item sx={{ marginRight: "16px", marginTop: "16px" }}>
       <Box
         sx={{
           backgroundColor: "white",

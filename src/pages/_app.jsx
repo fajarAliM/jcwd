@@ -12,10 +12,17 @@ const MyApp = ({ Component, pageProps }) => {
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        {router.pathname.startsWith("/admin") ? (
-          <AdminPageContainer children={<Component {...pageProps} />} />
-        ) : (
+        {router.pathname === "/admin/login" ||
+        router.pathname === "/admin/kartu_stok" ? (
           <Component {...pageProps} />
+        ) : (
+          <>
+            {router.pathname.startsWith("/admin") ? (
+              <AdminPageContainer children={<Component {...pageProps} />} />
+            ) : (
+              <Component {...pageProps} />
+            )}
+          </>
         )}
       </ThemeProvider>
     </Provider>
