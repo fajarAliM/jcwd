@@ -124,12 +124,12 @@ const DashboardPage = () => {
               flexDirection: "row",
             }}
           >
-            <CardCategory title="Pesanan Baru" value={7} column={3} />
-            <CardCategory title="Siap Dikirim" value={3} column={3} />
-            <CardCategory title="Sedang Dikirim" value={0} column={3} />
-            <CardCategory title="Selesai" value={7} column={3} />
-            <CardCategory title="Dibatalkan" value={3} column={3} />
-            <CardCategory title="Chat Baru" value={0} column={3} />
+            <CardCategory title="Pesanan Baru" value={7} column={4} />
+            <CardCategory title="Siap Dikirim" value={3} column={4} />
+            <CardCategory title="Sedang Dikirim" value={0} column={4} />
+            <CardCategory title="Selesai" value={7} column={4} />
+            <CardCategory title="Dibatalkan" value={3} column={4} />
+            <CardCategory title="Chat Baru" value={0} column={4} />
           </Grid>
         </Grid>
         <Grid item xs={6}>

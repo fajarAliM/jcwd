@@ -78,11 +78,14 @@ const AdminSidebar = () => {
           iconTag={<ReceiptIcon />}
           subMenus={[
             { submenuTitle: "Semua Pesanan", href: "/admin/semua-pesanan" },
-            { submenuTitle: "Pesanan Baru", href: "#" },
-            { submenuTitle: "Siap Dikirim", href: "#" },
-            { submenuTitle: "Dalam Pengiriman", href: "#" },
-            { submenuTitle: "Selesai", href: "#" },
-            { submenuTitle: "Dibatalkan", href: "#" },
+            { submenuTitle: "Pesanan Baru", href: "/admin/pesanan-baru" },
+            { submenuTitle: "Siap Dikirim", href: "/admin/siap-dikirim" },
+            {
+              submenuTitle: "Dalam Pengiriman",
+              href: "/admin/dalam-pengiriman",
+            },
+            { submenuTitle: "Selesai", href: "/admin/selesai" },
+            { submenuTitle: "Dibatalkan", href: "/admin/dibatalkan" },
           ]}
         />
         {/* Menu Sales & Revenue */}

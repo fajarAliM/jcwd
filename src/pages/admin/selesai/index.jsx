@@ -1,5 +1,5 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-unused-vars */
+/* eslint-disable react/jsx-no-useless-fragment */
 import {
   Grid,
   Box,
@@ -27,7 +27,7 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import CardOrder from "components/Admin/CardOrder";
 import Group from "public/Images/Group.png";
 
-const SemuaPesananPage = () => {
+const SelesaiPage = () => {
   const [order, setOrder] = useState([1]);
   const [sortFilter, setSortFilter] = useState("");
   const [urutkan, setUrutkan] = useState("");
@@ -44,7 +44,6 @@ const SemuaPesananPage = () => {
   const cardHandle = (event) => {
     setCardPerPage(event.target.value);
   };
-
   return (
     <>
       {order.length ? (
@@ -177,48 +176,6 @@ const SemuaPesananPage = () => {
             {/* Product Component */}
 
             <CardOrder
-              status="Pesanan Baru"
-              orderCode="HTMED129X"
-              orderTime="10 Jan 2022, 10:45 WIB"
-              expiredResponse="12 Jan 2022, 10:45 WIB"
-              productName="Kursi"
-              productQty={3}
-              productPrice={55000}
-              productOrderQty={2}
-              buyersName="Panji"
-              buyersAddress="Jl. Erlangga XII No.25, RT.5/RW.3, Selong, Kec. Kby. Baru, Kota Jakarta Selatan"
-              courier="Grab-Sameday"
-              totalPrice={3 * 55000}
-            />
-            <CardOrder
-              status="Siap Dikirim"
-              orderCode="HTMED129X"
-              orderTime="10 Jan 2022, 10:45 WIB"
-              expiredResponse="12 Jan 2022, 10:45 WIB"
-              productName="Kursi"
-              productQty={3}
-              productPrice={55000}
-              productOrderQty={2}
-              buyersName="Panji"
-              buyersAddress="Jl. Erlangga XII No.25, RT.5/RW.3, Selong, Kec. Kby. Baru, Kota Jakarta Selatan"
-              courier="Grab-Sameday"
-              totalPrice={3 * 55000}
-            />
-            <CardOrder
-              status="Dalam Pengiriman"
-              orderCode="HTMED129X"
-              orderTime="10 Jan 2022, 10:45 WIB"
-              expiredResponse="12 Jan 2022, 10:45 WIB"
-              productName="Kursi"
-              productQty={3}
-              productPrice={55000}
-              productOrderQty={2}
-              buyersName="Panji"
-              buyersAddress="Jl. Erlangga XII No.25, RT.5/RW.3, Selong, Kec. Kby. Baru, Kota Jakarta Selatan"
-              courier="Grab-Sameday"
-              totalPrice={3 * 55000}
-            />
-            <CardOrder
               status="Pesanan Selesai"
               orderCode="HTMED129X"
               orderTime="10 Jan 2022, 10:45 WIB"
@@ -237,7 +194,7 @@ const SemuaPesananPage = () => {
       ) : (
         <Box>
           <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
-            Semua Pesanan
+            Pesanan Selesai
           </Typography>
           <Divider orientation="horizontal" sx={{ marginY: "40px" }} />
           <Box
@@ -252,7 +209,7 @@ const SemuaPesananPage = () => {
             <Typography
               sx={{ marginTop: "20px", fontSize: "20px", color: "Brand.500" }}
             >
-              Belum Ada Pesanan
+              Belum Ada Pesanan yang selesai
             </Typography>
           </Box>
         </Box>
@@ -261,4 +218,4 @@ const SemuaPesananPage = () => {
   );
 };
 
-export default SemuaPesananPage;
+export default SelesaiPage;
