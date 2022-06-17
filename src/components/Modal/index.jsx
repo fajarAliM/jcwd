@@ -6,6 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useState } from "react";
+import Link from "next/link";
 import BCA from "../../public/Images/BCA.png";
 import Gopay from "../../public/Images/Gopay.png";
 import ShopeePay from "../../public/Images/ShopeePay.png";
@@ -275,17 +276,19 @@ const ModalIsi = ({ open, handleClose }) => {
             </Box>
           )}
           {bca ? (
-            <Button
-              variant="contained"
-              sx={{
-                boxShadow: 0,
-                height: "52px",
-                mt: "32px",
-                "&:hover": { border: 0, boxShadow: 0 },
-              }}
-            >
-              Pilih Metode
-            </Button>
+            <Link href="/konfirmasi">
+              <Button
+                variant="contained"
+                sx={{
+                  boxShadow: 0,
+                  height: "52px",
+                  mt: "32px",
+                  "&:hover": { border: 0, boxShadow: 0 },
+                }}
+              >
+                Pilih Metode
+              </Button>
+            </Link>
           ) : (
             <Button
               disabled

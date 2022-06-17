@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import Link from "next/link";
 
 const RoundedInput = styled(OutlinedInput)({
   borderRadius: "8px",
@@ -137,16 +138,18 @@ const Alamat = () => {
           >
             Batalkan
           </Button>
-          <Button
-            variant="contained"
-            sx={{
-              width: "50%",
-              height: "52px",
-              marginLeft: "8px",
-            }}
-          >
-            Simpan Alamat
-          </Button>
+          <Link href="checkout">
+            <Button
+              variant="contained"
+              sx={{
+                width: "50%",
+                height: "52px",
+                marginLeft: "8px",
+              }}
+            >
+              Simpan Alamat
+            </Button>
+          </Link>
         </Box>
       </Box>
     </Box>
