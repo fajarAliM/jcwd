@@ -4,6 +4,8 @@ import { useRouter } from "next/router";
 import AdminPageContainer from "components/Admin/AdminPageContainer";
 import "../styles/globals.css";
 import { Provider } from "react-redux";
+import Nav from "components/Nav/nav";
+import Footer from "components/Footer";
 import { store } from "../redux/store";
 import theme from "../theme";
 
@@ -20,7 +22,11 @@ const MyApp = ({ Component, pageProps }) => {
             {router.pathname.startsWith("/admin") ? (
               <AdminPageContainer children={<Component {...pageProps} />} />
             ) : (
-              <Component {...pageProps} />
+              <>
+                <Nav />
+                <Component {...pageProps} />
+                <Footer />
+              </>
             )}
           </>
         )}

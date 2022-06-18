@@ -1,7 +1,5 @@
 import { Box, Container } from "@mui/material";
-import Nav from "components/Nav/nav";
 import UnggahResep from "components/UnggahResep/unggahResep";
-import Footer from "components/Footer";
 import MetodePembayaran from "components/MetodePembayaran";
 import ProductCard from "components/ProductCard";
 import BannerJaminan from "components/BannerJaminan";
@@ -10,17 +8,19 @@ import Kategori from "components/Kategori";
 const Home = () => {
   return (
     <Box>
-      {/* <AdminNavbar />
-      <AdminSidebar /> */}
-      <Nav />
       <Container>
-        <ProductCard />
         <UnggahResep />
         <Kategori />
+        <Box sx={{ display: "flex" }}>
+          <ProductCard />
+          <ProductCard />
+          <ProductCard />
+          <ProductCard />
+          <ProductCard />
+        </Box>
         <BannerJaminan />
         <MetodePembayaran />
       </Container>
-      <Footer />
     </Box>
   );
 };
