@@ -16,6 +16,9 @@ import {
   Typography,
   FormControl,
   FormLabel,
+  Tooltip,
+  Fade,
+  FormHelperText,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
@@ -24,15 +27,59 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useState } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Link from "next/link";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import InfoIcon from "@mui/icons-material/Info";
+import { useRouter } from "next/router";
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const [term, setTerm] = useState(false);
+
+  const router = useRouter();
 
   const termHandle = () => {
     setTerm(!term);
   };
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      username: "",
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object().shape({
+      name: Yup.string()
+        .required("Name is required")
+        .min(3, "Name must be at least 3 characters")
+        .max(20, "Name must not exceed 20 characters"),
+      username: Yup.string()
+        .required("Username is required")
+        .min(3, "Username must be at least 3 characters")
+        .max(20, "Username must not exceed 20 characters"),
+      email: Yup.string()
+        .required("Email is required")
+        .email("Email is invalid"),
+      password: Yup.string()
+        .required("Password is required")
+        // the matches is user to ensure the password is strong
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/,
+          "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+        ),
+    }),
+    onSubmit: async (values) => {
+      try {
+        console.log(values);
+
+        router.push("/login");
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    validateOnChange: false,
+  });
 
   return (
     <>
@@ -41,7 +88,7 @@ const RegisterPage = () => {
         <Box>
           <Image src={Frame} layout="fixed" />
         </Box>
-        <Box px="96px" py="77px">
+        <Box px="96px" py="50px" height="100vh" overflow="scroll">
           <Typography fontWeight="bold" variant="h4" component="h4">
             Mari Kita Mulai
           </Typography>
@@ -53,7 +100,7 @@ const RegisterPage = () => {
                 component="span"
                 color="Brand.500"
               >
-                Daftar
+                Masuk
               </Typography>
             </Link>{" "}
           </Typography>
@@ -89,9 +136,17 @@ const RegisterPage = () => {
             </Button>
           </Stack>
           <Divider>atau</Divider>
-          <FormControl fullWidth>
+          <FormControl
+            fullWidth
+            required
+            error={formik.errors.name}
+            sx={{ mt: "16px" }}
+          >
             <FormLabel>Name</FormLabel>
             <OutlinedInput
+              onChange={(e) => {
+                formik.setFieldValue("name", e.target.value);
+              }}
               placeholder="John Doe"
               startAdornment={
                 <AccountCircleIcon
@@ -99,12 +154,23 @@ const RegisterPage = () => {
                   htmlColor="#02114f"
                 />
               }
-              sx={{ borderRadius: "10px", marginBottom: "16px" }}
+              sx={{ borderRadius: "10px" }}
             />
+            {formik.errors.name && (
+              <FormHelperText>{formik.errors.name}</FormHelperText>
+            )}
           </FormControl>
-          <FormControl fullWidth>
+          <FormControl
+            fullWidth
+            required
+            error={formik.errors.username}
+            sx={{ mt: "16px" }}
+          >
             <FormLabel>Username</FormLabel>
             <OutlinedInput
+              onChange={(e) => {
+                formik.setFieldValue("username", e.target.value);
+              }}
               placeholder="johndoe"
               startAdornment={
                 <AccountCircleIcon
@@ -113,30 +179,64 @@ const RegisterPage = () => {
                 />
               }
               fullWidth
-              sx={{ borderRadius: "10px", marginBottom: "16px" }}
+              sx={{ borderRadius: "10px", marginTop: "16px" }}
             />
+            {formik.errors.username && (
+              <FormHelperText>{formik.errors.username}</FormHelperText>
+            )}
           </FormControl>
-          <FormControl fullWidth>
+          <FormControl
+            fullWidth
+            required
+            error={formik.errors.email}
+            sx={{ mt: "16px" }}
+          >
             <FormLabel>Email Address</FormLabel>
             <OutlinedInput
+              onChange={(e) => {
+                formik.setFieldValue("email", e.target.value);
+              }}
               placeholder="JohnDoe@gmail.com"
               startAdornment={
                 <MailIcon sx={{ marginRight: "17px" }} htmlColor="#02114f" />
               }
               fullWidth
-              sx={{ borderRadius: "10px", marginBottom: "16px" }}
+              sx={{ borderRadius: "10px" }}
             />
+            {formik.errors.email && (
+              <FormHelperText>{formik.errors.email}</FormHelperText>
+            )}
           </FormControl>
-          <FormControl fullWidth>
-            <FormLabel>Password</FormLabel>
+          <FormControl
+            fullWidth
+            required
+            error={formik.errors.password}
+            sx={{ mt: "16px" }}
+          >
+            <FormLabel>
+              Password{" "}
+              <Tooltip
+                title="Passwords should contain at least 8 characters including an uppercase letter, a symbol, and a number"
+                TransitionComponent={Fade}
+                TransitionProps={{ timeout: 600 }}
+              >
+                <InfoIcon fontSize="small" />
+              </Tooltip>
+            </FormLabel>
             <OutlinedInput
+              onChange={(e) => {
+                formik.setFieldValue("password", e.target.value);
+              }}
               type={showPassword ? "password" : "text"}
               placeholder="Password123@"
               startAdornment={
                 <LockIcon sx={{ marginRight: "17px" }} htmlColor="#02114f" />
               }
               fullWidth
-              sx={{ borderRadius: "10px", marginBottom: "16px" }}
+              sx={{
+                borderRadius: "10px",
+                marginTop: "16px",
+              }}
               endAdornment={
                 <IconButton onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? (
@@ -147,29 +247,9 @@ const RegisterPage = () => {
                 </IconButton>
               }
             />
-          </FormControl>
-          <FormControl fullWidth>
-            <FormLabel>Repeat Password</FormLabel>
-            <OutlinedInput
-              type={showRepeatPassword ? "password" : "text"}
-              placeholder="Password123@"
-              startAdornment={
-                <LockIcon sx={{ marginRight: "17px" }} htmlColor="#02114f" />
-              }
-              fullWidth
-              sx={{ borderRadius: "10px", marginBottom: "16px" }}
-              endAdornment={
-                <IconButton
-                  onClick={() => setShowRepeatPassword(!showRepeatPassword)}
-                >
-                  {showRepeatPassword ? (
-                    <VisibilityIcon htmlColor="#02114f" sx={{}} />
-                  ) : (
-                    <VisibilityOffIcon htmlColor="#02114f" />
-                  )}
-                </IconButton>
-              }
-            />
+            {formik.errors.password && (
+              <FormHelperText>{formik.errors.password}</FormHelperText>
+            )}
           </FormControl>
           <FormControlLabel
             control={<Checkbox checked={term} onChange={termHandle} />}
@@ -193,7 +273,8 @@ const RegisterPage = () => {
             }}
             variant="contained"
             fullWidth
-            disabled={!term}
+            disabled={!term || formik.isSubmitting}
+            onClick={formik.handleSubmit}
           >
             Register
           </Button>
