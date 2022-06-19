@@ -9,10 +9,15 @@ import {
   DialogTitle,
   Fade,
   FormControl,
+  FormControlLabel,
   FormHelperText,
   FormLabel,
   Grid,
   OutlinedInput,
+  Radio,
+  RadioGroup,
+  Stack,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -21,6 +26,10 @@ import { useEffect, useRef, useState } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import moment from "moment";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import imagePlaceholder from "../../public/Images/imagePlaceholder.png";
 
 const ProfilePage = () => {
@@ -35,6 +44,8 @@ const ProfilePage = () => {
     email: "sonmychael@gmail.com",
     profilePicture: null,
     isVerified: false,
+    gender: "Pria",
+    DOB: "2001-03-31 07:20:31",
   };
 
   const inputProfilePictureRef = useRef(null);
@@ -43,6 +54,8 @@ const ProfilePage = () => {
     initialValues: {
       nama: userInfo.nama || "",
       username: userInfo.username || "",
+      gender: userInfo.gender || "",
+      DOB: userInfo.DOB || "",
     },
     validationSchema: Yup.object().shape({
       nama: Yup.string()
@@ -53,6 +66,8 @@ const ProfilePage = () => {
         .required("Username is required")
         .min(3, "Username must be at least 3 characters")
         .max(20, "Username must not exceed 20 characters"),
+      gender: Yup.string(),
+      DOB: Yup.date(),
     }),
     validateOnChange: false,
   });
@@ -262,7 +277,7 @@ const ProfilePage = () => {
                   Nama
                 </Typography>
                 <Typography fontWeight="bold">
-                  {userInfo.nama || "-"}
+                  {userProfileFormik.values.nama || "-"}
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center" mb="25px">
@@ -270,7 +285,7 @@ const ProfilePage = () => {
                   Username
                 </Typography>
                 <Typography fontWeight="bold">
-                  {userInfo.username || "-"}
+                  {userProfileFormik.values.username || "-"}
                 </Typography>
               </Box>
               <Box display="flex" alignItems="center" mb="25px">
@@ -281,30 +296,52 @@ const ProfilePage = () => {
                   {userInfo.email || "-"}
                 </Typography>
               </Box>
-              {userInfo.isVerified ? undefined : (
+              <Box display="flex" alignItems="center" mb="25px">
+                <Typography width="150px" variant="body1">
+                  Tanggal Lahir
+                </Typography>
+                <Typography fontWeight="bold">
+                  {userProfileFormik.values.DOB
+                    ? moment(userProfileFormik.values.DOB).format(
+                        "DD MMMM YYYY"
+                      )
+                    : "-"}
+                </Typography>
+              </Box>
+              <Box display="flex" alignItems="center" mb="25px">
+                <Typography width="150px" variant="body1">
+                  Jenis Kelamin
+                </Typography>
+                <Typography fontWeight="bold">
+                  {userProfileFormik.values.gender || "-"}
+                </Typography>
+              </Box>
+              <Stack direction="row" spacing={1}>
+                {userInfo.isVerified ? undefined : (
+                  <Button
+                    variant="contained"
+                    sx={{ height: "45px", width: "180px" }}
+                  >
+                    Verifikasi akun anda
+                  </Button>
+                )}
+                <br />
                 <Button
-                  variant="contained"
-                  sx={{ height: "45px", width: "180px", mb: "10px" }}
+                  variant="outlined"
+                  sx={{ height: "45px", width: "180px" }}
+                  onClick={() => setOpenModalEdit(true)}
                 >
-                  Verifikasi akun anda
+                  Edit Profile
                 </Button>
-              )}
-              <br />
-              <Button
-                variant="outlined"
-                sx={{ height: "45px", width: "180px", mb: "10px" }}
-                onClick={() => setOpenModalEdit(true)}
-              >
-                Edit Profile
-              </Button>
-              <br />
-              <Button
-                variant="outlined"
-                sx={{ height: "45px", width: "180px", mb: "10px" }}
-                onClick={() => setOpenModalPassword(true)}
-              >
-                Ganti Password
-              </Button>
+                <br />
+                <Button
+                  variant="outlined"
+                  sx={{ height: "45px", width: "180px" }}
+                  onClick={() => setOpenModalPassword(true)}
+                >
+                  Ganti Password
+                </Button>
+              </Stack>
             </Box>
             <Dialog open={openModalEdit} onClose={closeModal}>
               <Box
@@ -314,6 +351,7 @@ const ProfilePage = () => {
                 flexDirection="column"
                 alignItems="center"
                 pb={0}
+                overflow="scroll"
               >
                 {userInfo.profilePicture ? (
                   <Avatar
@@ -369,12 +407,72 @@ const ProfilePage = () => {
                       </FormHelperText>
                     )}
                   </FormControl>
+                  <FormControl fullWidth>
+                    <FormLabel
+                      id="controlled-radio-buttons-group"
+                      sx={{ fontVariant: "body1", mt: "25px" }}
+                    >
+                      Tanggal Lahir
+                    </FormLabel>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
+                        disableFuture
+                        openTo="year"
+                        views={["year", "month", "day"]}
+                        value={userProfileFormik.values.DOB}
+                        onChange={(newDate) => {
+                          userProfileFormik.setFieldValue("DOB", newDate);
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+                    </LocalizationProvider>
+                  </FormControl>
+                  <FormControl fullWidth>
+                    <FormLabel
+                      id="controlled-radio-buttons-group"
+                      sx={{ fontVariant: "body1", mt: "25px" }}
+                    >
+                      Gender
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="controlled-radio-buttons-group"
+                      name="controlled-radio-buttons-group"
+                      value={userProfileFormik.values.gender}
+                      onChange={(e) =>
+                        userProfileFormik.setFieldValue(
+                          "gender",
+                          e.target.value
+                        )
+                      }
+                    >
+                      <FormControlLabel
+                        value="Pria"
+                        control={<Radio />}
+                        label="Pria"
+                      />
+                      <FormControlLabel
+                        value="Wanita"
+                        control={<Radio />}
+                        label="Wanita"
+                      />
+                    </RadioGroup>
+                  </FormControl>
                 </DialogContent>
               </Box>
               <DialogActions sx={{ marginX: 6, marginBottom: 4, marginTop: 2 }}>
                 <Button
                   variant="outlined"
-                  onClick={closeModal}
+                  onClick={() => {
+                    closeModal();
+                    userProfileFormik.setFieldValue("nama", userInfo.nama);
+                    userProfileFormik.setFieldValue(
+                      "username",
+                      userInfo.username
+                    );
+                    userProfileFormik.setFieldValue("gender", userInfo.gender);
+                    userProfileFormik.setFieldValue("DOB", userInfo.DOB);
+                  }}
                   sx={{ width: "90px", height: "42px", mr: "8px" }}
                 >
                   Batal

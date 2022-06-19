@@ -64,7 +64,7 @@ const LoginPage = () => {
         name: "john doe",
         password: values.password,
       };
-      console.log(userInfo);
+      // console.log(userInfo);
       dispatch(login(userInfo));
 
       setTimeout(() => {
