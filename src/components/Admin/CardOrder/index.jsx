@@ -15,6 +15,8 @@ import Image from "next/image";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ChatIcon from "@mui/icons-material/Chat";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import { useState } from "react";
+import ModalTerimaPesanan from "../ModalTerimaPesanan";
 
 const CardOrder = ({
   status,
@@ -33,6 +35,10 @@ const CardOrder = ({
   totalPrice,
 }) => {
   // Status: "Pesanan Baru", "Dalam Pengiriman", "Siap Dikirim", "Pesanan Selesai", "Pesanan Dibatalkan"
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   return (
     <>
       {/* Product Component */}
@@ -322,7 +328,21 @@ const CardOrder = ({
             ) : status === "Pesanan Baru" ? (
               <>
                 <Button sx={{ color: "Brand.500" }}>Tolak Pesanan</Button>
-                <Button variant="contained">Terima Pesanan</Button>
+                <Button variant="contained" onClick={handleOpen}>
+                  Terima Pesanan
+                </Button>
+                <ModalTerimaPesanan
+                  open={open}
+                  handleClose={handleClose}
+                  hargaProduk={productPrice}
+                  jumlahProduk={productQty}
+                  jumlahProdukOrder={productOrderQty}
+                  kodeOrder={orderCode}
+                  namaPembeli={buyersName}
+                  namaProduk={productName}
+                  totalHarga={totalPrice}
+                  waktuOrder={orderTime}
+                />
               </>
             ) : null}
           </Box>

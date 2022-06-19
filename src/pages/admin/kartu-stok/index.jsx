@@ -94,7 +94,7 @@ const KartuStok = () => {
         sx={{ backgroundColor: "#FFFFFF" }}
       >
         <Box display="flex" alignItems="center">
-          <Link href="/admin/daftar_obat">
+          <Link href="/admin/daftar-produk">
             <IconButton>
               <ArrowBackIosNewIcon />
             </IconButton>

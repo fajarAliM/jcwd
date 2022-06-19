@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-/* eslint-disable no-unused-vars */
+
 import {
   Grid,
   Box,
@@ -19,15 +19,12 @@ import DownloadIcon from "@mui/icons-material/Download";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import Kursiplastik from "public/Images/kursiplastik.png";
 import Image from "next/image";
-import ChatIcon from "@mui/icons-material/Chat";
-import ReceiptIcon from "@mui/icons-material/Receipt";
 import CardOrder from "components/Admin/CardOrder";
 import Group from "public/Images/Group.png";
 
 const SemuaPesananPage = () => {
+  // eslint-disable-next-line no-unused-vars
   const [order, setOrder] = useState([1]);
   const [sortFilter, setSortFilter] = useState("");
   const [urutkan, setUrutkan] = useState("");
@@ -105,8 +102,8 @@ const SemuaPesananPage = () => {
                   <MenuItem disabled value="">
                     Filter
                   </MenuItem>
+                  <MenuItem value="Obat Bebas">Obat Bebas</MenuItem>
                   <MenuItem value="Obat Resep">Obat Resep</MenuItem>
-                  <MenuItem value="Obat Racik">Obat Racik</MenuItem>
                 </Select>
               </FormControl>
 
