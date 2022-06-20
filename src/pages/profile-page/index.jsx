@@ -361,7 +361,7 @@ const ProfilePage = () => {
                   />
                 ) : (
                   <Avatar
-                    {...stringAvatar(userInfo.nama)}
+                    {...stringAvatar(userProfileFormik.values.nama)}
                     sx={{ width: 56, height: 56 }}
                   />
                 )}
