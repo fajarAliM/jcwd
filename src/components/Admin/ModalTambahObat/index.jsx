@@ -459,7 +459,7 @@ const ModalTambahObat = ({ open, handleClose }) => {
                     backgroundColor: "whitesmoke",
                     border: "1px solid #FF6600",
                     ":hover": {
-                      backgroundColor: "white",
+                      color: "white",
                     },
                   }}
                 >

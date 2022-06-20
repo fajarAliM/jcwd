@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-no-useless-fragment */
 import {
   Grid,
@@ -19,19 +18,17 @@ import DownloadIcon from "@mui/icons-material/Download";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import Kursiplastik from "public/Images/kursiplastik.png";
 import Image from "next/image";
-import ChatIcon from "@mui/icons-material/Chat";
-import ReceiptIcon from "@mui/icons-material/Receipt";
 import CardOrder from "components/Admin/CardOrder";
 import Group from "public/Images/Group.png";
 
 const PesananBaruPage = () => {
+  // eslint-disable-next-line no-unused-vars
   const [order, setOrder] = useState([1]);
   const [sortFilter, setSortFilter] = useState("");
   const [urutkan, setUrutkan] = useState("");
   const [cardPerPage, setCardPerPage] = useState("5");
+  const [checkedItems, setCheckedItems] = useState([]);
 
   const filterHandle = (event) => {
     setSortFilter(event.target.value);
@@ -142,7 +139,29 @@ const PesananBaruPage = () => {
               justifyContent="space-between"
             >
               <Box>
-                <FormControlLabel control={<Checkbox />} label="Pilih Semua" />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={({ target: { checked } }) => {
+                        let dupItems = [...checkedItems];
+                        if (checked) {
+                          order.forEach((val, idx) => dupItems.push(idx));
+                        } else {
+                          dupItems = [];
+                        }
+
+                        setCheckedItems(dupItems);
+                      }}
+                      sx={{
+                        color: "Brand.500",
+                        "&.Mui-checked": {
+                          color: "Brand.500",
+                        },
+                      }}
+                    />
+                  }
+                  label="Pilih Semua"
+                />
               </Box>
               <Box display="flex" flexDirection="row" alignContent="center">
                 <Typography sx={{ marginRight: "5px" }}>
@@ -174,8 +193,40 @@ const PesananBaruPage = () => {
             </Box>
 
             {/* Product Component */}
+            {order.map((val, idx) => {
+              return (
+                <CardOrder
+                  setCartChecked={() => {
+                    let dupItems = [...checkedItems];
+
+                    if (dupItems.includes(idx)) {
+                      dupItems = dupItems.filter((oldItem) => oldItem !== idx);
+                    } else {
+                      dupItems.push(idx);
+                    }
+                    setCheckedItems(dupItems);
+                  }}
+                  checked={checkedItems.includes(idx)}
+                />
+              );
+            })}
 
             <CardOrder
+              status="Pesanan Baru"
+              orderCode="HTMED129X"
+              orderTime="10 Jan 2022, 10:45 WIB"
+              expiredResponse="12 Jan 2022, 10:45 WIB"
+              productName="Kursi"
+              productQty={3}
+              productPrice={55000}
+              productOrderQty={2}
+              buyersName="Panji"
+              buyersAddress="Jl. Erlangga XII No.25, RT.5/RW.3, Selong, Kec. Kby. Baru, Kota Jakarta Selatan"
+              courier="Grab-Sameday"
+              totalPrice={3 * 55000}
+            />
+            <CardOrder
+              isObatResep
               status="Pesanan Baru"
               orderCode="HTMED129X"
               orderTime="10 Jan 2022, 10:45 WIB"

@@ -29,6 +29,7 @@ const SemuaPesananPage = () => {
   const [sortFilter, setSortFilter] = useState("");
   const [urutkan, setUrutkan] = useState("");
   const [cardPerPage, setCardPerPage] = useState("5");
+  const [checkedItems, setCheckedItems] = useState([]);
 
   const filterHandle = (event) => {
     setSortFilter(event.target.value);
@@ -140,7 +141,29 @@ const SemuaPesananPage = () => {
               justifyContent="space-between"
             >
               <Box>
-                <FormControlLabel control={<Checkbox />} label="Pilih Semua" />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onChange={({ target: { checked } }) => {
+                        let dupItems = [...checkedItems];
+                        if (checked) {
+                          order.forEach((val, idx) => dupItems.push(idx));
+                        } else {
+                          dupItems = [];
+                        }
+
+                        setCheckedItems(dupItems);
+                      }}
+                      sx={{
+                        color: "Brand.500",
+                        "&.Mui-checked": {
+                          color: "Brand.500",
+                        },
+                      }}
+                    />
+                  }
+                  label="Pilih Semua"
+                />
               </Box>
               <Box display="flex" flexDirection="row" alignContent="center">
                 <Typography sx={{ marginRight: "5px" }}>
@@ -172,6 +195,23 @@ const SemuaPesananPage = () => {
             </Box>
 
             {/* Product Component */}
+            {order.map((val, idx) => {
+              return (
+                <CardOrder
+                  setCartChecked={() => {
+                    let dupItems = [...checkedItems];
+
+                    if (dupItems.includes(idx)) {
+                      dupItems = dupItems.filter((oldItem) => oldItem !== idx);
+                    } else {
+                      dupItems.push(idx);
+                    }
+                    setCheckedItems(dupItems);
+                  }}
+                  checked={checkedItems.includes(idx)}
+                />
+              );
+            })}
 
             <CardOrder
               status="Pesanan Baru"

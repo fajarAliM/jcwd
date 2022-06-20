@@ -17,8 +17,11 @@ import ChatIcon from "@mui/icons-material/Chat";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import { useState } from "react";
 import ModalTerimaPesanan from "../ModalTerimaPesanan";
+import ModalSalinanResep from "../ModalSalinanResep";
 
 const CardOrder = ({
+  checked = false,
+  setCartChecked,
   status,
   orderCode,
   orderTime,
@@ -39,6 +42,8 @@ const CardOrder = ({
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [salinanResep, setSalinanResep] = useState(false);
+
   return (
     <>
       {/* Product Component */}
@@ -66,7 +71,21 @@ const CardOrder = ({
         >
           {/* Check Box */}
           <Box display="flex" alignItems="center" flexDirection="row">
-            <FormControlLabel sx={{ marginRight: 0 }} control={<Checkbox />} />
+            <FormControlLabel
+              sx={{ marginRight: 0 }}
+              control={
+                <Checkbox
+                  onClick={setCartChecked}
+                  checked={checked}
+                  sx={{
+                    color: "Brand.500",
+                    "&.Mui-checked": {
+                      color: "Brand.500",
+                    },
+                  }}
+                />
+              }
+            />
             <Typography sx={{ fontWeight: "bold" }}>{status}</Typography>
             <Typography sx={{ color: "Sidebar.700", marginLeft: "10px" }}>
               /
@@ -152,6 +171,7 @@ const CardOrder = ({
                     </Typography>
                     <Button
                       variant="contained"
+                      onClick={() => setSalinanResep(true)}
                       sx={{
                         maxHeight: "32px",
                         fontSize: "12px",
@@ -159,6 +179,17 @@ const CardOrder = ({
                     >
                       Buat Salinan Resep
                     </Button>
+                    <ModalSalinanResep
+                      open={salinanResep}
+                      handleClose={() => setSalinanResep(false)}
+                      namaPembeli={buyersName}
+                      hargaProduk={productPrice}
+                      hargaTotal={totalPrice}
+                      jumlahProduk={productQty}
+                      kodeOrder={orderCode}
+                      namaProduk={productName}
+                      waktuOrder={orderTime}
+                    />
                   </>
                 ) : (
                   <>

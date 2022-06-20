@@ -98,7 +98,7 @@ const AdminSidebar = () => {
               href: "/admin/ringkasan-statistik",
             },
             { submenuTitle: "Buku Kas", href: "/admin/buku-kas" },
-            { submenuTitle: "Laba & Rugi", href: "#" },
+            { submenuTitle: "Laba & Rugi", href: "/admin/laba-&-rugi" },
           ]}
         />
       </Box>
