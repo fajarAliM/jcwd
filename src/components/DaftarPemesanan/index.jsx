@@ -1,77 +1,10 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  MenuItem,
-  Select,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import CheckOutCard from "components/CheckOut";
-import { useState } from "react";
 import { BsFillChatDotsFill } from "react-icons/bs";
 
-const DaftarPemesanan = () => {
-  const [filter, setFilter] = useState("");
-  const handleChange = (event) => {
-    setFilter(event.target.value);
-  };
+const DaftarPemesanan = ({ status }) => {
   return (
     <Stack>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          mt: "46px",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Typography sx={{ fontWeight: 700, fontSize: "14px", mr: "10px" }}>
-            Jenis Obat
-          </Typography>
-          <Button variant="outlined" sx={{ mr: "10px", borderRadius: "17px" }}>
-            Semua Obat
-          </Button>
-          <Button variant="outlined" sx={{ mr: "10px", borderRadius: "17px" }}>
-            Obat Resep
-          </Button>
-          <Button
-            variant="contained"
-            sx={{
-              "&:hover": { border: 0 },
-              mr: "10px",
-              borderRadius: "17px",
-            }}
-          >
-            Obat Bebas
-          </Button>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Typography
-            sx={{ color: "#737A8D", fontSize: "14px", fontWeight: 400 }}
-          >
-            Urutkan
-          </Typography>
-          <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-            <Select value={filter} onChange={handleChange}>
-              <MenuItem value="Terbaru">Terbaru</MenuItem>
-              <MenuItem value="Termahal">Termahal</MenuItem>
-              <MenuItem value="Termurah">Termurah</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-      </Box>
       <Stack
         sx={{
           border: "1px solid white",
@@ -90,25 +23,43 @@ const DaftarPemesanan = () => {
           }}
         >
           <Typography>Jumat, 5 April 2022, 15:45</Typography>
-          <Box
-            sx={{
-              border: "1px solid #FFDE6B",
-              color: "#CBAF4E",
-              width: "156px",
-              height: "26px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: "3px",
-            }}
-          >
-            <Typography sx={{ fontSize: "12px", fontWeight: 400 }}>
-              Menunggu Pembayaran
-            </Typography>
-            {/* <Typography>Menunggu Konfirmasi</Typography>
-          <Typography>Sedang Pengiriman</Typography>
-          <Typography>Pesanan Diterima</Typography> */}
-          </Box>
+          {status === "Dikirim" || status === "Selesai" ? (
+            <Box
+              sx={{
+                border: "1px solid #32A853",
+                color: "#32A853",
+                background: "#87DF9F",
+                width: "156px",
+                height: "26px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "3px",
+              }}
+            >
+              <Typography sx={{ fontSize: "12px", fontWeight: 400 }}>
+                {status}
+              </Typography>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                border: "1px solid #CBAF4E",
+                color: "#CBAF4E",
+                background: "#FFDE6B",
+                width: "156px",
+                height: "26px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "3px",
+              }}
+            >
+              <Typography sx={{ fontSize: "12px", fontWeight: 400 }}>
+                {status}
+              </Typography>
+            </Box>
+          )}
         </Box>
         <Box
           sx={{

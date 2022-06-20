@@ -1,4 +1,16 @@
-import { Avatar, Box, Grid, Stack, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  MenuItem,
+  Select,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -18,7 +30,11 @@ const TabPanel = (props) => {
 };
 
 const ProsesPemesanan = () => {
-  const [value, setValue] = useState("one");
+  const [filter, setFilter] = useState("");
+  const handleFilter = (event) => {
+    setFilter(event.target.value);
+  };
+  const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -69,7 +85,9 @@ const ProsesPemesanan = () => {
             </Box>
             <Box sx={{ display: "flex" }}>
               <FormatListBulletedIcon sx={{ mr: "26px" }} />
-              <Typography>Proses Pemesanan</Typography>
+              <Typography sx={{ color: "Brand.500", fontWeight: 700 }}>
+                Proses Pemesanan
+              </Typography>
             </Box>
             <Box sx={{ display: "flex" }}>
               <PaymentsIcon sx={{ mr: "26px" }} />
@@ -117,16 +135,84 @@ const ProsesPemesanan = () => {
                 },
               }}
             >
-              <Tab label="Semua" sx={{ textTransform: "none" }} />
-              <Tab label="Menunggu" sx={{ textTransform: "none" }} />
-              <Tab label="Diproses" sx={{ textTransform: "none" }} />
-              <Tab label="Dikirim" sx={{ textTransform: "none" }} />
-              <Tab label="Selesai" sx={{ textTransform: "none" }} />
-              <Tab label="Dibatalkan" sx={{ textTransform: "none" }} />
+              <Tab label="Semua" value={0} sx={{ textTransform: "none" }} />
+              <Tab label="Menunggu" value={1} sx={{ textTransform: "none" }} />
+              <Tab label="Diproses" value={2} sx={{ textTransform: "none" }} />
+              <Tab label="Dikirim" value={3} sx={{ textTransform: "none" }} />
+              <Tab label="Selesai" value={4} sx={{ textTransform: "none" }} />
+              <Tab
+                label="Dibatalkan"
+                value={5}
+                sx={{ textTransform: "none" }}
+              />
             </Tabs>
           </Box>
           <TabPanel value={value} index={0}>
-            <DaftarPemesanan />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mt: "46px",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  sx={{ fontWeight: 700, fontSize: "14px", mr: "10px" }}
+                >
+                  Jenis Obat
+                </Typography>
+                <Button
+                  variant="outlined"
+                  sx={{ mr: "10px", borderRadius: "17px" }}
+                >
+                  Semua Obat
+                </Button>
+                <Button
+                  variant="outlined"
+                  sx={{ mr: "10px", borderRadius: "17px" }}
+                >
+                  Obat Resep
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    "&:hover": { border: 0 },
+                    mr: "10px",
+                    borderRadius: "17px",
+                  }}
+                >
+                  Obat Bebas
+                </Button>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  sx={{ color: "#737A8D", fontSize: "14px", fontWeight: 400 }}
+                >
+                  Urutkan
+                </Typography>
+                <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                  <Select value={filter} onChange={handleFilter}>
+                    <MenuItem value="Terbaru">Terbaru</MenuItem>
+                    <MenuItem value="Termahal">Termahal</MenuItem>
+                    <MenuItem value="Termurah">Termurah</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            </Box>
+            <DaftarPemesanan status="Dikirim" />
+            <DaftarPemesanan status="Sedang Dikirim" />
+            <DaftarPemesanan status="Diproses" />
           </TabPanel>
         </Stack>
       </Grid>

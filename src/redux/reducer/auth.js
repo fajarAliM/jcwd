@@ -6,6 +6,9 @@ const initialState = {
   email: "",
   alamat: "",
   noHp: "",
+  gender: "",
+  DOB: "",
+  isAdmin: 0,
 };
 
 // eslint-disable-next-line import/prefer-default-export
@@ -24,6 +27,12 @@ const authReducer = createSlice({
       state.alamat = action.payload.alamat;
       // eslint-disable-next-line no-param-reassign
       state.noHp = action.payload.noHp;
+      // eslint-disable-next-line no-param-reassign
+      state.gender = action.payload.gender;
+      // eslint-disable-next-line no-param-reassign
+      state.DOB = action.payload.DOB;
+      // eslint-disable-next-line no-param-reassign
+      state.isAdmin = action.payload.isAdmin;
     },
     logout: () => {
       return initialState;

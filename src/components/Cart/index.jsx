@@ -10,9 +10,39 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Image from "next/image";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import KudaMesir from "../../public/Images/KudaMesir.png";
 
 const UserCart = ({ checked = false, setCartChecked }) => {
+  const formik = useFormik({
+    initialValues: {
+      quantity: 1,
+    },
+    onSubmit: () => {
+      // eslint-disable-next-line no-console
+      console.log("berhasil!");
+    },
+    validationSchema: Yup.object().shape({
+      quantity: Yup.number().required().min(1),
+    }),
+  });
+
+  const qtyHandler = (status) => {
+    if (status === "increment") {
+      if (formik.values.quantity === "") {
+        formik.setFieldValue("quantity", 1);
+        return;
+      }
+      if (formik.values.quantity >= 10) return;
+      // eslint-disable-next-line radix
+      formik.setFieldValue("quantity", parseInt(formik.values.quantity) + 1);
+    } else if (status === "decrement") {
+      if (formik.values.quantity < 1) return;
+
+      formik.setFieldValue("quantity", formik.values.quantity - 1);
+    }
+  };
   return (
     <Box sx={{ display: "flex", flexDirection: "column", mt: "28px" }}>
       <Box sx={{ display: "flex", flexDirection: "row" }}>
@@ -100,6 +130,7 @@ const UserCart = ({ checked = false, setCartChecked }) => {
             }}
           >
             <Button
+              onClick={() => qtyHandler("decrement")}
               variant="outlined"
               sx={{
                 border: 0,
@@ -119,9 +150,10 @@ const UserCart = ({ checked = false, setCartChecked }) => {
                 textAlign: "center",
               }}
             >
-              1
+              {formik.values.quantity}
             </Typography>
             <Button
+              onClick={() => qtyHandler("increment")}
               variant="outlined"
               sx={{
                 border: 0,

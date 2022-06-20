@@ -11,9 +11,11 @@ import {
 import ProductCard from "components/ProductCard";
 import Sidebar from "components/Sidebar";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 const ProductList = () => {
+  const router = useRouter();
   const [filter, setFilter] = useState("");
   const handleChange = (event) => {
     setFilter(event.target.value);
@@ -22,17 +24,42 @@ const ProductList = () => {
     <Grid container sx={{ mt: "44px" }}>
       <Grid item xs={1} sm={3}>
         <Stack sx={{ ml: "90px" }}>
-          <Box sx={{ display: "flex", flexDirection: "column", mt: 2, mr: 10 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", mt: 2, mr: 8 }}>
             <Box sx={{ mb: 5 }}>
-              <Breadcrumbs sx={{ fontSize: "14px" }}>
-                <Link underline="hover" color="Brand.500" href="/">
-                  Beranda
+              <Breadcrumbs sx={{ "&:hover": { cursor: "pointer" } }}>
+                <Link underline="hover" href="/">
+                  <Typography
+                    sx={{
+                      color: router.pathname === "/" ? "Brand.500" : "#213360",
+                      fontWeight: router.pathname === "/" ? 700 : 400,
+                    }}
+                  >
+                    Beranda
+                  </Typography>
                 </Link>
-                <Link underline="hover" color="Brand.500" href="/">
-                  Kategori
+                <Link underline="hover" href="/">
+                  <Typography
+                    sx={{
+                      color: router.pathname === "/" ? "Brand.500" : "#213360",
+                      fontWeight: router.pathname === "/" ? 700 : 400,
+                    }}
+                  >
+                    Kategori
+                  </Typography>
                 </Link>
-                <Link underline="hover" color="Brand.500" href="/">
-                  Obat
+                <Link underline="hover" href="/product-list">
+                  <Typography
+                    sx={{
+                      color:
+                        router.pathname === "/product-list"
+                          ? "Brand.500"
+                          : "#213360",
+                      fontWeight:
+                        router.pathname === "/product-list" ? 700 : 400,
+                    }}
+                  >
+                    Obat
+                  </Typography>
                 </Link>
               </Breadcrumbs>
             </Box>

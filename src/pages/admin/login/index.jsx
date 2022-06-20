@@ -25,6 +25,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import Link from "next/link";
 
 const LoginPage = () => {
+  // onSubmit kasih isAdmin = 1
   const [showPassword, setShowPassword] = useState("false");
   return (
     <>

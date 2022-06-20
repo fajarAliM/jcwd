@@ -15,8 +15,10 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import ProductCard from "components/ProductCard";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useRouter } from "next/router";
 
 const ProductPage = () => {
+  const router = useRouter();
   const formik = useFormik({
     initialValues: {
       quantity: 1,
@@ -58,15 +60,37 @@ const ProductPage = () => {
         {/* LEFT SIDE */}
         <Box sx={{ display: "flex", flexDirection: "column", mt: 2, mr: 10 }}>
           <Box sx={{ mb: 5 }}>
-            <Breadcrumbs sx={{ fontSize: "18px" }}>
-              <Link underline="hover" color="Brand.500" href="/">
-                Beranda
+            <Breadcrumbs sx={{ "&:hover": { cursor: "pointer" } }}>
+              <Link underline="none" href="/">
+                <Typography
+                  sx={{
+                    color: router.pathname === "/" ? "Brand.500" : "#213360",
+                    fontWeight: router.pathname === "/" ? 700 : 400,
+                  }}
+                >
+                  Beranda
+                </Typography>
               </Link>
-              <Link underline="hover" color="Brand.500" href="/">
-                Kategori
+              <Link underline="none" href="/">
+                <Typography
+                  sx={{
+                    color: router.pathname === "/" ? "Brand.500" : "#213360",
+                    fontWeight: router.pathname === "/" ? 700 : 400,
+                  }}
+                >
+                  Kategori
+                </Typography>
               </Link>
-              <Link underline="hover" color="Brand.500" href="/">
-                Obat
+              <Link underline="none" href="/product">
+                <Typography
+                  sx={{
+                    color:
+                      router.pathname === "/product" ? "Brand.500" : "#213360",
+                    fontWeight: router.pathname === "/product" ? 700 : 400,
+                  }}
+                >
+                  Obat
+                </Typography>
               </Link>
             </Breadcrumbs>
           </Box>
