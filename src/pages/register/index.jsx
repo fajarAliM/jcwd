@@ -30,13 +30,16 @@ import Link from "next/link";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import InfoIcon from "@mui/icons-material/Info";
-// import { useRouter } from "next/router";
+import axiosInstance from "config/api";
+import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [term, setTerm] = useState(false);
 
-  // const router = useRouter();
+  const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   const termHandle = () => {
     setTerm(!term);
@@ -69,11 +72,27 @@ const RegisterPage = () => {
           "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
         ),
     }),
-    // onSubmit: async (values) => {
-    //   try {
-    //     router.push("/login");
-    //   } catch (err) {}
-    // },
+    onSubmit: async (values) => {
+      try {
+        const userInfo = {
+          name: values.name,
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        };
+
+        const registerUser = await axiosInstance.post(
+          "/auth/register",
+          userInfo
+        );
+
+        enqueueSnackbar(registerUser.data.message, { variant: "success" });
+
+        router.push("/login");
+      } catch (err) {
+        enqueueSnackbar(err.response.data.message, { variant: "error" });
+      }
+    },
     validateOnChange: false,
   });
 
@@ -112,7 +131,10 @@ const RegisterPage = () => {
                 height: "48px",
                 border: "2px solid #c7bfaf",
                 boxShadow: "none",
-                ":hover": { backgroundColor: "#c7bfaf", border: "unset" },
+                ":hover": {
+                  backgroundColor: "#c7bfaf",
+                  border: "2px solid transparent",
+                },
               }}
             >
               Daftar dengan Google
@@ -175,11 +197,12 @@ const RegisterPage = () => {
                 />
               }
               fullWidth
-              sx={{ borderRadius: "10px", marginTop: "16px" }}
+              sx={{ borderRadius: "10px" }}
             />
-            {formik.errors.username && (
+            <FormHelperText>{formik.errors.username}</FormHelperText>
+            {/* {formik.errors.username && (
               <FormHelperText>{formik.errors.username}</FormHelperText>
-            )}
+            )} */}
           </FormControl>
           <FormControl
             fullWidth
@@ -210,11 +233,12 @@ const RegisterPage = () => {
             sx={{ mt: "16px" }}
           >
             <FormLabel>
-              Password{" "}
+              Password
               <Tooltip
                 title="Passwords should contain at least 8 characters including an uppercase letter, a symbol, and a number"
                 TransitionComponent={Fade}
                 TransitionProps={{ timeout: 600 }}
+                sx={{ ml: "5px" }}
               >
                 <InfoIcon fontSize="small" />
               </Tooltip>
@@ -231,12 +255,11 @@ const RegisterPage = () => {
               fullWidth
               sx={{
                 borderRadius: "10px",
-                marginTop: "16px",
               }}
               endAdornment={
                 <IconButton onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? (
-                    <VisibilityIcon htmlColor="#02114f" sx={{}} />
+                    <VisibilityIcon htmlColor="#02114f" />
                   ) : (
                     <VisibilityOffIcon htmlColor="#02114f" />
                   )}
