@@ -16,8 +16,9 @@ import ProductCard from "components/ProductCard";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
+import axiosInstance from "config/api";
 
-const ProductPage = () => {
+const ProductPage = ({ productDetail }) => {
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
@@ -47,6 +48,11 @@ const ProductPage = () => {
       formik.setFieldValue("quantity", formik.values.quantity - 1);
     }
   };
+
+  const hargaJual =
+    // eslint-disable-next-line no-unsafe-optional-chaining
+    productDetail?.harga - productDetail?.harga * (productDetail?.diskon / 100);
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Container
@@ -163,7 +169,7 @@ const ProductPage = () => {
               fontWeight: "bold",
             }}
           >
-            Obat Kuat Kuda Mesir
+            {productDetail?.nama_produk}
           </Typography>
           <Typography
             sx={{
@@ -172,7 +178,7 @@ const ProductPage = () => {
               mb: 2,
             }}
           >
-            Obat Kuat Kuda Mesir 2 Tablet
+            {productDetail?.nama_produk}
           </Typography>
           <Box
             sx={{
@@ -182,34 +188,44 @@ const ProductPage = () => {
             }}
           >
             <Typography sx={{ fontWeight: 500, fontSize: "24px" }}>
-              Rp 25.000
+              Rp{" "}
+              {productDetail?.diskon
+                ? hargaJual.toLocaleString()
+                : productDetail?.harga.toLocaleString()}
+              ,-
             </Typography>
             <Typography sx={{ ml: 2, fontSize: "14px" }}>
               / Strip (2 Tablet)
             </Typography>
           </Box>
-          <Box
-            sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
-          >
-            <Typography
-              sx={{ textDecoration: "line-through", color: "#737A8D", mr: 2 }}
-            >
-              Rp 30.000
-            </Typography>
+          {productDetail?.diskon ? (
             <Box
               sx={{
-                border: "1px solid",
-                color: "#FF6600",
-                borderRadius: 1,
-                width: "40px",
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              <Typography>15%</Typography>
+              <Typography
+                sx={{ textDecoration: "line-through", color: "#737A8D", mr: 2 }}
+              >
+                Rp {productDetail.harga.toLocaleString()},-
+              </Typography>
+              <Box
+                sx={{
+                  border: "1px solid",
+                  color: "#FF6600",
+                  borderRadius: 1,
+                  width: "40px",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                }}
+              >
+                <Typography>{productDetail?.diskon}%</Typography>
+              </Box>
             </Box>
-          </Box>
+          ) : null}
           <Box
             sx={{
               display: "flex",
@@ -403,5 +419,17 @@ const ProductPage = () => {
     </Box>
   );
 };
+
+export async function getServerSideProps(context) {
+  const { productId } = context.params;
+
+  const res = await axiosInstance.get(`/product/${productId}`);
+
+  return {
+    props: {
+      productDetail: res?.data?.result,
+    },
+  };
+}
 
 export default ProductPage;
