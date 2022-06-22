@@ -30,6 +30,8 @@ import moment from "moment";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import axiosInstance from "config/api";
+import { useSnackbar } from "notistack";
 import imagePlaceholder from "../../public/Images/imagePlaceholder.png";
 
 const ProfilePage = () => {
@@ -37,6 +39,10 @@ const ProfilePage = () => {
   const [openModalPassword, setOpenModalPassword] = useState(false);
   const [editPhotoProfile, setEditPhotoProfile] = useState(null);
   const [showPhotoProfilePreview, setShowPhotoProfilePreview] = useState();
+  const [verificationButtonLoading, setVerificationButtonLoading] =
+    useState(false);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const userInfo = {
     nama: "Mychael Son",
@@ -152,6 +158,20 @@ const ProfilePage = () => {
     // eslint-disable-next-line consistent-return
     return () => URL.revokeObjectURL(objectUrl);
   }, [editPhotoProfile]);
+
+  const verifiactionButtonHandler = async () => {
+    try {
+      setVerificationButtonLoading(true);
+      const sendEmail = await axiosInstance.post(
+        "/auth/resend-verification-email"
+      );
+      setVerificationButtonLoading(false);
+      enqueueSnackbar(sendEmail?.data?.message, { variant: "success" });
+    } catch (err) {
+      setVerificationButtonLoading(false);
+      enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+    }
+  };
 
   return (
     <Container>
@@ -319,6 +339,8 @@ const ProfilePage = () => {
               <Stack direction="row" spacing={1}>
                 {userInfo.isVerified ? undefined : (
                   <Button
+                    onClick={verifiactionButtonHandler}
+                    disabled={verificationButtonLoading}
                     variant="contained"
                     sx={{ height: "45px", width: "180px" }}
                   >
