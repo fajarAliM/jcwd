@@ -315,7 +315,7 @@ const ProfilePage = () => {
                   <Typography width="150px" variant="body1">
                     Status Akun
                   </Typography>
-                  {userProfileFormik.values.isVerified ? (
+                  {userSelectors.is_verified ? (
                     <Box
                       sx={{
                         border: "2px solid #2db31e",
@@ -394,8 +394,10 @@ const ProfilePage = () => {
                   </Typography>
                 </Box>
                 <Stack direction="row" spacing={1}>
-                  {userProfileFormik.values.isVerified ? undefined : (
+                  {userSelectors.is_verified ? undefined : (
                     <Button
+                      onClick={verifiactionButtonHandler}
+                      disabled={verificationButtonLoading}
                       variant="contained"
                       sx={{ height: "45px", width: "180px" }}
                     >
@@ -684,8 +686,6 @@ const ProfilePage = () => {
                   sx={{ marginX: 6, marginBottom: 4, marginTop: 2 }}
                 >
                   <Button
-                    onClick={verifiactionButtonHandler}
-                    disabled={verificationButtonLoading}
                     variant="contained"
                     sx={{ height: "45px", width: "180px" }}
                   >
