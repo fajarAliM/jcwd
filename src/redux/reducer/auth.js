@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  id: "",
+  id: 0,
   nama: "",
+  username: "",
   email: "",
-  alamat: "",
-  noHp: "",
+  photo_profile: "",
+  is_verified: 0,
   gender: "",
   DOB: "",
   isAdmin: 0,
@@ -20,13 +21,15 @@ const authReducer = createSlice({
       // eslint-disable-next-line no-param-reassign
       state.id = action.payload.id;
       // eslint-disable-next-line no-param-reassign
-      state.name = action.payload.name;
+      state.nama = action.payload.nama;
+      // eslint-disable-next-line no-param-reassign
+      state.username = action.payload.username;
       // eslint-disable-next-line no-param-reassign
       state.email = action.payload.email;
       // eslint-disable-next-line no-param-reassign
-      state.alamat = action.payload.alamat;
+      state.photo_profile = action.payload.photo_profile;
       // eslint-disable-next-line no-param-reassign
-      state.noHp = action.payload.noHp;
+      state.is_verified = action.payload.is_verified;
       // eslint-disable-next-line no-param-reassign
       state.gender = action.payload.gender;
       // eslint-disable-next-line no-param-reassign

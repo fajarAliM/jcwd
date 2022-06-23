@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import Nav from "components/Nav/nav";
 import Footer from "components/Footer";
 import { SnackbarProvider } from "notistack";
+import AuthProvider from "components/AuthProvider";
 import { store } from "../redux/store";
 import theme from "../theme";
 
@@ -27,9 +28,11 @@ const MyApp = ({ Component, pageProps }) => {
                 <AdminPageContainer children={<Component {...pageProps} />} />
               ) : (
                 <>
-                  <Nav />
-                  <Component {...pageProps} />
-                  <Footer />
+                  <AuthProvider>
+                    <Nav />
+                    <Component {...pageProps} />
+                    <Footer />
+                  </AuthProvider>
                 </>
               )}
             </>

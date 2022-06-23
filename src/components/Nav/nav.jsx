@@ -6,6 +6,8 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
+  Menu,
+  MenuItem,
   OutlinedInput,
   Typography,
 } from "@mui/material";
@@ -14,11 +16,31 @@ import { BsSearch } from "react-icons/bs";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { logout } from "redux/reducer/auth";
 import shopee from "../../public/Images/shopee.png";
+import jsCookie from "js-cookie";
+import Router from "next/router";
 
 const Nav = () => {
-  const userName = "Elon Musk";
+  const userSelector = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
+  const logoutBtnHandler = () => {
+    dispatch(logout());
+
+    jsCookie.remove("user_auth_token");
+    Router.push("/login");
+  };
   return (
     <Box
       sx={{
@@ -36,7 +58,9 @@ const Nav = () => {
         background: "rgb(255, 255, 255, 0.9)",
       }}
     >
-      <Image src={shopee} height="80px" width="210px" />
+      <Link href="/">
+        <Image src={shopee} height="80px" width="210px" />
+      </Link>
       <FormControl
         sx={{
           m: 1,
@@ -98,9 +122,21 @@ const Nav = () => {
         <NotificationsIcon sx={{ color: "Brand.500" }} />
       </IconButton>
       <Box sx={{ display: "flex", alignItems: "center", ml: "52px" }}>
-        <Avatar src="https://upload.wikimedia.org/wikipedia/commons/3/34/Elon_Musk_Royal_Society_%28crop2%29.jpg" />
+        <Avatar
+          onClick={handleClick}
+          src={userSelector?.photo_profile}
+          sx={{ ":hover": { cursor: "pointer" } }}
+        />
+        <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+          <MenuItem>
+            <Link href="/profile-page">Profil Saya</Link>
+          </MenuItem>
+          <MenuItem onClick={logoutBtnHandler}>Keluar</MenuItem>
+        </Menu>
         <Typography sx={{ ml: "14px" }}>
-          {userName.length > 5 ? `${userName.slice(0, 4)}...` : userName}
+          {userSelector?.nama?.length > 5
+            ? `${userSelector?.nama?.slice(0, 4)}...`
+            : userSelector?.nama}
         </Typography>
       </Box>
     </Box>

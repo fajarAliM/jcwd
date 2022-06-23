@@ -118,7 +118,7 @@ const ProductPage = ({ productDetail }) => {
                   height: "230px",
                   width: "220px",
                 }}
-                src="https://images.tokopedia.net/img/cache/700/product-1/2020/7/10/99397509/99397509_442d6651-7a64-4c6b-8c26-2f918a7ca1d0_690_690.jpg"
+                src={productDetail?.produk_image_url}
               />
             </Card>
             <Box sx={{ mt: 3 }}>
