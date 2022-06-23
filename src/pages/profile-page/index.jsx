@@ -23,7 +23,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 import { useFormik } from "formik";
@@ -37,24 +36,12 @@ import { useSnackbar } from "notistack";
 import ModalTambahAlamat from "components/ModalTambahAlamat";
 import CardAlamat from "components/CardAlamat";
 import Group from "public/Images/Group.png";
-import imagePlaceholder from "../../public/Images/imagePlaceholder.png";
+import { useDispatch, useSelector } from "react-redux";
+import Image from "next/image";
+import { login } from "redux/reducer/auth";
 
 const ProfilePage = () => {
-  const [openModalEdit, setOpenModalEdit] = useState(false);
-  const [openModalPassword, setOpenModalPassword] = useState(false);
-  const [editPhotoProfile, setEditPhotoProfile] = useState(null);
-  const [showPhotoProfilePreview, setShowPhotoProfilePreview] = useState();
-  const [verificationButtonLoading, setVerificationButtonLoading] =
-    useState(false);
-  const [tab, setTab] = useState(1);
-  const [tambahAlamat, setTambahAlamat] = useState(false);
-  const [listAlamat, setListAlamat] = useState(1);
-  const { enqueueSnackbar } = useSnackbar();
-
-  const tabHandle = (event, newValue) => {
-    setTab(newValue);
-  };
-  const userInfo = {
+  const userSelector = {
     nama: "Mychael Son",
     username: "mychael",
     email: "sonmychael@gmail.com",
@@ -64,14 +51,56 @@ const ProfilePage = () => {
     DOB: "2001-03-31 07:20:31",
   };
 
+  // eslint-disable-next-line no-unused-vars
+  const userSelectors = useSelector((state) => state.auth);
+  const [openModalEdit, setOpenModalEdit] = useState(false);
+  const [openModalPassword, setOpenModalPassword] = useState(false);
+  const [editPhotoProfile, setEditPhotoProfile] = useState(null);
+  // eslint-disable-next-line no-unused-vars
+  const [showPhotoProfilePreview, setShowPhotoProfilePreview] = useState();
+  const [verificationButtonLoading, setVerificationButtonLoading] =
+    useState(false);
+  const [tab, setTab] = useState(1);
+  const [tambahAlamat, setTambahAlamat] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [listAlamat, setListAlamat] = useState(1);
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
+
+  const tabHandle = (event, newValue) => {
+    setTab(newValue);
+  };
+
   const inputProfilePictureRef = useRef(null);
+
+  const uploadAvatarHandler = async () => {
+    const formData = new FormData();
+
+    formData.append("avatar_image_file", editPhotoProfile);
+
+    try {
+      const userUpdatePhotoProfile = await axiosInstance.patch(
+        `/auth/${userSelectors.id}`,
+        formData
+      );
+      setEditPhotoProfile(null);
+
+      dispatch(login(userUpdatePhotoProfile.data.result));
+
+      enqueueSnackbar("Profile Picture Updated!", { variant: "success" });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
 
   const userProfileFormik = useFormik({
     initialValues: {
-      nama: userInfo.nama || "",
-      username: userInfo.username || "",
-      gender: userInfo.gender || "",
-      DOB: userInfo.DOB || "",
+      nama: userSelector.nama || "",
+      username: userSelector.username || "",
+      gender: userSelector.gender || "",
+      DOB: userSelector.DOB || "",
+      email: userSelector.email || "",
     },
     validationSchema: Yup.object().shape({
       nama: Yup.string()
@@ -219,14 +248,15 @@ const ProfilePage = () => {
                   width="300px"
                   height="300px"
                 >
-                  <Image
-                    src={
-                      showPhotoProfilePreview ||
-                      userInfo.profilePicture ||
-                      imagePlaceholder
-                    }
-                    width="300px"
-                    height="300px"
+                  <img
+                    src={showPhotoProfilePreview || userSelectors.photo_profile}
+                    alt="photo_profile"
+                    // eslint-disable-next-line react/style-prop-object
+                    style={{
+                      objectFit: "cover",
+                      width: "100%",
+                      height: "100%",
+                    }}
                   />
                 </Box>
                 <input
@@ -253,8 +283,10 @@ const ProfilePage = () => {
                     <Button
                       variant="contained"
                       sx={{ width: "140px", borderRadius: "8px", mt: "20px" }}
-                      // onClick={() => inputProfilePictureRef.current.click()}
-                      // onclick ini bakal ngehandle file upload ke API
+                      onClick={() => {
+                        uploadAvatarHandler();
+                        // setShowPhotoProfilePreview("");
+                      }}
                     >
                       Simpan
                     </Button>
@@ -283,7 +315,7 @@ const ProfilePage = () => {
                   <Typography width="150px" variant="body1">
                     Status Akun
                   </Typography>
-                  {userInfo.isVerified ? (
+                  {userProfileFormik.values.isVerified ? (
                     <Box
                       sx={{
                         border: "2px solid #2db31e",
@@ -338,7 +370,7 @@ const ProfilePage = () => {
                     Email
                   </Typography>
                   <Typography fontWeight="bold">
-                    {userInfo.email || "-"}
+                    {userProfileFormik.values.email || "-"}
                   </Typography>
                 </Box>
                 <Box display="flex" alignItems="center" mb="25px">
@@ -362,7 +394,7 @@ const ProfilePage = () => {
                   </Typography>
                 </Box>
                 <Stack direction="row" spacing={1}>
-                  {userInfo.isVerified ? undefined : (
+                  {userProfileFormik.values.isVerified ? undefined : (
                     <Button
                       variant="contained"
                       sx={{ height: "45px", width: "180px" }}
@@ -398,10 +430,10 @@ const ProfilePage = () => {
                   pb={0}
                   overflow="scroll"
                 >
-                  {userInfo.profilePicture ? (
+                  {userSelector.profilePicture ? (
                     <Avatar
-                      src={userInfo.profilePicture}
-                      alt={userInfo.nama}
+                      src={userSelector.profilePicture}
+                      alt={userProfileFormik.values.nama}
                       sx={{ width: 56, height: 56 }}
                     />
                   ) : (
@@ -518,16 +550,19 @@ const ProfilePage = () => {
                     variant="outlined"
                     onClick={() => {
                       closeModal();
-                      userProfileFormik.setFieldValue("nama", userInfo.nama);
+                      userProfileFormik.setFieldValue(
+                        "nama",
+                        userSelector.nama
+                      );
                       userProfileFormik.setFieldValue(
                         "username",
-                        userInfo.username
+                        userSelector.username
                       );
                       userProfileFormik.setFieldValue(
                         "gender",
-                        userInfo.gender
+                        userSelector.gender
                       );
-                      userProfileFormik.setFieldValue("DOB", userInfo.DOB);
+                      userProfileFormik.setFieldValue("DOB", userSelector.DOB);
                     }}
                     sx={{ width: "90px", height: "42px", mr: "8px" }}
                   >
@@ -536,8 +571,12 @@ const ProfilePage = () => {
                   <Button
                     autoFocus
                     variant="contained"
-                    sx={{ width: "90px", height: "42px" }}
-                    onClick={() => userProfileFormik.handleSubmit()}
+                    sx={{ width: "140px", borderRadius: "8px", mt: "20px" }}
+                    onClick={() => {
+                      uploadAvatarHandler();
+                    }}
+                    // onClick={() => inputProfilePictureRef.current.click()}
+                    // onclick ini bakal ngehandle file upload ke API
                   >
                     Simpan
                   </Button>
@@ -552,15 +591,15 @@ const ProfilePage = () => {
                   alignItems="center"
                   pb={0}
                 >
-                  {userInfo.profilePicture ? (
+                  {userSelector.profilePicture ? (
                     <Avatar
-                      src={userInfo.profilePicture}
-                      alt={userInfo.nama}
+                      src={userSelector.profilePicture}
+                      alt={userSelector.nama}
                       sx={{ width: 56, height: 56 }}
                     />
                   ) : (
                     <Avatar
-                      {...stringAvatar(userInfo.nama)}
+                      {...stringAvatar(userSelector.nama)}
                       sx={{ width: 56, height: 56 }}
                     />
                   )}

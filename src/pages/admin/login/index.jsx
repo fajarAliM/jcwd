@@ -26,7 +26,7 @@ import { useRouter } from "next/router";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import jsCookie from "js-cookie";
-import api from "../../../config/api";
+import axiosInstance from "config/api";
 import { login } from "../../../redux/reducer/auth";
 
 const LoginPage = () => {
@@ -37,7 +37,7 @@ const LoginPage = () => {
 
   const userLogin = async (values, setSubmitting) => {
     try {
-      const res = await api.post("/auth/admin/login", {
+      const res = await axiosInstance.post("/auth/admin/login", {
         username: values.username,
         password: values.password,
       });
@@ -49,7 +49,6 @@ const LoginPage = () => {
       jsCookie.set("admin_auth_token", userResponse.token);
 
       const userResponseAdded = { ...userResponse.user, isAdmin: 1 };
-
       // yang masuk ke login() akan masuk ke action.payload di reducer
       dispatch(login(userResponseAdded));
 
