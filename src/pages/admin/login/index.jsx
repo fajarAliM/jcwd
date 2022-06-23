@@ -46,7 +46,7 @@ const LoginPage = () => {
       // eslint-disable-next-line no-console
       console.log(userResponse);
 
-      jsCookie.set("user_token", userResponse.token);
+      jsCookie.set("admin_auth_token", userResponse.token);
 
       const userResponseAdded = { ...userResponse.user, isAdmin: 1 };
 

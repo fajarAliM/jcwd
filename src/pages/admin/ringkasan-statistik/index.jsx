@@ -10,6 +10,7 @@ import CardCategory from "components/Admin/CardCategory";
 import CardStatistik from "components/Admin/CardStatistik";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import requiresAdmin from "config/requireAdmin";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 const RingkasanStatistikPage = () => {
@@ -250,5 +251,12 @@ const RingkasanStatistikPage = () => {
     </Grid>
   );
 };
+
+// eslint-disable-next-line no-unused-vars
+export const getServerSideProps = requiresAdmin((context) => {
+  return {
+    props: {},
+  };
+});
 
 export default RingkasanStatistikPage;

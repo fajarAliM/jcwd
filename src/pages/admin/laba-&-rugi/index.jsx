@@ -16,6 +16,7 @@ import { useState } from "react";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import requiresAdmin from "config/requireAdmin";
 
 const LabaDanRugiPage = () => {
   const [periode, setPeriode] = useState("Bulanan");
@@ -165,5 +166,12 @@ const LabaDanRugiPage = () => {
     </Grid>
   );
 };
+
+// eslint-disable-next-line no-unused-vars
+export const getServerSideProps = requiresAdmin((context) => {
+  return {
+    props: {},
+  };
+});
 
 export default LabaDanRugiPage;

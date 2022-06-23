@@ -21,6 +21,7 @@ import { useState } from "react";
 import Image from "next/image";
 import CardOrder from "components/Admin/CardOrder";
 import Group from "public/Images/Group.png";
+import requiresAdmin from "config/requireAdmin";
 
 const SelesaiPage = () => {
   // eslint-disable-next-line no-unused-vars
@@ -253,5 +254,12 @@ const SelesaiPage = () => {
     </>
   );
 };
+
+// eslint-disable-next-line no-unused-vars
+export const getServerSideProps = requiresAdmin((context) => {
+  return {
+    props: {},
+  };
+});
 
 export default SelesaiPage;

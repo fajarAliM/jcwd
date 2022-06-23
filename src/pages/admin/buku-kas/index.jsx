@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRange } from "react-date-range";
+import requiresAdmin from "config/requireAdmin";
 
 const columns = [
   { field: "id", headerName: "No", width: 70 },
@@ -251,5 +252,12 @@ const KartuStok = () => {
     </Box>
   );
 };
+
+// eslint-disable-next-line no-unused-vars
+export const getServerSideProps = requiresAdmin((context) => {
+  return {
+    props: {},
+  };
+});
 
 export default KartuStok;

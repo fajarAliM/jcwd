@@ -15,6 +15,7 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import ModalTambahObat from "components/Admin/ModalTambahObat";
+import requiresAdmin from "config/requireAdmin";
 
 const columns = [
   { field: "id", headerName: "No", width: 70 },
@@ -189,5 +190,12 @@ const DaftarProduk = () => {
     </Box>
   );
 };
+
+// eslint-disable-next-line no-unused-vars
+export const getServerSideProps = requiresAdmin((context) => {
+  return {
+    props: {},
+  };
+});
 
 export default DaftarProduk;

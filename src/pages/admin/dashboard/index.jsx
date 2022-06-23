@@ -4,6 +4,7 @@ import CardCategory from "components/Admin/CardCategory";
 import CardWithCircularBar from "components/Admin/CardWithCircularBar";
 import { useState } from "react";
 import CardStatistik from "components/Admin/CardStatistik";
+import requiresAdmin from "config/requireAdmin";
 
 const DashboardPage = () => {
   const penjualanObatOption = {
@@ -263,5 +264,12 @@ const DashboardPage = () => {
     </Grid>
   );
 };
+
+// eslint-disable-next-line no-unused-vars
+export const getServerSideProps = requiresAdmin((context) => {
+  return {
+    props: {},
+  };
+});
 
 export default DashboardPage;

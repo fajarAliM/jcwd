@@ -10,7 +10,7 @@ import PerawatanTubuh from "../../public/Images/PerawatanTubuh.png";
 
 const Kategori = () => {
   return (
-    <Box mt="44px" mb="56px">
+    <Box mt="44px" mb="56px" sx={{ overflowX: "scroll" }}>
       <Typography variant="h5">Kategori</Typography>
       <Box display="flex" mt="28px">
         <KategoriBox imgUrl={Obat} imgAlt="obat" title="Obat - Obatan" />
