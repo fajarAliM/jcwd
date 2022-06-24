@@ -80,7 +80,7 @@ const ProfilePage = () => {
 
     try {
       const userUpdatePhotoProfile = await axiosInstance.patch(
-        `/auth/${userSelectors.id}`,
+        `/user/${userSelectors.id}`,
         formData
       );
       setEditPhotoProfile(null);

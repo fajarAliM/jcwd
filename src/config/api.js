@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -9,8 +10,13 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  // eslint-disable-next-line no-param-reassign
-  config.headers.authorization = Cookies.get("user_auth_token") || "";
+  const userToken = Cookies.get("user_auth_token");
+
+  if (userToken) {
+    config.headers.authorization = userToken || "";
+  } else {
+    config.headers.authorization = Cookies.get("admin_auth_token") || "";
+  }
 
   return config;
 });

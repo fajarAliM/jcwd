@@ -8,6 +8,7 @@ import Nav from "components/Nav/nav";
 import Footer from "components/Footer";
 import { SnackbarProvider } from "notistack";
 import AuthProvider from "components/AuthProvider";
+import AdminProvider from "components/AdminProvider";
 import { store } from "../redux/store";
 import theme from "../theme";
 
@@ -25,7 +26,9 @@ const MyApp = ({ Component, pageProps }) => {
           ) : (
             <>
               {router.pathname.startsWith("/admin") ? (
-                <AdminPageContainer children={<Component {...pageProps} />} />
+                <AdminProvider>
+                  <AdminPageContainer children={<Component {...pageProps} />} />
+                </AdminProvider>
               ) : (
                 <>
                   <AuthProvider>
