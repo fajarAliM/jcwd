@@ -19,9 +19,9 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { logout } from "redux/reducer/auth";
-import shopee from "../../public/Images/shopee.png";
 import jsCookie from "js-cookie";
 import Router from "next/router";
+import shopee from "../../public/Images/shopee.png";
 
 const Nav = () => {
   const userSelector = useSelector((state) => state.auth);
