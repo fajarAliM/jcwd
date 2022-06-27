@@ -98,7 +98,19 @@ const LoginPage = () => {
         .required("Email is required")
         .email("Email is invalid"),
     }),
-    onSubmit: () => {},
+    onSubmit: async (values) => {
+      try {
+        const sendEmail = await axiosInstance.post(
+          "auth/send-reset-password-email",
+          { email: values.email }
+        );
+
+        enqueueSnackbar(sendEmail?.data?.message, { variant: "success" });
+        setOpenModal(false);
+      } catch (err) {
+        enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+      }
+    },
     validateOnChange: false,
   });
 
@@ -380,7 +392,10 @@ const LoginPage = () => {
                   <OutlinedInput
                     autoFocus
                     onChange={(e) => {
-                      forgotPasswordFormik.setFieldValue(e.target.value);
+                      forgotPasswordFormik.setFieldValue(
+                        "email",
+                        e.target.value
+                      );
                     }}
                     placeholder="JohnDoe@gmail.com"
                     startAdornment={
@@ -401,9 +416,8 @@ const LoginPage = () => {
                   variant="contained"
                   fullWidth
                   sx={{ mt: "30px", height: "48px" }}
-                  onClick={() => {
-                    forgotPasswordFormik.handleSubmit();
-                  }}
+                  onClick={forgotPasswordFormik.handleSubmit}
+                  disabled={forgotPasswordFormik.isSubmitting}
                 >
                   Send
                 </Button>

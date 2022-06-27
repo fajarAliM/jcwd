@@ -8,10 +8,16 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import axiosInstance from "config/api";
 import { useFormik } from "formik";
+import { useRouter } from "next/router";
+import { useSnackbar } from "notistack";
 import * as Yup from "yup";
 
 const ForgotPassword = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
+
   const newPasswordFormik = useFormik({
     initialValues: {
       newPassword: "",
@@ -33,6 +39,24 @@ const ForgotPassword = () => {
         ),
     }),
     validateOnChange: false,
+    onSubmit: async (values) => {
+      try {
+        const passwordAndToken = {
+          forgotPasswordToken: router.query.fp_token,
+          newPassword: values.newPassword,
+        };
+
+        const resetPassword = await axiosInstance.post(
+          "/auth/reset-password",
+          passwordAndToken
+        );
+
+        enqueueSnackbar(resetPassword?.data?.message, { variant: "success" });
+        router.push("/login");
+      } catch (err) {
+        enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+      }
+    },
   });
 
   return (
@@ -84,7 +108,8 @@ const ForgotPassword = () => {
         <Button
           variant="contained"
           sx={{ height: "45px" }}
-          onClick={() => newPasswordFormik.handleSubmit()}
+          onClick={newPasswordFormik.handleSubmit}
+          disabled={newPasswordFormik.isSubmitting}
         >
           Submit
         </Button>
