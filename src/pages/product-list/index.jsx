@@ -22,11 +22,14 @@ const ProductList = () => {
   };
   return (
     <Grid container sx={{ mt: "44px" }}>
-      <Grid item xs={1} sm={3}>
+      <Grid item sm={0} md={3} order={{ xs: 2, md: 1 }}>
         <Stack sx={{ ml: "90px" }}>
           <Box sx={{ display: "flex", flexDirection: "column", mt: 2, mr: 8 }}>
-            <Box sx={{ mb: 5 }}>
-              <Breadcrumbs sx={{ "&:hover": { cursor: "pointer" } }}>
+            <Box sx={{ mb: 5 }} display={{ xs: "none", sm: "block" }}>
+              <Breadcrumbs
+                sx={{ "&:hover": { cursor: "pointer" } }}
+                display={{ xs: "none", md: "block" }}
+              >
                 <Link underline="hover" href="/">
                   <Typography
                     sx={{
@@ -67,7 +70,7 @@ const ProductList = () => {
           <Sidebar />
         </Stack>
       </Grid>
-      <Grid item xs={11} sm={9}>
+      <Grid item sm={12} md={9} order={{ xs: 1, md: 2 }}>
         <Stack sx={{ mr: "96px", ml: "48px" }}>
           <Box
             sx={{

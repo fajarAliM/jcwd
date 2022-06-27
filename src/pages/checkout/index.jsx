@@ -20,8 +20,8 @@ const CheckOut = () => {
 
   return (
     <Container sx={{ mt: "56px" }}>
-      <Grid container spacing={2}>
-        <Grid item xs={8}>
+      <Grid container spacing={2} columns={{ xs: 6, md: 12 }}>
+        <Grid item xs={6} md={8}>
           <Box
             sx={{
               border: "1px solid white",
@@ -134,8 +134,9 @@ const CheckOut = () => {
             </Box>
           </Stack>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6} md={4}>
           <Box
+            width={{ xs: "100%", md: "100%" }}
             sx={{
               border: "1px solid white",
               borderRadius: 3,

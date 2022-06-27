@@ -58,9 +58,11 @@ const Nav = () => {
         background: "rgb(255, 255, 255, 0.9)",
       }}
     >
-      <Link href="/">
-        <Image src={shopee} height="80px" width="210px" />
-      </Link>
+      <Box display={{ xs: "none", md: "block" }}>
+        <Link href="/">
+          <Image src={shopee} height="80px" width="210px" />
+        </Link>
+      </Box>
       <FormControl
         sx={{
           m: 1,

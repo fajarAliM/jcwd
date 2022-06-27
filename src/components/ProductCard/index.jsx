@@ -3,7 +3,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { styled } from "@mui/material/styles";
 
 const Image = styled("img")({
-  maxWidth: "139px",
+  maxWidth: "100%",
   maxHeight: "142px",
   objectFit: "scale-down",
 });
@@ -14,12 +14,13 @@ const ProductCard = () => {
     <Paper
       elevation={2}
       sx={{
-        width: "213px",
-        height: "340px",
+        maxWidth: "213px",
+        maxHeight: "340px",
         borderRadius: "20px",
         mx: "8px",
         marginBottom: "16px",
         marginTop: "24px",
+        pb: "20px",
       }}
     >
       <Box paddingTop="20px" paddingX="40px" position="relative">
@@ -33,7 +34,7 @@ const ProductCard = () => {
         <Paper
           sx={{
             borderRadius: "50%",
-            width: "44px",
+            maxWidth: "44px",
             height: "44px",
             top: "20px",
             right: "20px",
@@ -53,7 +54,7 @@ const ProductCard = () => {
         </Paper>
       </Box>
       <Box marginX="24px" mt="5px">
-        <Box height="40px">
+        <Box maxHeight="40px" overflow="hidden">
           <Typography variant="subtitle2" component="h2" fontWeight="bold">
             {productName.length > 34
               ? `${productName.slice(0, 33)}...`
@@ -87,7 +88,7 @@ const ProductCard = () => {
           </Box>
         </Box>
         <Box display="flex" marginTop="7px">
-          <Box width="103px">
+          <Box maxWidth="103px">
             <Typography fontWeight="bold">Rp. 18.000</Typography>
           </Box>
           <Typography>/ Pack</Typography>
