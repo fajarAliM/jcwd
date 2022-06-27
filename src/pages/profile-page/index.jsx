@@ -149,14 +149,14 @@ const ProfilePage = () => {
     },
     validationSchema: Yup.object().shape({
       oldPassword: Yup.string()
-        .required("Password is required")
+        .required("Current Password is required")
         // the matches is user to ensure the password is strong
         .matches(
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/,
           "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
         ),
       newPassword: Yup.string()
-        .required("Password is required")
+        .required("New Password is required")
         // the matches is user to ensure the password is strong
         .matches(
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/,
@@ -164,9 +164,28 @@ const ProfilePage = () => {
         ),
       repeatPassword: Yup.string()
         .required("Confirm Password is required")
-        .oneOf([Yup.ref("password"), null], "Confirm Password does not match"),
+        .oneOf(
+          [Yup.ref("newPassword"), null],
+          "Confirm Password does not match"
+        ),
     }),
     validateOnChange: false,
+    onSubmit: async (values) => {
+      try {
+        const userChangePassword = {
+          oldPassword: values.oldPassword,
+          newPassword: values.newPassword,
+        };
+
+        await axiosInstance.post("/auth/change-password", userChangePassword);
+
+        enqueueSnackbar("Change Password Success!", { variant: "success" });
+
+        setOpenModalPassword(false);
+      } catch (err) {
+        enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+      }
+    },
   });
 
   const closeModal = () => {
@@ -227,7 +246,7 @@ const ProfilePage = () => {
     return () => URL.revokeObjectURL(objectUrl);
   }, [editPhotoProfile]);
 
-  const verifiactionButtonHandler = async () => {
+  const verificationButtonHandler = async () => {
     try {
       setVerificationButtonLoading(true);
       const sendEmail = await axiosInstance.post(
@@ -431,7 +450,7 @@ const ProfilePage = () => {
                   {userSelectors.is_verified ? undefined : (
                     // Button Verifikasi
                     <Button
-                      onClick={verifiactionButtonHandler}
+                      onClick={verificationButtonHandler}
                       disabled={verificationButtonLoading}
                       variant="contained"
                       sx={{ height: "45px", width: "180px" }}
@@ -733,7 +752,8 @@ const ProfilePage = () => {
                     autoFocus
                     variant="contained"
                     sx={{ width: "120px", height: "42px" }}
-                    onClick={() => passwordFormik.handleSubmit()}
+                    onClick={passwordFormik.handleSubmit}
+                    disabled={passwordFormik.isSubmitting}
                   >
                     Simpan
                   </Button>
