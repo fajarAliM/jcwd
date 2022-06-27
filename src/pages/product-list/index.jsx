@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable array-callback-return */
 import {
   Box,
   Breadcrumbs,
@@ -10,9 +12,11 @@ import {
 } from "@mui/material";
 import ProductCard from "components/ProductCard";
 import Sidebar from "components/Sidebar";
+import axiosInstance from "config/api";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const ProductList = () => {
   const router = useRouter();
@@ -20,6 +24,50 @@ const ProductList = () => {
   const handleChange = (event) => {
     setFilter(event.target.value);
   };
+  const [contentList, setContentList] = useState([]);
+  const [page, setPage] = useState(1);
+
+  const fetchProductList = async () => {
+    try {
+      const productList = await axiosInstance.get("/product", {
+        params: {
+          _sortBy: "id",
+          _sortDir: "DESC",
+          _limit: 3,
+          _page: page,
+        },
+      });
+      console.log(productList);
+      setContentList((prevPost) => [
+        ...prevPost,
+        ...productList.data.result.rows,
+      ]);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchNextPage = () => {
+    setPage(page + 1);
+  };
+
+  const renderProductList = () => {
+    return contentList?.map((val) => {
+      <Grid item xs={6} sm={4} md={3}>
+        <ProductCard
+          nama_produk={val?.nama_produk}
+          harga={val?.harga}
+          diskon={val?.diskon}
+          produk_image={val?.produk_image}
+          id={val?.id}
+        />
+      </Grid>;
+    });
+  };
+
+  useEffect(() => {
+    fetchProductList();
+  }, []);
   return (
     <Grid container sx={{ mt: "44px" }}>
       <Grid item sm={0} md={3} order={{ xs: 2, md: 1 }}>
@@ -116,36 +164,15 @@ const ProductList = () => {
             rowSpacing="24px"
             columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           >
-            <Grid item xs={6} sm={4} md={3}>
-              <ProductCard />
-            </Grid>
-            <Grid item xs={6} sm={4} md={3}>
-              <ProductCard />
-            </Grid>
-            <Grid item xs={6} sm={4} md={3}>
-              <ProductCard />
-            </Grid>
-            <Grid item xs={6} sm={4} md={3}>
-              <ProductCard />
-            </Grid>
-            <Grid item xs={6} sm={4} md={3}>
-              <ProductCard />
-            </Grid>
-            <Grid item xs={6} sm={4} md={3}>
-              <ProductCard />
-            </Grid>
-            <Grid item xs={6} sm={4} md={3}>
-              <ProductCard />
-            </Grid>
-            <Grid item xs={6} sm={4} md={3}>
-              <ProductCard />
-            </Grid>
-            <Grid item xs={6} sm={4} md={3}>
-              <ProductCard />
-            </Grid>
-            <Grid item xs={6} sm={4} md={3}>
-              <ProductCard />
-            </Grid>
+            <InfiniteScroll
+              dataLength={contentList.length}
+              next={fetchNextPage}
+              // eslint-disable-next-line react/jsx-boolean-value
+              hasMore={true}
+              // loader={<Spinner />}
+            >
+              {renderProductList()}
+            </InfiniteScroll>
           </Grid>
         </Stack>
       </Grid>

@@ -15,7 +15,6 @@ const Sidebar = () => {
   const [kategori, setKategori] = useState(false);
   const openKategori = () => setKategori(true);
   const closeKategori = () => setKategori(false);
-
   const [harga, setHarga] = useState(false);
   const openHarga = () => setHarga(true);
   const closeHarga = () => setHarga(false);
@@ -229,5 +228,4 @@ const Sidebar = () => {
     </Box>
   );
 };
-
 export default Sidebar;
