@@ -27,6 +27,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import jsCookie from "js-cookie";
 import axiosInstance from "config/api";
+import { useSnackbar } from "notistack";
 import { login } from "../../../redux/reducer/auth";
 
 const LoginPage = () => {
@@ -34,31 +35,7 @@ const LoginPage = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState("false");
   const dispatch = useDispatch();
-
-  const userLogin = async (values, setSubmitting) => {
-    try {
-      const res = await axiosInstance.post("/auth/admin/login", {
-        username: values.username,
-        password: values.password,
-      });
-
-      const userResponse = res.data.result;
-      // eslint-disable-next-line no-console
-      console.log(userResponse);
-
-      jsCookie.set("admin_auth_token", userResponse.token);
-
-      const userResponseAdded = { ...userResponse.user, isAdmin: 1 };
-      // yang masuk ke login() akan masuk ke action.payload di reducer
-      dispatch(login(userResponseAdded));
-
-      setSubmitting(false);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err.response.data);
-    }
-  };
-  // onSubmit kasih isAdmin = 1
+  const { enqueueSnackbar } = useSnackbar();
 
   const formik = useFormik({
     initialValues: {
@@ -70,10 +47,25 @@ const LoginPage = () => {
       password: Yup.string().required("This field is required!"),
     }),
     validateOnChange: false,
-    onSubmit: (values) => {
-      setTimeout(() => {
-        userLogin(values, formik.setSubmitting);
-      }, 2000);
+    onSubmit: async (values) => {
+      try {
+        const res = await axiosInstance.post("/auth/admin/login", {
+          username: values.username,
+          password: values.password,
+        });
+
+        const userResponse = res.data.result;
+
+        jsCookie.set("admin_auth_token", userResponse.token);
+
+        const userResponseAdded = { ...userResponse.user, isAdmin: 1 };
+        // yang masuk ke login() akan masuk ke action.payload di reducer
+        dispatch(login(userResponseAdded));
+
+        enqueueSnackbar(res?.data?.message, { variant: "success" });
+      } catch (err) {
+        enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+      }
     },
   });
 
@@ -167,9 +159,8 @@ const LoginPage = () => {
           <Typography color="#c7bfaf">Lupa Kata Sandi ?</Typography>
         </Stack>
         <Button
-          // onClick={console.log("halo")}
           onClick={formik.handleSubmit}
-          // disabled={formik.isSubmitting}
+          disabled={formik.isSubmitting}
           sx={{
             marginBottom: "48px",
             minHeight: "48px",
