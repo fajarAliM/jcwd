@@ -6,7 +6,6 @@ import {
   OutlinedInput,
   Typography,
 } from "@mui/material";
-import DataTable from "components/Admin/table";
 import _ from "lodash";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
@@ -16,76 +15,13 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import ModalTambahObat from "components/Admin/ModalTambahObat";
 import requiresAdmin from "config/requireAdmin";
-
-const columns = [
-  { field: "id", headerName: "No", width: 70 },
-  { field: "namaObat", headerName: "Nama Obat", width: 130 },
-  { field: "noObat", headerName: "No Obat", width: 130 },
-  {
-    field: "noBpom",
-    headerName: "No.BPOM",
-    width: 130,
-  },
-  {
-    field: "kategori",
-    headerName: "Kategori",
-    sortable: false,
-    width: 130,
-  },
-  { field: "stok", headerName: "Stok", width: 90, type: "number" },
-  { field: "satuan", headerName: "Satuan", width: 130, sortable: false },
-  { field: "nilaiBarang", headerName: "Nilai Barang", width: 130 },
-  { field: "nilaiJual", headerName: "Nilai Jual", width: 130 },
-  {
-    field: "atur",
-    headerName: "Atur",
-    width: 130,
-    renderCell: () => {
-      return <Button variant="outlined">Lihat Detail</Button>;
-    },
-  },
-];
-
-// hasil map dari state yg dpt dari API
-const rows = [
-  {
-    id: 1,
-    namaObat: "Adem Sari",
-    noObat: "A000321",
-    noBpom: "B000521",
-    kategori: "Obat Bebas",
-    stok: 20,
-    satuan: "Box",
-    nilaiBarang: "Rp. 15.000",
-    nilaiJual: "Rp. 44.000",
-  },
-  {
-    id: 2,
-    namaObat: "Adem Sari",
-    noObat: "A000321",
-    noBpom: "B000521",
-    kategori: "Obat Bebas",
-    stok: 10,
-    satuan: "Box",
-    nilaiBarang: "Rp. 15.000",
-    nilaiJual: "Rp. 44.000",
-  },
-  {
-    id: 3,
-    namaObat: "Adem Sari",
-    noObat: "A000321",
-    noBpom: "B000521",
-    kategori: "Obat Bebas",
-    stok: 15,
-    satuan: "Box",
-    nilaiBarang: "Rp. 15.000",
-    nilaiJual: "Rp. 44.000",
-  },
-];
+import TableData from "components/Admin/NewTable";
 
 const DaftarProduk = () => {
   const [namaObatFilter, setNamaObatFilter] = useState("");
   const [tambahObat, setTambahObat] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowPerPage, setRowPerPage] = useState(10);
 
   const router = useRouter();
 
@@ -112,6 +48,64 @@ const DaftarProduk = () => {
     }
   }, [router.isReady]);
 
+  const rows = [
+    {
+      id: 1,
+      namaObat: "Adem Sari",
+      noObat: "A000321",
+      noBpom: "B000521",
+      kategori: "Obat Bebas",
+      stok: 20,
+      satuan: "Box",
+      nilaiBarang: 15000,
+      nilaiJual: 44000,
+    },
+    {
+      id: 2,
+      namaObat: "Adem Sari",
+      noObat: "A000321",
+      noBpom: "B000521",
+      kategori: "Obat Bebas",
+      stok: 10,
+      satuan: "Box",
+      nilaiBarang: 15000,
+      nilaiJual: 44000,
+    },
+    {
+      id: 3,
+      namaObat: "Adem Sari",
+      noObat: "A000321",
+      noBpom: "B000521",
+      kategori: "Obat Bebas",
+      stok: 15,
+      satuan: "Box",
+      nilaiBarang: 15000,
+      nilaiJual: 44000,
+    },
+  ];
+
+  const columns = [
+    "No",
+    "Nama Obat",
+    "No.Obat",
+    "No.BPOM",
+    "Kategori",
+    "Stok",
+    "Satuan",
+    "Nilai Barang",
+    "Nilai Jual",
+    "Atur",
+  ];
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
   return (
     <Box display="flex" justifyContent="flex-end">
       <Box width="1186px" height="100%">
@@ -134,6 +128,7 @@ const DaftarProduk = () => {
         </Box>
         <Box
           paddingLeft="32px"
+          paddingRight="32px"
           paddingY="32px"
           width="100%"
           height="772px"
@@ -183,7 +178,14 @@ const DaftarProduk = () => {
               marginTop: "32px",
             }}
           >
-            <DataTable columns={columns} rows={rows} />
+            <TableData
+              columns={columns}
+              rows={rows}
+              page={page}
+              rowPerPage={rowPerPage}
+              handleChangePage={handleChangePage}
+              handleChangeRowsPerPage={handleChangeRowsPerPage}
+            />
           </Box>
         </Box>
       </Box>
