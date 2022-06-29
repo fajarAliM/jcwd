@@ -16,14 +16,19 @@ import { useRouter } from "next/router";
 import ModalTambahObat from "components/Admin/ModalTambahObat";
 import requiresAdmin from "config/requireAdmin";
 import TableData from "components/Admin/NewTable";
+import { useSnackbar } from "notistack";
+import axiosInstance from "config/api";
 
 const DaftarProduk = () => {
   const [namaObatFilter, setNamaObatFilter] = useState("");
   const [tambahObat, setTambahObat] = useState(false);
   const [page, setPage] = useState(0);
   const [rowPerPage, setRowPerPage] = useState(10);
+  const [rows, setRows] = useState([]);
+  const [totalData, setTotalData] = useState(0);
 
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   const debounceNamaObatFilter = useCallback(
     _.debounce((values) => {
@@ -48,53 +53,20 @@ const DaftarProduk = () => {
     }
   }, [router.isReady]);
 
-  const rows = [
-    {
-      id: 1,
-      namaObat: "Adem Sari",
-      noObat: "A000321",
-      noBpom: "B000521",
-      kategori: "Obat Bebas",
-      stok: 20,
-      satuan: "Box",
-      nilaiBarang: 15000,
-      nilaiJual: 44000,
-    },
-    {
-      id: 2,
-      namaObat: "Adem Sari",
-      noObat: "A000321",
-      noBpom: "B000521",
-      kategori: "Obat Bebas",
-      stok: 10,
-      satuan: "Box",
-      nilaiBarang: 15000,
-      nilaiJual: 44000,
-    },
-    {
-      id: 3,
-      namaObat: "Adem Sari",
-      noObat: "A000321",
-      noBpom: "B000521",
-      kategori: "Obat Bebas",
-      stok: 15,
-      satuan: "Box",
-      nilaiBarang: 15000,
-      nilaiJual: 44000,
-    },
-  ];
-
   const columns = [
-    "No",
-    "Nama Obat",
-    "No.Obat",
-    "No.BPOM",
-    "Kategori",
-    "Stok",
-    "Satuan",
-    "Nilai Barang",
-    "Nilai Jual",
-    "Atur",
+    { props: "No", width: 10 },
+    { props: "Nama Obat", width: 125 },
+    { props: "No.Obat", width: 75 },
+    { props: "No.BPOM", width: 75 },
+    { props: "Kategori", width: 75 },
+    { props: "Stok Available", width: 155 },
+    { props: "Stok On Freeze", width: 155 },
+    { props: "Stok On Delivery", width: 75 },
+    { props: "Total Stok", width: 75 },
+    { props: "Satuan", width: 75 },
+    { props: "Nilai Barang", width: 75 },
+    { props: "Nilai Jual", width: 75 },
+    { props: "Atur", width: 75 },
   ];
 
   const handleChangeRowsPerPage = (event) => {
@@ -106,9 +78,50 @@ const DaftarProduk = () => {
     setPage(newPage);
   };
 
+  const fetchProduct = async () => {
+    try {
+      const res = await axiosInstance.get("/admin/product", {
+        params: {
+          _limit: rowPerPage,
+          _page: page,
+        },
+      });
+
+      const data = res.data.result.rows;
+
+      setTotalData(res.data.result.count);
+
+      setRows(
+        data.map((val, idx) => {
+          return {
+            id: idx + rowPerPage * page + 1,
+            namaObat: val.nama_produk,
+            noObat: val?.no_obat,
+            noBpom: val?.noBpom,
+            kategori: val.product_category.kategori,
+            stok: val.stocks.reduce((init, object) => {
+              return init + object.jumlah_stok;
+            }, 0),
+            stokTypes: val.stocks,
+            satuan: val?.satuan,
+            nilaiBarang: val.harga_modal,
+            nilaiJual: val.harga,
+            productId: val.id,
+          };
+        })
+      );
+    } catch (err) {
+      enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+    }
+  };
+
+  useEffect(() => {
+    fetchProduct();
+  }, [rowPerPage, page]);
+
   return (
     <Box display="flex" justifyContent="flex-end">
-      <Box width="1186px" height="100%">
+      <Box width="100%" height="100%">
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6" fontWeight="bold">
             Daftar Obat
@@ -128,7 +141,6 @@ const DaftarProduk = () => {
         </Box>
         <Box
           paddingLeft="32px"
-          paddingRight="32px"
           paddingY="32px"
           width="100%"
           height="772px"
@@ -173,7 +185,7 @@ const DaftarProduk = () => {
           <Divider />
           <Box
             sx={{
-              height: 400,
+              height: "100%",
               width: "100%",
               marginTop: "32px",
             }}
@@ -185,6 +197,7 @@ const DaftarProduk = () => {
               rowPerPage={rowPerPage}
               handleChangePage={handleChangePage}
               handleChangeRowsPerPage={handleChangeRowsPerPage}
+              totalData={totalData}
             />
           </Box>
         </Box>

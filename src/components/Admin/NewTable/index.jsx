@@ -6,10 +6,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {
+  Box,
   Button,
   IconButton,
+  Menu,
+  MenuItem,
   styled,
-  TableFooter,
   TablePagination,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -21,6 +23,7 @@ const TableData = ({
   page,
   handleChangeRowsPerPage,
   handleChangePage,
+  totalData,
 }) => {
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -44,38 +47,66 @@ const TableData = ({
 
   const renderTableHead = () => {
     return columns.map((val) => {
-      return <StyledTableCell align="center">{val}</StyledTableCell>;
+      return <StyledTableCell align="center">{val.props}</StyledTableCell>;
     });
   };
 
   const renderTableBody = () => {
-    return (
-      rowPerPage > 0
-        ? rows.slice(page * rowPerPage, page * rowPerPage + rowPerPage)
-        : rows
-    ).map((val) => {
+    return rows.map((val) => {
       return (
         <StyledTableRow>
-          <StyledTableCell component="th" scope="row">
+          <StyledTableCell align="center" component="th" scope="row">
             {val.id}
           </StyledTableCell>
-          <StyledTableCell align="center">{val.namaObat}</StyledTableCell>
-          <StyledTableCell align="center">{val.noObat}</StyledTableCell>
-          <StyledTableCell align="center">{val.noBpom}</StyledTableCell>
-          <StyledTableCell align="center">{val.kategori}</StyledTableCell>
-          <StyledTableCell align="center">{val.stok}</StyledTableCell>
-          <StyledTableCell align="center">{val.satuan}</StyledTableCell>
           <StyledTableCell align="center">
-            Rp. {val.nilaiBarang.toLocaleString()}
+            {val.namaObat || "-"}
+          </StyledTableCell>
+          <StyledTableCell align="center">{val.noObat || "-"}</StyledTableCell>
+          <StyledTableCell align="center">{val.noBpom || "-"}</StyledTableCell>
+          <StyledTableCell align="center">
+            {val.kategori || "-"}
           </StyledTableCell>
           <StyledTableCell align="center">
-            Rp. {val.nilaiJual.toLocaleString()}
+            {val.stokTypes.reduce((init, obj) => {
+              if (obj.stockStatusId !== 1) {
+                return init;
+              }
+              return init + obj.jumlah_stok;
+            }, 0) || "-"}
+          </StyledTableCell>
+          <StyledTableCell align="center">
+            {val.stokTypes.reduce((init, obj) => {
+              if (obj.stockStatusId !== 2) {
+                return init;
+              }
+              return init + obj.jumlah_stok;
+            }, 0) || "-"}
+          </StyledTableCell>
+          <StyledTableCell align="center">
+            {val.stokTypes.reduce((init, obj) => {
+              if (obj.stockStatusId !== 3) {
+                return init;
+              }
+              return init + obj.jumlah_stok;
+            }, 0) || "-"}
+          </StyledTableCell>
+          <StyledTableCell align="center">{val.stok || "-"}</StyledTableCell>
+          <StyledTableCell align="center">{val.satuan || "-"}</StyledTableCell>
+          <StyledTableCell align="center">
+            Rp. {val.nilaiBarang.toLocaleString() || "-"}
+          </StyledTableCell>
+          <StyledTableCell align="center">
+            Rp. {val.nilaiJual.toLocaleString() || "-"}
           </StyledTableCell>
           <StyledTableCell align="center">
             <Button variant="outlined">Liat Detail</Button>
             <IconButton>
               <MoreVertIcon />
             </IconButton>
+            <Menu>
+              <MenuItem>test</MenuItem>
+              <MenuItem>test</MenuItem>
+            </Menu>
           </StyledTableCell>
         </StyledTableRow>
       );
@@ -83,26 +114,35 @@ const TableData = ({
   };
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>{renderTableHead()}</TableRow>
-        </TableHead>
-        <TableBody>{renderTableBody()}</TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[1, 10, 20]}
-              count={rows.length}
-              rowsPerPage={rowPerPage}
-              page={page}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              onPageChange={handleChangePage}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+    <>
+      <Box sx={{ overflow: "scroll" }} paddingRight="32px">
+        <TableContainer
+          component={Paper}
+          sx={{ minWidth: "1450px", maxHeight: "550px" }}
+        >
+          <Table
+            sx={{ overflow: "auto", width: "100%" }}
+            aria-label="customized table"
+            stickyHeader
+          >
+            <TableHead>
+              <TableRow>{renderTableHead()}</TableRow>
+            </TableHead>
+            <TableBody>{renderTableBody()}</TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+      <TablePagination
+        sx={{ marginRight: "32px" }}
+        component="div"
+        rowsPerPageOptions={[1, 10, 20]}
+        count={totalData}
+        rowsPerPage={rowPerPage}
+        page={page}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        onPageChange={handleChangePage}
+      />
+    </>
   );
 };
 
