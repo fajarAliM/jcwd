@@ -1,8 +1,13 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable eqeqeq */
+/* eslint-disable no-unneeded-ternary */
 /* eslint-disable no-console */
 /* eslint-disable array-callback-return */
 import {
   Box,
   Breadcrumbs,
+  Button,
   FormControl,
   Grid,
   MenuItem,
@@ -20,28 +25,40 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 const ProductList = () => {
   const router = useRouter();
-  const [filter, setFilter] = useState("");
-  const handleChange = (event) => {
-    setFilter(event.target.value);
-  };
   const [contentList, setContentList] = useState([]);
   const [page, setPage] = useState(1);
+  const [searchValue, setSearchValue] = useState("");
+  const [sortInput, setSortInput] = useState("");
+  const [sortBy, setSortBy] = useState("");
+  const [sortDir, setSortDir] = useState("");
+  const [hargaMinimum, setHargaMinimum] = useState(null);
+  const [hargaMaksimum, setHargaMaksimum] = useState(null);
+  const [maxPage, setMaxPage] = useState(1);
+  const [jumlahProduk, setJumlahProduk] = useState(null);
 
   const fetchProductList = async () => {
+    const limit = 3;
     try {
       const productList = await axiosInstance.get("/product", {
         params: {
-          _sortBy: "id",
-          _sortDir: "DESC",
-          _limit: 3,
+          _sortBy: sortBy ? sortBy : undefined,
+          _sortDir: sortDir ? sortDir : undefined,
+          _limit: limit,
           _page: page,
+          hargaMinimum: hargaMinimum || undefined,
+          hargaMaksimum: hargaMaksimum || undefined,
         },
       });
-      console.log(productList);
-      setContentList((prevPost) => [
-        ...prevPost,
-        ...productList.data.result.rows,
-      ]);
+      setJumlahProduk(productList.data.result.count);
+      if (page == 1) {
+        setContentList(productList.data.result.rows);
+      } else {
+        setContentList((prevProduct) => [
+          ...prevProduct,
+          ...productList.data.result.rows,
+        ]);
+      }
+      setMaxPage(Math.ceil(productList.data.result.count / limit));
     } catch (err) {
       console.log(err);
     }
@@ -51,23 +68,70 @@ const ProductList = () => {
     setPage(page + 1);
   };
 
+  useEffect(() => {
+    if (router.isReady) {
+      if (router.query._sortDir) {
+        setSearchValue(router.query._sortDir);
+      }
+      if (router.query._sortBy) {
+        setSearchValue(router.query._sortBy);
+      }
+    }
+  }, [router.isReady]);
+
+  const sortInputHandler = (event) => {
+    const { value } = event.target;
+    setSortInput(value);
+  };
+
+  const sortButton = () => {
+    if (sortInput == "Highest Price") {
+      setSortBy("harga");
+      setSortDir("DESC");
+    } else if (sortInput == "Lowest Price") {
+      setSortBy("harga");
+      setSortDir("ASC");
+    } else if (sortInput == "name_ASC") {
+      setSortBy("nama_produk");
+      setSortDir("ASC");
+    } else if (sortInput == "name_DESC") {
+      setSortBy("nama_produk");
+      setSortDir("DESC");
+    } else if (sortInput == "") {
+      setSortBy("");
+      setSortDir("");
+    }
+    setPage(1);
+  };
+
   const renderProductList = () => {
     return contentList?.map((val) => {
-      <Grid item xs={6} sm={4} md={3}>
-        <ProductCard
-          nama_produk={val?.nama_produk}
-          harga={val?.harga}
-          diskon={val?.diskon}
-          produk_image={val?.produk_image}
-          id={val?.id}
-        />
-      </Grid>;
+      return (
+        <Grid item xs={6} sm={4} md={3}>
+          <ProductCard
+            nama_produk={val?.nama_produk}
+            harga={val?.harga}
+            diskon={val?.diskon}
+            produk_image={val?.produk_image_url[0]}
+            id={val?.id}
+          />
+        </Grid>
+      );
     });
   };
 
   useEffect(() => {
     fetchProductList();
-  }, []);
+
+    if (sortInput) {
+      router.push({
+        query: {
+          _sortBy: sortBy ? sortBy : undefined,
+          _sortDir: sortDir ? sortDir : undefined,
+        },
+      });
+    }
+  }, [page, sortDir, sortBy, hargaMaksimum, hargaMinimum]);
   return (
     <Grid container sx={{ mt: "44px" }}>
       <Grid item sm={0} md={3} order={{ xs: 2, md: 1 }}>
@@ -115,7 +179,11 @@ const ProductList = () => {
               </Breadcrumbs>
             </Box>
           </Box>
-          <Sidebar />
+          <Sidebar
+            setHargaMaksimum={setHargaMaksimum}
+            setHargaMinimum={setHargaMinimum}
+            setPage={setPage}
+          />
         </Stack>
       </Grid>
       <Grid item sm={12} md={9} order={{ xs: 1, md: 2 }}>
@@ -137,7 +205,7 @@ const ProductList = () => {
             <Typography
               sx={{ fontSize: "14px", fontWeight: 400, color: "#737A8D" }}
             >
-              45 Produk di Vitamin & Suplemen
+              {jumlahProduk} Produk di Vitamin & Suplemen
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography
@@ -151,29 +219,33 @@ const ProductList = () => {
                 Urutkan
               </Typography>
               <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                <Select value={filter} onChange={handleChange}>
-                  <MenuItem value="Terbaru">Terbaru</MenuItem>
-                  <MenuItem value="Termahal">Termahal</MenuItem>
-                  <MenuItem value="Termurah">Termurah</MenuItem>
+                <Select onChange={sortInputHandler}>
+                  <MenuItem value="Highest Price">Termahal</MenuItem>
+                  <MenuItem value="Lowest Price">Termurah</MenuItem>
+                  <MenuItem value="name_ASC">A - Z</MenuItem>
+                  <MenuItem value="name_DESC">Z - A</MenuItem>
                 </Select>
               </FormControl>
+              <Button variant="contained" onClick={sortButton}>
+                Cari
+              </Button>
             </Box>
           </Box>
-          <Grid
-            container
-            rowSpacing="24px"
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          <InfiniteScroll
+            dataLength={contentList.length}
+            next={fetchNextPage}
+            // eslint-disable-next-line react/jsx-boolean-value
+            hasMore={page < maxPage}
+            loader={<Typography>Loading...</Typography>}
           >
-            <InfiniteScroll
-              dataLength={contentList.length}
-              next={fetchNextPage}
-              // eslint-disable-next-line react/jsx-boolean-value
-              hasMore={true}
-              // loader={<Spinner />}
+            <Grid
+              container
+              rowSpacing="24px"
+              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
               {renderProductList()}
-            </InfiniteScroll>
-          </Grid>
+            </Grid>
+          </InfiniteScroll>
         </Stack>
       </Grid>
     </Grid>

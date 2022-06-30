@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable camelcase */
 import { Box, Button, Paper, Typography } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { styled } from "@mui/material/styles";
@@ -8,8 +10,8 @@ const Image = styled("img")({
   objectFit: "scale-down",
 });
 
-const ProductCard = () => {
-  const productName = "ALLOPURINOL OGB DEXA MEDICA 100...";
+const ProductCard = ({ nama_produk, harga, diskon, produk_image, id }) => {
+  // const productName = "ALLOPURINOL OGB DEXA MEDICA 100...";
   return (
     <Paper
       elevation={2}
@@ -26,7 +28,7 @@ const ProductCard = () => {
       <Box paddingTop="20px" paddingX="40px" position="relative">
         <Box>
           <Image
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSq450n2CMbPX0tYBQffa-FNL4Sgs91Hjf50g&usqp=CAU"
+            src={produk_image}
             // width={"139px"}
             // height={"142px"}
           />
@@ -55,10 +57,13 @@ const ProductCard = () => {
       </Box>
       <Box marginX="24px" mt="5px">
         <Box maxHeight="40px" overflow="hidden">
-          <Typography variant="subtitle2" component="h2" fontWeight="bold">
-            {productName.length > 34
-              ? `${productName.slice(0, 33)}...`
-              : productName}
+          <Typography
+            textOverflow="ellipsis"
+            variant="subtitle2"
+            component="h2"
+            fontWeight="bold"
+          >
+            {nama_produk}
           </Typography>
         </Box>
         <Box display="flex" alignItems="center" mt="5px">
@@ -73,7 +78,7 @@ const ProductCard = () => {
             marginRight="8px"
           >
             <Typography fontSize="12px" color="red">
-              10%
+              {diskon}
             </Typography>
           </Box>
           <Box marginLeft="8px">
@@ -83,13 +88,15 @@ const ProductCard = () => {
                 textDecoration: "line-through",
               }}
             >
-              Rp. 20.000
+              Rp. {parseInt(harga).toLocaleString()}
             </Typography>
           </Box>
         </Box>
         <Box display="flex" marginTop="7px">
           <Box maxWidth="103px">
-            <Typography fontWeight="bold">Rp. 18.000</Typography>
+            <Typography fontWeight="bold">
+              Rp. {parseInt(harga).toLocaleString()}
+            </Typography>
           </Box>
           <Typography>/ Pack</Typography>
         </Box>

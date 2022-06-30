@@ -6,18 +6,27 @@ import {
   Typography,
   InputAdornment,
   FormControl,
+  Button,
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useState } from "react";
 
-const Sidebar = () => {
+const Sidebar = ({ setHargaMinimum, setHargaMaksimum, setPage }) => {
   const [kategori, setKategori] = useState(false);
   const openKategori = () => setKategori(true);
   const closeKategori = () => setKategori(false);
   const [harga, setHarga] = useState(false);
   const openHarga = () => setHarga(true);
   const closeHarga = () => setHarga(false);
+  const [hargaMin, setHargaMin] = useState(null);
+  const [hargaMaks, setHargaMaks] = useState(null);
+
+  const setHandler = () => {
+    setHargaMinimum(hargaMin);
+    setHargaMaksimum(hargaMaks);
+    setPage(1);
+  };
   return (
     <Box display="flex" flexDirection={{ xs: "row", md: "column" }}>
       <Stack
@@ -205,6 +214,7 @@ const Sidebar = () => {
         <Collapse in={harga}>
           <FormControl variant="outlined" sx={{ mt: "16px" }}>
             <TextField
+              onChange={(e) => setHargaMin(e.target.value)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">Rp</InputAdornment>
@@ -215,6 +225,7 @@ const Sidebar = () => {
           </FormControl>
           <FormControl variant="outlined" sx={{ mt: "16px" }}>
             <TextField
+              onChange={(e) => setHargaMaks(e.target.value)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">Rp</InputAdornment>
@@ -223,6 +234,14 @@ const Sidebar = () => {
               label="Harga Maksimum"
             />
           </FormControl>
+          <Button
+            fullWidth
+            onClick={setHandler}
+            variant="contained"
+            sx={{ "&:hover": { border: 0 }, mt: 2 }}
+          >
+            SET
+          </Button>
         </Collapse>
       </Stack>
     </Box>
