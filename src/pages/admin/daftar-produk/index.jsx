@@ -26,6 +26,7 @@ const DaftarProduk = () => {
   const [rowPerPage, setRowPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [totalData, setTotalData] = useState(0);
+  const [productCategory, setProductCategory] = useState([]);
 
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
@@ -36,6 +37,19 @@ const DaftarProduk = () => {
     }, 2000),
     []
   );
+
+  const fetchProductCategory = async () => {
+    try {
+      const findAllProductCategory = await axiosInstance.get(
+        "/admin/product-category"
+      );
+
+      setProductCategory(findAllProductCategory?.data?.result);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     router.push({
@@ -52,6 +66,10 @@ const DaftarProduk = () => {
       }
     }
   }, [router.isReady]);
+
+  useEffect(() => {
+    fetchProductCategory();
+  }, []);
 
   const columns = [
     { props: "No", width: 10 },
@@ -180,6 +198,7 @@ const DaftarProduk = () => {
             <ModalTambahObat
               open={tambahObat}
               handleClose={() => setTambahObat(false)}
+              categories={productCategory}
             />
           </Box>
           <Divider />

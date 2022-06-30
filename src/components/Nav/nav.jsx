@@ -127,14 +127,16 @@ const Nav = () => {
         <Avatar
           onClick={handleClick}
           src={userSelector?.photo_profile}
-          sx={{ ":hover": { cursor: "pointer" } }}
+          sx={{ ":hover": { cursor: userSelector.id ? "pointer" : "default" } }}
         />
-        <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-          <MenuItem>
-            <Link href="/profile-page">Profil Saya</Link>
-          </MenuItem>
-          <MenuItem onClick={logoutBtnHandler}>Keluar</MenuItem>
-        </Menu>
+        {userSelector.id ? (
+          <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+            <MenuItem>
+              <Link href="/profile-page">Profil Saya</Link>
+            </MenuItem>
+            <MenuItem onClick={logoutBtnHandler}>Keluar</MenuItem>
+          </Menu>
+        ) : null}
         <Typography sx={{ ml: "14px" }}>
           {userSelector?.nama?.length > 5
             ? `${userSelector?.nama?.slice(0, 4)}...`
