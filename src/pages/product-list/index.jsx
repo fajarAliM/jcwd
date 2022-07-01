@@ -22,12 +22,14 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useSelector } from "react-redux";
 
 const ProductList = () => {
+  const searchSelector = useSelector((state) => state.search);
   const router = useRouter();
   const [contentList, setContentList] = useState([]);
   const [page, setPage] = useState(1);
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState(searchSelector.searchInput);
   const [sortInput, setSortInput] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [sortDir, setSortDir] = useState("");
@@ -35,9 +37,10 @@ const ProductList = () => {
   const [hargaMaksimum, setHargaMaksimum] = useState(null);
   const [maxPage, setMaxPage] = useState(1);
   const [jumlahProduk, setJumlahProduk] = useState(null);
+  const [kategoriTerpilih, setKategoriTerpilih] = useState(null);
 
   const fetchProductList = async () => {
-    const limit = 3;
+    const limit = 4;
     try {
       const productList = await axiosInstance.get("/product", {
         params: {
@@ -47,6 +50,8 @@ const ProductList = () => {
           _page: page,
           hargaMinimum: hargaMinimum || undefined,
           hargaMaksimum: hargaMaksimum || undefined,
+          kategoriTerpilih: kategoriTerpilih || undefined,
+          searchProduk: searchValue,
         },
       });
       setJumlahProduk(productList.data.result.count);
@@ -67,17 +72,6 @@ const ProductList = () => {
   const fetchNextPage = () => {
     setPage(page + 1);
   };
-
-  useEffect(() => {
-    if (router.isReady) {
-      if (router.query._sortDir) {
-        setSearchValue(router.query._sortDir);
-      }
-      if (router.query._sortBy) {
-        setSearchValue(router.query._sortBy);
-      }
-    }
-  }, [router.isReady]);
 
   const sortInputHandler = (event) => {
     const { value } = event.target;
@@ -110,7 +104,7 @@ const ProductList = () => {
         <Grid item xs={6} sm={4} md={3}>
           <ProductCard
             nama_produk={val?.nama_produk}
-            harga={val?.harga}
+            harga={val?.harga_jual}
             diskon={val?.diskon}
             produk_image={val?.produk_image_url[0]}
             id={val?.id}
@@ -128,10 +122,28 @@ const ProductList = () => {
         query: {
           _sortBy: sortBy ? sortBy : undefined,
           _sortDir: sortDir ? sortDir : undefined,
+          hargaMaksimum: hargaMaksimum || undefined,
+          hargaMinimum: hargaMinimum || undefined,
+          kategoriTerpilih: kategoriTerpilih || undefined,
+          searchProduk: searchValue || undefined,
         },
       });
     }
-  }, [page, sortDir, sortBy, hargaMaksimum, hargaMinimum]);
+  }, [
+    page,
+    sortDir,
+    sortBy,
+    hargaMaksimum,
+    hargaMinimum,
+    kategoriTerpilih,
+    searchValue,
+  ]);
+
+  useEffect(() => {
+    setSearchValue(searchSelector.searchInput);
+    setPage(1);
+  }, [searchSelector.searchInput]);
+
   return (
     <Grid container sx={{ mt: "44px" }}>
       <Grid item sm={0} md={3} order={{ xs: 2, md: 1 }}>
@@ -183,6 +195,7 @@ const ProductList = () => {
             setHargaMaksimum={setHargaMaksimum}
             setHargaMinimum={setHargaMinimum}
             setPage={setPage}
+            setKategoriTerpilih={setKategoriTerpilih}
           />
         </Stack>
       </Grid>

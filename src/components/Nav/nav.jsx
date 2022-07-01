@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  // Button,
   FormControl,
   IconButton,
   InputAdornment,
@@ -17,10 +16,11 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { logout } from "redux/reducer/auth";
 import jsCookie from "js-cookie";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
+import { search } from "../../redux/reducer/search";
 import shopee from "../../public/Images/shopee.png";
 
 const Nav = () => {
@@ -28,6 +28,8 @@ const Nav = () => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [searchInput, setSearchInput] = useState("");
+  const router = useRouter();
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -41,6 +43,19 @@ const Nav = () => {
     jsCookie.remove("user_auth_token");
     Router.push("/login");
   };
+
+  const inputHandler = (event) => {
+    setSearchInput(event.target.value);
+  };
+
+  useEffect(() => {
+    if (router.isReady) {
+      if (router.query.searchProduk) {
+        dispatch(search(router.query.searchProduk));
+      }
+    }
+  }, []);
+
   return (
     <Box
       sx={{
@@ -70,51 +85,37 @@ const Nav = () => {
         }}
         variant="outlined"
       >
+        {/* <form> */}
         <InputLabel htmlFor="outlined-search" sx={{ ml: 2 }}>
           Cari Obat, Suplemen, Vitamin, produk Kesehatan
         </InputLabel>
         <OutlinedInput
+          onChange={inputHandler}
           id="outlined-search"
           sx={{ borderRadius: 2 }}
           endAdornment={
             <InputAdornment position="end">
-              <IconButton edge="end" sx={{ mr: 1 }}>
+              <IconButton
+                // type="submit"
+                edge="end"
+                sx={{ mr: 1 }}
+                onClick={() => {
+                  dispatch(search(searchInput));
+                  router.push({
+                    query: {
+                      searchProduk: searchInput,
+                    },
+                  });
+                }}
+              >
                 <BsSearch />
               </IconButton>
             </InputAdornment>
           }
           label="Cari Obat, Suplemen, Vitamin, produk Kesehatan yuk"
         />
+        {/* </form> */}
       </FormControl>
-
-      {/* USER NOT LOGGED IN */}
-
-      {/* <Button
-        variant="outlined"
-        sx={{
-          mr: 3,
-          ml: 3,
-          width: 150,
-          height: 50,
-        }}
-      >
-        Masuk
-      </Button>
-      <Button
-        variant="contained"
-        sx={{
-          width: 150,
-          height: 50,
-          boxShadow: 0,
-          "&:hover": {
-            boxShadow: 0,
-          },
-        }}
-      >
-        Daftar
-      </Button> */}
-
-      {/* USER LOGGED IN */}
       <Link href="/keranjang">
         <IconButton sx={{ ml: "50px" }}>
           <ShoppingCartIcon sx={{ color: "Brand.500" }} />

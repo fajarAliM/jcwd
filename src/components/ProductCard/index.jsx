@@ -23,6 +23,7 @@ const ProductCard = ({ nama_produk, harga, diskon, produk_image, id }) => {
         marginBottom: "16px",
         marginTop: "24px",
         pb: "20px",
+        "&:hover": { background: "#EFEFEF", cursor: "pointer" },
       }}
     >
       <Box paddingTop="20px" paddingX="40px" position="relative">
@@ -36,7 +37,8 @@ const ProductCard = ({ nama_produk, harga, diskon, produk_image, id }) => {
         <Paper
           sx={{
             borderRadius: "50%",
-            maxWidth: "44px",
+            // maxWidth: "50px",
+            minWidth: "45px",
             height: "44px",
             top: "20px",
             right: "20px",

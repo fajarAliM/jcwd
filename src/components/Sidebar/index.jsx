@@ -1,3 +1,5 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable no-unused-vars */
 import {
   Box,
   Collapse,
@@ -10,9 +12,15 @@ import {
 } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axiosInstance from "config/api";
 
-const Sidebar = ({ setHargaMinimum, setHargaMaksimum, setPage }) => {
+const Sidebar = ({
+  setHargaMinimum,
+  setHargaMaksimum,
+  setPage,
+  setKategoriTerpilih,
+}) => {
   const [kategori, setKategori] = useState(false);
   const openKategori = () => setKategori(true);
   const closeKategori = () => setKategori(false);
@@ -21,12 +29,57 @@ const Sidebar = ({ setHargaMinimum, setHargaMaksimum, setPage }) => {
   const closeHarga = () => setHarga(false);
   const [hargaMin, setHargaMin] = useState(null);
   const [hargaMaks, setHargaMaks] = useState(null);
+  const [pilihKategori, setPilihKategori] = useState(null);
+  const [category, setCategory] = useState(null);
+
+  const fetchCategory = async () => {
+    try {
+      const categoryList = await axiosInstance.get("/admin/product-category");
+
+      setCategory(categoryList.data.result);
+      console.log(categoryList.data.result);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const kategoriHandler = (value) => {
+    setPilihKategori(value);
+    setKategoriTerpilih(value);
+    setPage(1);
+  };
 
   const setHandler = () => {
     setHargaMinimum(hargaMin);
     setHargaMaksimum(hargaMaks);
     setPage(1);
   };
+
+  const renderCategory = () => {
+    return category?.map((val) => {
+      return (
+        <Typography
+          onClick={() => kategoriHandler(val.id)}
+          sx={{
+            fontSize: "14px",
+            color: val.id == pilihKategori ? "Brand.500" : "black",
+            mb: "12px",
+            "&:hover": {
+              cursor: "pointer",
+              color: "Brand.500",
+              fontWeight: 700,
+            },
+          }}
+        >
+          {val.kategori}
+        </Typography>
+      );
+    });
+  };
+
+  useEffect(() => {
+    fetchCategory();
+  }, []);
   return (
     <Box display="flex" flexDirection={{ xs: "row", md: "column" }}>
       <Stack
@@ -77,99 +130,7 @@ const Sidebar = ({ setHargaMinimum, setHargaMaksimum, setPage }) => {
           )}
         </Box>
         <Collapse in={kategori}>
-          <Stack sx={{ mt: "16px" }}>
-            <Typography
-              sx={{
-                fontSize: "14px",
-                mb: "12px",
-                "&:hover": {
-                  cursor: "pointer",
-                  color: "Brand.500",
-                  fontWeight: 700,
-                },
-              }}
-            >
-              Obat-Obatan
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "14px",
-                mb: "12px",
-                "&:hover": {
-                  cursor: "pointer",
-                  color: "Brand.500",
-                  fontWeight: 700,
-                },
-              }}
-            >
-              Nutrisi
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "14px",
-                mb: "12px",
-                "&:hover": {
-                  cursor: "pointer",
-                  color: "Brand.500",
-                  fontWeight: 700,
-                },
-              }}
-            >
-              Herbal
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "14px",
-                mb: "12px",
-                "&:hover": {
-                  cursor: "pointer",
-                  color: "Brand.500",
-                  fontWeight: 700,
-                },
-              }}
-            >
-              Vitamin & Suplemen
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "14px",
-                mb: "12px",
-                "&:hover": {
-                  cursor: "pointer",
-                  color: "Brand.500",
-                  fontWeight: 700,
-                },
-              }}
-            >
-              Alat Kesehatan
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "14px",
-                mb: "12px",
-                "&:hover": {
-                  cursor: "pointer",
-                  color: "Brand.500",
-                  fontWeight: 700,
-                },
-              }}
-            >
-              Perawatan Tubuh
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "14px",
-                mb: "12px",
-                "&:hover": {
-                  cursor: "pointer",
-                  color: "Brand.500",
-                  fontWeight: 700,
-                },
-              }}
-            >
-              Ibu & Anak
-            </Typography>
-          </Stack>
+          <Stack sx={{ mt: "16px" }}>{renderCategory()}</Stack>
         </Collapse>
       </Stack>
       <Stack
