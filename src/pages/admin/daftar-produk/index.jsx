@@ -2,8 +2,12 @@ import {
   Box,
   Button,
   Divider,
+  FormControl,
   InputAdornment,
+  InputLabel,
+  MenuItem,
   OutlinedInput,
+  Select,
   Typography,
 } from "@mui/material";
 import _ from "lodash";
@@ -20,23 +24,19 @@ import { useSnackbar } from "notistack";
 import axiosInstance from "config/api";
 
 const DaftarProduk = () => {
-  const [namaObatFilter, setNamaObatFilter] = useState("");
+  const router = useRouter();
+
+  const [namaObatFilter, setNamaObatFilter] = useState(router.query.nama_obat);
   const [tambahObat, setTambahObat] = useState(false);
   const [page, setPage] = useState(0);
   const [rowPerPage, setRowPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [totalData, setTotalData] = useState(0);
   const [productCategory, setProductCategory] = useState([]);
+  const [sortBy, setSortBy] = useState(router.query.sort_by);
+  const [sortDir, setSortDir] = useState(router.query.sort_dir);
 
-  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-
-  const debounceNamaObatFilter = useCallback(
-    _.debounce((values) => {
-      setNamaObatFilter(values);
-    }, 2000),
-    []
-  );
 
   const fetchProductCategory = async () => {
     try {
@@ -52,49 +52,8 @@ const DaftarProduk = () => {
   };
 
   useEffect(() => {
-    router.push({
-      query: {
-        nama_obat: namaObatFilter === "" ? undefined : namaObatFilter,
-      },
-    });
-  }, [namaObatFilter]);
-
-  useEffect(() => {
-    if (router.isReady) {
-      if (router.query.nama_obat) {
-        setNamaObatFilter(router.query.nama_obat);
-      }
-    }
-  }, [router.isReady]);
-
-  useEffect(() => {
     fetchProductCategory();
   }, []);
-
-  const columns = [
-    { props: "No", width: 10 },
-    { props: "Nama Obat", width: 125 },
-    { props: "No.Obat", width: 75 },
-    { props: "No.BPOM", width: 75 },
-    { props: "Kategori", width: 75 },
-    { props: "Stok Available", width: 155 },
-    { props: "Stok On Freeze", width: 155 },
-    { props: "Stok On Delivery", width: 75 },
-    { props: "Total Stok", width: 75 },
-    { props: "Satuan", width: 75 },
-    { props: "Nilai Barang", width: 75 },
-    { props: "Nilai Jual", width: 75 },
-    { props: "Atur", width: 75 },
-  ];
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
 
   const fetchProduct = async () => {
     try {
@@ -102,6 +61,8 @@ const DaftarProduk = () => {
         params: {
           _limit: rowPerPage,
           _page: page,
+          _sortBy: sortBy || undefined,
+          _sortDir: sortDir || undefined,
         },
       });
 
@@ -114,16 +75,15 @@ const DaftarProduk = () => {
           return {
             id: idx + rowPerPage * page + 1,
             namaObat: val.nama_produk,
-            noObat: val?.no_obat,
-            noBpom: val?.noBpom,
+            noObat: val?.nomor_obat,
+            noBpom: val?.nomor_bpom,
             kategori: val.product_category.kategori,
             stok: val.stocks.reduce((init, object) => {
               return init + object.jumlah_stok;
             }, 0),
             stokTypes: val.stocks,
             satuan: val?.satuan,
-            nilaiBarang: val.harga_modal,
-            nilaiJual: val.harga,
+            nilaiJual: val.harga_jual,
             productId: val.id,
           };
         })
@@ -135,7 +95,113 @@ const DaftarProduk = () => {
 
   useEffect(() => {
     fetchProduct();
-  }, [rowPerPage, page]);
+
+    if (typeof namaObatFilter === "string" || typeof sortDir === "string") {
+      router.push({
+        query: {
+          nama_obat: namaObatFilter,
+          sort_dir: sortDir,
+          sort_by: sortBy,
+        },
+      });
+    }
+  }, [namaObatFilter, rowPerPage, page, sortBy, sortDir]);
+
+  useEffect(() => {
+    if (router.isReady) {
+      if (router.query.nama_obat) {
+        setNamaObatFilter(router.query.nama_obat);
+      }
+      if (router.query.sort_dir) {
+        setSortDir(router.query.sort_dir);
+      }
+      if (router.query.sort_by) {
+        setSortBy(router.query.sort_by);
+      }
+    }
+  }, [router.isReady]);
+
+  const sortButton = (val) => {
+    if (val === "Highest Price") {
+      setSortBy("harga_jual");
+      setSortDir("DESC");
+    } else if (val === "Lowest Price") {
+      setSortBy("harga_jual");
+      setSortDir("ASC");
+    } else if (val === "name_ASC") {
+      setSortBy("nama_produk");
+      setSortDir("ASC");
+    } else if (val === "name_DESC") {
+      setSortBy("nama_produk");
+      setSortDir("DESC");
+    } else if (val === "") {
+      setSortBy("");
+      setSortDir("");
+    }
+    setPage(0);
+  };
+
+  const sortDefaultValue = () => {
+    if (router.isReady && router.query.sort_dir && router.query.sort_by) {
+      if (
+        router.query.sort_dir === "DESC" &&
+        router.query.sort_by === "harga_jual"
+      ) {
+        return "Highest Price";
+      }
+      if (
+        router.query.sort_dir === "ASC" &&
+        router.query.sort_by === "harga_jual"
+      ) {
+        return "Lowest Price";
+      }
+      if (
+        router.query.sort_dir === "DESC" &&
+        router.query.sort_by === "nama_produk"
+      ) {
+        return "name_DESC";
+      }
+      if (router.query.sort_dir === "ASC" && router.query.sort_by === "harga") {
+        return "name_ASC";
+      }
+    }
+    return "";
+  };
+
+  const debounce = useCallback(
+    _.debounce((values, field) => {
+      if (field === "namaObat") {
+        setNamaObatFilter(values);
+      } else if (field === "sort") {
+        sortButton(values);
+      }
+    }, 2000),
+    []
+  );
+
+  const columns = [
+    { props: "No" },
+    { props: "Nama Obat" },
+    { props: "No.Obat" },
+    { props: "No.BPOM" },
+    { props: "Kategori" },
+    { props: "Stok Available" },
+    { props: "Stok On Freeze" },
+    { props: "Stok On Delivery" },
+    { props: "Total Stok" },
+    { props: "Satuan" },
+    { props: "Nilai Jual" },
+    { props: "Atur" },
+  ];
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
 
   return (
     <Box display="flex" justifyContent="flex-end">
@@ -177,21 +243,38 @@ const DaftarProduk = () => {
             marginBottom="35px"
             marginRight="32px"
           >
-            <OutlinedInput
-              onChange={(e) => debounceNamaObatFilter(e.target.value)}
-              placeholder="Cari nama obat"
-              sx={{ width: "328px", height: "42px" }}
-              endAdornment={
-                <InputAdornment>
-                  <SearchIcon />
-                </InputAdornment>
-              }
-            />
+            <Box display="flex" alignItems="center">
+              <OutlinedInput
+                onChange={(e) => debounce(e.target.value, "namaObat")}
+                placeholder="Cari nama obat"
+                sx={{ width: "300px", height: "55px", mr: 1 }}
+                defaultValue={router.query.nama_obat}
+                endAdornment={
+                  <InputAdornment>
+                    <SearchIcon />
+                  </InputAdornment>
+                }
+              />
+              <FormControl sx={{ m: 1, minWidth: 120 }} size="medium">
+                <InputLabel>Sort</InputLabel>
+                <Select
+                  label="Sort"
+                  onChange={(e) => debounce(e.target.value, "sort")}
+                  defaultValue={sortDefaultValue()}
+                >
+                  <MenuItem value="">None</MenuItem>
+                  <MenuItem value="Highest Price">Termahal</MenuItem>
+                  <MenuItem value="Lowest Price">Termurah</MenuItem>
+                  <MenuItem value="name_ASC">A - Z</MenuItem>
+                  <MenuItem value="name_DESC">Z - A</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
             <Button
               onClick={() => setTambahObat(true)}
               variant="contained"
               startIcon={<AddIcon />}
-              sx={{ width: "160px" }}
+              sx={{ width: "160px", height: "45px" }}
             >
               Tambah Obat
             </Button>
