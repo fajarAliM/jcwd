@@ -114,7 +114,7 @@ const TableData = ({
       <Box sx={{ overflow: "scroll" }} paddingRight="32px">
         <TableContainer
           component={Paper}
-          sx={{ minWidth: "1450px", maxHeight: "550px" }}
+          sx={{ minWidth: "1450px", maxHeight: "100%" }}
         >
           <Table
             sx={{ overflow: "auto", width: "100%" }}

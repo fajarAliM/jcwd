@@ -19,7 +19,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import ModalTambahObat from "components/Admin/ModalTambahObat";
 import requiresAdmin from "config/requireAdmin";
-import TableData from "components/Admin/NewTable";
+import TableData from "components/Admin/DaftarObatTable";
 import { useSnackbar } from "notistack";
 import axiosInstance from "config/api";
 
@@ -35,6 +35,9 @@ const DaftarProduk = () => {
   const [productCategory, setProductCategory] = useState([]);
   const [sortBy, setSortBy] = useState(router.query.sort_by);
   const [sortDir, setSortDir] = useState(router.query.sort_dir);
+  const [filterCategory, setFilterCategory] = useState(
+    router.query.filter_by_category
+  );
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -63,6 +66,8 @@ const DaftarProduk = () => {
           _page: page,
           _sortBy: sortBy || undefined,
           _sortDir: sortDir || undefined,
+          filterCategory: filterCategory || undefined,
+          searchProduk: namaObatFilter,
         },
       });
 
@@ -96,16 +101,21 @@ const DaftarProduk = () => {
   useEffect(() => {
     fetchProduct();
 
-    if (typeof namaObatFilter === "string" || typeof sortDir === "string") {
+    if (
+      typeof namaObatFilter === "string" ||
+      typeof sortDir === "string" ||
+      filterCategory
+    ) {
       router.push({
         query: {
           nama_obat: namaObatFilter,
           sort_dir: sortDir,
           sort_by: sortBy,
+          filter_by_category: filterCategory,
         },
       });
     }
-  }, [namaObatFilter, rowPerPage, page, sortBy, sortDir]);
+  }, [namaObatFilter, rowPerPage, page, sortBy, sortDir, filterCategory]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -117,6 +127,9 @@ const DaftarProduk = () => {
       }
       if (router.query.sort_by) {
         setSortBy(router.query.sort_by);
+      }
+      if (router.query.filter_by_category) {
+        setFilterCategory(router.query.filter_by_category);
       }
     }
   }, [router.isReady]);
@@ -138,7 +151,6 @@ const DaftarProduk = () => {
       setSortBy("");
       setSortDir("");
     }
-    setPage(0);
   };
 
   const sortDefaultValue = () => {
@@ -168,13 +180,34 @@ const DaftarProduk = () => {
     return "";
   };
 
-  const debounce = useCallback(
-    _.debounce((values, field) => {
-      if (field === "namaObat") {
-        setNamaObatFilter(values);
-      } else if (field === "sort") {
-        sortButton(values);
-      }
+  const filtersetState = (vals) => {
+    if (vals === "") {
+      setFilterCategory(null);
+    } else {
+      setFilterCategory(vals);
+    }
+  };
+
+  const namaObatDebounce = useCallback(
+    _.debounce((values) => {
+      setNamaObatFilter(values);
+      setPage(0);
+    }, 2000),
+    []
+  );
+
+  const filterDebounce = useCallback(
+    _.debounce((values) => {
+      filtersetState(values);
+      setPage(0);
+    }, 2000),
+    []
+  );
+
+  const sortDebounce = useCallback(
+    _.debounce((values) => {
+      sortButton(values);
+      setPage(0);
     }, 2000),
     []
   );
@@ -203,6 +236,12 @@ const DaftarProduk = () => {
     setPage(newPage);
   };
 
+  const renderCategory = () => {
+    return productCategory.map((val) => {
+      return <MenuItem value={val.id}>{val.kategori}</MenuItem>;
+    });
+  };
+
   return (
     <Box display="flex" justifyContent="flex-end">
       <Box width="100%" height="100%">
@@ -227,7 +266,7 @@ const DaftarProduk = () => {
           paddingLeft="32px"
           paddingY="32px"
           width="100%"
-          height="772px"
+          height="100%"
           marginTop="38px"
           marginBottom="94px"
           borderRadius="8px"
@@ -245,7 +284,7 @@ const DaftarProduk = () => {
           >
             <Box display="flex" alignItems="center">
               <OutlinedInput
-                onChange={(e) => debounce(e.target.value, "namaObat")}
+                onChange={(e) => namaObatDebounce(e.target.value)}
                 placeholder="Cari nama obat"
                 sx={{ width: "300px", height: "55px", mr: 1 }}
                 defaultValue={router.query.nama_obat}
@@ -255,11 +294,22 @@ const DaftarProduk = () => {
                   </InputAdornment>
                 }
               />
+              <FormControl sx={{ m: 1, minWidth: 220 }} size="medium">
+                <InputLabel>Filter</InputLabel>
+                <Select
+                  label="Filter"
+                  onChange={(e) => filterDebounce(e.target.value)}
+                  defaultValue={router.query.filter_by_category}
+                >
+                  <MenuItem value="">None</MenuItem>
+                  {renderCategory()}
+                </Select>
+              </FormControl>
               <FormControl sx={{ m: 1, minWidth: 120 }} size="medium">
                 <InputLabel>Sort</InputLabel>
                 <Select
                   label="Sort"
-                  onChange={(e) => debounce(e.target.value, "sort")}
+                  onChange={(e) => sortDebounce(e.target.value)}
                   defaultValue={sortDefaultValue()}
                 >
                   <MenuItem value="">None</MenuItem>
