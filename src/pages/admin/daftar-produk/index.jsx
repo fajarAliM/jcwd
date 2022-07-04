@@ -82,6 +82,7 @@ const DaftarProduk = () => {
             namaObat: val.nama_produk,
             noObat: val?.nomor_obat,
             noBpom: val?.nomor_bpom,
+            kategoriId: val.productCategoryId,
             kategori: val.product_category.kategori,
             stok: val.stocks.reduce((init, object) => {
               return init + object.jumlah_stok;
@@ -90,6 +91,8 @@ const DaftarProduk = () => {
             satuan: val?.satuan,
             nilaiJual: val.harga_jual,
             productId: val.id,
+            obatImages: val.produk_image_url,
+            diskon: val.diskon,
           };
         })
       );
@@ -350,6 +353,7 @@ const DaftarProduk = () => {
               handleChangePage={handleChangePage}
               handleChangeRowsPerPage={handleChangeRowsPerPage}
               totalData={totalData}
+              categoriesData={productCategory}
             />
           </Box>
         </Box>

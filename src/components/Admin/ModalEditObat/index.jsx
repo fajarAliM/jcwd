@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable camelcase */
 import {
   Modal,
@@ -11,27 +12,113 @@ import {
   Grid,
   Select,
   MenuItem,
-  Tooltip,
+  IconButton,
 } from "@mui/material";
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Group8729 from "public/Images/Group8729.png";
 import axiosInstance from "config/api";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
+import AddIcon from "@mui/icons-material/Add";
 
-const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
+const ModalEditObat = ({
+  open,
+  handleClose,
+  categories = [],
+  data,
+  // eslint-disable-next-line no-unused-vars
+  produkImages = [],
+}) => {
   const [activeStep, setActiveStep] = useState(1);
-  const [files, setFiles] = useState([]);
   const [imageReview, setImageReview] = useState([]);
-
   const { enqueueSnackbar } = useSnackbar();
+  const [files, setFiles] = useState([]);
+  const [editImage, setEditImage] = useState(false);
 
   const inputFile = useRef(null);
 
-  const handleFile = (e) => {
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      nama_produk: data.namaObat,
+      nomor_obat: data.noObat,
+      nomor_bpom: data.noBpom,
+      kategori: data.kategoriId,
+      satuan: data.satuan,
+      harga_jual: data.nilaiJual,
+      diskon: data.diskon,
+    },
+    validationSchema: Yup.object().shape({
+      nama_produk: Yup.string().required(),
+      kategori: Yup.string().required(),
+      nomor_obat: Yup.string().required(),
+      nomor_bpom: Yup.string().required(),
+      satuan: Yup.string().required(),
+      harga_jual: Yup.number().min(1).required(),
+      diskon: Yup.number(),
+    }),
+    validateOnChange: true,
+    onSubmit: async (values) => {
+      try {
+        const productInfo = {
+          nama_produk: values.nama_produk,
+          nomor_obat: values.nomor_obat,
+          nomor_bpom: values.nomor_bpom,
+          kategori: values.kategori,
+          satuan: values.satuan,
+          harga_jual: values.harga_jual,
+          diskon: values.diskon,
+        };
+        const res = await axiosInstance.patch(
+          `/admin/product/${data.productId}`,
+          productInfo
+        );
+        enqueueSnackbar(res?.data?.message, { variant: "success" });
+        setActiveStep(3);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.log(err);
+        enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+      }
+    },
+  });
+
+  const imagesSubmitHandler = async () => {
+    if (!imageReview) {
+      enqueueSnackbar("Select your Image First!", { variant: "warning" });
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+
+      Object.values(files).forEach((file) => {
+        formData.append("product_image_file", file);
+      });
+      const res = await axiosInstance.put(
+        `/admin/product-images/${data.productId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      // setFiles(null);
+      // setImageReview(null);
+      enqueueSnackbar(res?.data?.message, { variant: "success" });
+      setEditImage(false);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+      enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+    }
+  };
+
+  const onChange = (e) => {
     if (!files) {
       setFiles([e.target.files[0]]);
       enqueueSnackbar(e.target.files[0].name, {
@@ -64,83 +151,50 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
     }
   };
 
-  const formik = useFormik({
-    initialValues: {
-      nama_produk: "",
-      nomor_obat: "",
-      nomor_bpom: "",
-      kategori: "",
-      satuan: "Box",
-      diskon: 0,
-    },
-    validationSchema: Yup.object().shape({
-      nama_produk: Yup.string().required(),
-      kategori: Yup.string().required(),
-      nomor_obat: Yup.string().required(),
-      nomor_bpom: Yup.string().required(),
-      satuan: Yup.string().required(),
-      harga_jual: Yup.number().min(1).required(),
-      diskon: Yup.number(),
-    }),
-    validateOnChange: true,
-  });
-
-  const submitHandler = async () => {
-    if (!files) {
-      enqueueSnackbar("Select your Image First!", { variant: "warning" });
-      return;
-    }
-
-    const formData = new FormData();
-    const {
-      nama_produk,
-      nomor_obat,
-      nomor_bpom,
-      kategori,
-      satuan,
-      harga_jual,
-      diskon,
-    } = formik.values;
-
-    if (!diskon) {
-      // eslint-disable-next-line no-unused-expressions
-      diskon === 0;
-    }
-
-    formData.append("nama_produk", nama_produk);
-    formData.append("nomor_obat", nomor_obat);
-    formData.append("nomor_bpom", nomor_bpom);
-    formData.append("productCategoryId", kategori);
-    formData.append("satuan", satuan);
-    formData.append("harga_jual", harga_jual);
-    formData.append("diskon", diskon);
-    Object.values(files).forEach((file) => {
-      formData.append("product_image_file", file);
-    });
-
-    try {
-      const res = await axiosInstance.post("/admin/product", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      setFiles(null);
-      enqueueSnackbar(res?.data?.message, { variant: "success" });
-      setActiveStep(3);
-
-      formik.setFieldValue("nama_produk", formik.initialValues.nama_produk);
-      formik.setFieldValue("nomor_obat", formik.initialValues.nomor_obat);
-      formik.setFieldValue("nomor_bpom", formik.initialValues.nomor_bpom);
-      formik.setFieldValue("productCategoryId", "");
-      formik.setFieldValue("satuan", "Box");
-      formik.setFieldValue("harga_jual", formik.initialValues.harga_jual);
-      formik.setFieldValue("diskon", formik.initialValues.diskon);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
-      enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
-    }
+  const closeEditImage = () => {
+    setEditImage(false);
+    setFiles([]);
+    setImageReview([]);
   };
+
+  async function createFile() {
+    produkImages.map(async (image) => {
+      const response = await fetch(`${image}`);
+      const blob = await response.blob();
+      const file = new File([blob], `${image}`, { type: blob.type });
+      // if (!files) {
+      //   setFiles([file]);
+      // } else {
+      //   setFiles([...files, file]);
+      // }
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      if (!imageReview || !files) {
+        reader.onload = () => {
+          setFiles([file]);
+          setImageReview([reader.result]);
+        };
+      } else {
+        reader.onload = () => {
+          setImageReview((imgs) => [...imgs, reader.result]);
+          setFiles((imgs) => [...imgs, file]);
+        };
+      }
+      reader.onerror = () => {
+        // eslint-disable-next-line no-console
+        console.log(reader.error);
+      };
+    });
+  }
+  useEffect(() => {
+    if (produkImages) {
+      createFile();
+    } else {
+      setImageReview([]);
+      setFiles([]);
+    }
+  }, [produkImages]);
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -192,7 +246,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                 fontWeight: "bold",
               }}
             >
-              Obat Berhasil Ditambahkan!
+              Produk Berhasil Diubah!
             </Typography>
             <Typography sx={{ color: "Brand.300", fontSize: "12px" }}>
               Jumlah stok diperbarui secara otomatis
@@ -224,10 +278,14 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
               marginBottom="30px"
             >
               <Typography fontSize="20px" fontWeight="bold">
-                Tambah Obat
+                Ubah Data Obat
               </Typography>
               <CloseIcon
-                onClick={handleClose}
+                onClick={() => {
+                  handleClose();
+                  setFiles([]);
+                  setImageReview([]);
+                }}
                 sx={{
                   "&:hover": {
                     cursor: "pointer",
@@ -257,7 +315,6 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                         formik.setFieldValue("nama_produk", event.target.value)
                       }
                       sx={{ height: "32px", minWidth: "226px" }}
-                      placeholder="Masukkan nama obat"
                       value={formik.values.nama_produk}
                     />
                   </Grid>
@@ -328,6 +385,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                   </Grid>
                   <Grid item xs={9}>
                     <Select
+                      defaultValue={data.kategoriId}
                       sx={{
                         backgroundColor: "white",
                         height: "32px",
@@ -338,7 +396,6 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                       }}
                       value={formik.values.kategori}
                       autoWidth
-                      displayEmpty
                     >
                       <MenuItem disabled value="">
                         Kategori
@@ -348,8 +405,6 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                           <MenuItem value={val.id}>{val.kategori}</MenuItem>
                         );
                       })}
-                      {/* <MenuItem value="Obat Bebas">Obat Bebas</MenuItem>
-                          <MenuItem value="Obat Resep">Obat Resep</MenuItem> */}
                     </Select>
                   </Grid>
                 </Grid>
@@ -369,6 +424,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                   </Grid>
                   <Grid item xs={9}>
                     <Select
+                      defaultValue={data.satuan}
                       sx={{
                         backgroundColor: "white",
                         height: "32px",
@@ -454,93 +510,142 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                     </FormLabel>
                   </Grid>
                   <Grid item xs={9}>
-                    {files?.length === 5 ? (
-                      <Tooltip title="Maksimal 5 Gambar" placement="right">
-                        <span>
-                          <input
-                            accept="image/png, image/jpeg, image/jpg"
-                            onChange={handleFile}
-                            ref={inputFile}
-                            type="file"
-                            inputProps={{ multiple: true }}
-                            style={{ display: "none" }}
-                          />
+                    <Button
+                      variant="outlined"
+                      onClick={() => setEditImage(true)}
+                    >
+                      Edit Image
+                    </Button>
+                  </Grid>
+                  <Modal open={editImage} onClose={closeEditImage}>
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        minWidth: "300px",
+                        maxWidth: "1000px",
+                        height: "auto",
+                        bgcolor: "white",
+                        borderRadius: 2,
+                        boxShadow: 24,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        padding: 3,
+                      }}
+                    >
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        marginBottom="30px"
+                      >
+                        <Typography fontSize="20px" fontWeight="bold">
+                          Ubah Gambar Produk
+                        </Typography>
+                        <CloseIcon
+                          onClick={closeEditImage}
+                          sx={{
+                            "&:hover": {
+                              cursor: "pointer",
+                            },
+                          }}
+                        />
+                      </Box>
+                      <Box
+                        display="flex"
+                        alignContent="center"
+                        alignItems="center"
+                        maxWidth="100%"
+                        overflow="auto"
+                      >
+                        {imageReview?.map((file, idx) => {
+                          return (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                borderRadius: "10px",
+                                padding: "5px",
+                              }}
+                            >
+                              <img src={file} height="200px" />
+                              <CloseIcon
+                                sx={{
+                                  color: "Sidebar.600",
+                                  position: "relative",
+                                  right: 30,
+                                  alignContent: "flex-end",
+                                  ":hover": {
+                                    color: "red",
+                                    cursor: "pointer",
+                                  },
+                                }}
+                                onClick={() => {
+                                  setImageReview((prevValue) => {
+                                    return prevValue.filter(
+                                      (val, prevIdx) => idx !== prevIdx
+                                    );
+                                  });
+                                  setFiles((prevValue) => {
+                                    return prevValue.filter(
+                                      (val, prevIdx) => idx !== prevIdx
+                                    );
+                                  });
+                                }}
+                              />
+                            </Box>
+                          );
+                        })}
+                        {imageReview?.length > 4 ? null : (
+                          <Box
+                            sx={{
+                              display: "flex",
+                            }}
+                          >
+                            <IconButton
+                              onClick={() => inputFile.current.click()}
+                            >
+                              <input
+                                accept="image/png, image/jpeg, image/jpg"
+                                onChange={onChange}
+                                ref={inputFile}
+                                type="file"
+                                inputProps={{ multiple: true }}
+                                style={{ display: "none" }}
+                              />
+                              <AddIcon />
+                              Add
+                            </IconButton>
+                          </Box>
+                        )}
+                      </Box>
+                      <Box>
+                        <Divider orientation="horizontal" />
+                        <Box
+                          display="flex"
+                          justifyContent="flex-end"
+                          marginTop="20px"
+                        >
                           <Button
                             variant="outlined"
-                            onClick={() => inputFile.current.click()}
-                            disabled={files.length === 5}
-                          >
-                            Add Image
-                          </Button>
-                        </span>
-                      </Tooltip>
-                    ) : (
-                      <>
-                        <input
-                          accept="image/png, image/jpeg, image/jpg"
-                          onChange={handleFile}
-                          ref={inputFile}
-                          type="file"
-                          inputProps={{ multiple: true }}
-                          style={{ display: "none" }}
-                        />
-                        <Button
-                          variant="outlined"
-                          onClick={() => inputFile.current.click()}
-                          disabled={files.length === 5}
-                        >
-                          Add Image
-                        </Button>
-                      </>
-                    )}
-                  </Grid>
-
-                  <Box
-                    display="flex"
-                    marginTop="10px"
-                    maxWidth="100%"
-                    sx={{
-                      overflowX: "auto",
-                    }}
-                  >
-                    {imageReview?.map((file, idx) => {
-                      return (
-                        <Box
-                          sx={{
-                            display: "flex",
-                            borderRadius: "10px",
-                            padding: "5px",
-                          }}
-                        >
-                          <img src={file} height="200px" />
-                          <CloseIcon
-                            sx={{
-                              color: "Sidebar.600",
-                              position: "relative",
-                              right: 30,
-                              alignContent: "flex-end",
-                              ":hover": {
-                                color: "red",
-                                cursor: "pointer",
-                              },
-                            }}
                             onClick={() => {
-                              setImageReview((prevValue) => {
-                                return prevValue.filter(
-                                  (val, prevIdx) => idx !== prevIdx
-                                );
-                              });
-                              setFiles((prevValue) => {
-                                return prevValue.filter(
-                                  (val, prevIdx) => idx !== prevIdx
-                                );
-                              });
+                              setEditImage(false);
                             }}
-                          />
+                            sx={{ marginRight: 1 }}
+                          >
+                            Batal
+                          </Button>
+                          <Button
+                            variant="contained"
+                            onClick={imagesSubmitHandler}
+                          >
+                            Simpan
+                          </Button>
                         </Box>
-                      );
-                    })}
-                  </Box>
+                      </Box>
+                    </Box>
+                  </Modal>
                 </Grid>
               </FormControl>
             </Box>
@@ -550,8 +655,8 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
             <Divider orientation="horizontal" />
             <Box display="flex" justifyContent="flex-end" padding="16px">
               <Button
-                onClick={submitHandler}
-                disabled={!(formik.isValid && formik.dirty)}
+                onClick={formik.handleSubmit}
+                disabled={!formik.isValid}
                 variant="contained"
               >
                 Simpan
@@ -564,4 +669,4 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
   );
 };
 
-export default ModalTambahObat;
+export default ModalEditObat;
