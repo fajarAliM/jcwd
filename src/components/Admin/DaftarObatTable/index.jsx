@@ -17,6 +17,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useState } from "react";
 import ModalEditObat from "../ModalEditObat";
 import DeleteDialog from "../DeleteDialog";
+import ModalTambahStok from "../ModalTambahStok";
 
 const TableData = ({
   columns,
@@ -50,6 +51,7 @@ const TableData = ({
   const [selectedId, setSelectedId] = useState(0);
   const [produkImages, setProdukImages] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [tambahStok, setTambahStok] = useState(false);
 
   const open = (id) => {
     setSelectedId(id);
@@ -116,7 +118,15 @@ const TableData = ({
               onClose={() => open(0)}
             >
               <MenuItem>Lihat Detail</MenuItem>
-              <MenuItem>Tambah Stok</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setTambahStok(true);
+                  setProdukData(val);
+                  setSelectedId(0);
+                }}
+              >
+                Tambah Stok
+              </MenuItem>
               <MenuItem
                 onClick={() => {
                   setEditProduk(true);
@@ -143,23 +153,29 @@ const TableData = ({
     });
   };
 
+  const handleClose = () => {
+    setTambahStok(false);
+    setEditProduk(false);
+    setDeleteProduk(false);
+    setSelectedId(0);
+  };
+
   return (
     <>
+      <ModalTambahStok
+        open={tambahStok}
+        handleClose={handleClose}
+        data={produkData}
+      />
       <DeleteDialog
         open={deleteProduk}
-        handleClose={() => {
-          setDeleteProduk(false);
-          setSelectedId(0);
-        }}
+        handleClose={handleClose}
         data={produkData}
       />
       <ModalEditObat
         open={editProduk}
         data={produkData}
-        handleClose={() => {
-          setEditProduk(false);
-          setSelectedId(0);
-        }}
+        handleClose={handleClose}
         categories={categoriesData}
         produkImages={produkImages}
       />

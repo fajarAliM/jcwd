@@ -162,11 +162,6 @@ const ModalEditObat = ({
       const response = await fetch(`${image}`);
       const blob = await response.blob();
       const file = new File([blob], `${image}`, { type: blob.type });
-      // if (!files) {
-      //   setFiles([file]);
-      // } else {
-      //   setFiles([...files, file]);
-      // }
 
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -187,6 +182,7 @@ const ModalEditObat = ({
       };
     });
   }
+
   useEffect(() => {
     if (produkImages) {
       createFile();
@@ -297,11 +293,10 @@ const ModalEditObat = ({
             {/* Body Box */}
             <Box display="flex" flexDirection="column">
               <FormControl error={formik.errors.nama_produk}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -314,18 +309,17 @@ const ModalEditObat = ({
                       onChange={(event) =>
                         formik.setFieldValue("nama_produk", event.target.value)
                       }
-                      sx={{ height: "32px", minWidth: "226px" }}
+                      size="small"
                       value={formik.values.nama_produk}
                     />
                   </Grid>
                 </Grid>
               </FormControl>
               <FormControl error={formik.errors.nomor_obat}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -335,7 +329,7 @@ const ModalEditObat = ({
                   </Grid>
                   <Grid item xs={9}>
                     <OutlinedInput
-                      sx={{ height: "32px", minWidth: "226px" }}
+                      size="small"
                       placeholder="Masukkan no. obat"
                       onChange={(event) =>
                         formik.setFieldValue("nomor_obat", event.target.value)
@@ -346,11 +340,10 @@ const ModalEditObat = ({
                 </Grid>
               </FormControl>
               <FormControl error={formik.errors.nomor_bpom}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -360,7 +353,7 @@ const ModalEditObat = ({
                   </Grid>
                   <Grid item xs={9}>
                     <OutlinedInput
-                      sx={{ height: "32px", minWidth: "226px" }}
+                      size="small"
                       placeholder="Masukkan no. BPOM"
                       onChange={(event) =>
                         formik.setFieldValue("nomor_bpom", event.target.value)
@@ -371,11 +364,10 @@ const ModalEditObat = ({
                 </Grid>
               </FormControl>
               <FormControl error={formik.errors.kategori}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -388,9 +380,8 @@ const ModalEditObat = ({
                       defaultValue={data.kategoriId}
                       sx={{
                         backgroundColor: "white",
-                        height: "32px",
-                        width: "auto",
                       }}
+                      size="small"
                       onChange={(e) => {
                         formik.setFieldValue("kategori", e.target.value);
                       }}
@@ -410,11 +401,10 @@ const ModalEditObat = ({
                 </Grid>
               </FormControl>
               <FormControl error={formik.errors.satuan}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -427,9 +417,8 @@ const ModalEditObat = ({
                       defaultValue={data.satuan}
                       sx={{
                         backgroundColor: "white",
-                        height: "32px",
-                        width: "auto",
                       }}
+                      size="small"
                       onChange={(event) => {
                         formik.setFieldValue("satuan", event.target.value);
                       }}
@@ -444,11 +433,10 @@ const ModalEditObat = ({
                 </Grid>
               </FormControl>
               <FormControl error={formik.errors.harga_jual}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -459,7 +447,7 @@ const ModalEditObat = ({
                   <Grid item xs={9}>
                     <OutlinedInput
                       type="number"
-                      sx={{ height: "32px", minWidth: "226px" }}
+                      size="small"
                       placeholder="Masukkan nilai jual"
                       value={formik.values.harga_jual}
                       onChange={(event) =>
@@ -470,11 +458,10 @@ const ModalEditObat = ({
                 </Grid>
               </FormControl>
               <FormControl error={formik.errors.diskon}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -485,7 +472,7 @@ const ModalEditObat = ({
                   <Grid item xs={9}>
                     <OutlinedInput
                       type="number"
-                      sx={{ height: "32px", minWidth: "226px" }}
+                      size="small"
                       placeholder="Masukkan diskon"
                       value={formik.values.diskon}
                       onChange={(event) =>
@@ -497,11 +484,10 @@ const ModalEditObat = ({
               </FormControl>
               {/* Form Upload Foto Produk */}
               <FormControl>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}

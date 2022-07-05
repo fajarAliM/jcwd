@@ -66,6 +66,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
   };
 
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       nama_produk: "",
       nomor_obat: "",
@@ -73,6 +74,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
       kategori: "",
       satuan: "Box",
       diskon: 0,
+      harga_jual: 0,
     },
     validationSchema: Yup.object().shape({
       nama_produk: Yup.string().required(),
@@ -125,7 +127,8 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-      setFiles(null);
+      setFiles([]);
+      setImageReview([]);
       enqueueSnackbar(res?.data?.message, { variant: "success" });
       setActiveStep(3);
 
@@ -134,6 +137,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
       formik.setFieldValue("nomor_bpom", formik.initialValues.nomor_bpom);
       formik.setFieldValue("productCategoryId", "");
       formik.setFieldValue("satuan", "Box");
+      formik.setFieldValue("kategori", "");
       formik.setFieldValue("harga_jual", formik.initialValues.harga_jual);
       formik.setFieldValue("diskon", formik.initialValues.diskon);
     } catch (err) {
@@ -158,6 +162,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
             borderRadius: 2,
             boxShadow: 24,
             display: "flex",
+            overflow: "auto",
             flexDirection: "column",
             justifyContent: "space-between",
             p: 3,
@@ -228,7 +233,29 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                 Tambah Obat
               </Typography>
               <CloseIcon
-                onClick={handleClose}
+                onClick={() => {
+                  handleClose();
+                  formik.setFieldValue(
+                    "nama_produk",
+                    formik.initialValues.nama_produk
+                  );
+                  formik.setFieldValue(
+                    "nomor_obat",
+                    formik.initialValues.nomor_obat
+                  );
+                  formik.setFieldValue(
+                    "nomor_bpom",
+                    formik.initialValues.nomor_bpom
+                  );
+                  formik.setFieldValue("productCategoryId", "");
+                  formik.setFieldValue("satuan", "Box");
+                  formik.setFieldValue("kategori", "");
+                  formik.setFieldValue(
+                    "harga_jual",
+                    formik.initialValues.harga_jual
+                  );
+                  formik.setFieldValue("diskon", formik.initialValues.diskon);
+                }}
                 sx={{
                   "&:hover": {
                     cursor: "pointer",
@@ -240,11 +267,10 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
             {/* Body Box */}
             <Box display="flex" flexDirection="column">
               <FormControl error={formik.errors.nama_produk}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -257,7 +283,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                       onChange={(event) =>
                         formik.setFieldValue("nama_produk", event.target.value)
                       }
-                      sx={{ height: "32px", minWidth: "226px" }}
+                      size="small"
                       placeholder="Masukkan nama obat"
                       value={formik.values.nama_produk}
                     />
@@ -265,11 +291,10 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                 </Grid>
               </FormControl>
               <FormControl error={formik.errors.nomor_obat}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -279,7 +304,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                   </Grid>
                   <Grid item xs={9}>
                     <OutlinedInput
-                      sx={{ height: "32px", minWidth: "226px" }}
+                      size="small"
                       placeholder="Masukkan no. obat"
                       onChange={(event) =>
                         formik.setFieldValue("nomor_obat", event.target.value)
@@ -290,11 +315,10 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                 </Grid>
               </FormControl>
               <FormControl error={formik.errors.nomor_bpom}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -304,7 +328,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                   </Grid>
                   <Grid item xs={9}>
                     <OutlinedInput
-                      sx={{ height: "32px", minWidth: "226px" }}
+                      size="small"
                       placeholder="Masukkan no. BPOM"
                       onChange={(event) =>
                         formik.setFieldValue("nomor_bpom", event.target.value)
@@ -315,11 +339,10 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                 </Grid>
               </FormControl>
               <FormControl error={formik.errors.kategori}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -329,11 +352,11 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                   </Grid>
                   <Grid item xs={9}>
                     <Select
+                      defaultValue=""
                       sx={{
                         backgroundColor: "white",
-                        height: "32px",
-                        width: "auto",
                       }}
+                      size="small"
                       onChange={(e) => {
                         formik.setFieldValue("kategori", e.target.value);
                       }}
@@ -356,11 +379,10 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                 </Grid>
               </FormControl>
               <FormControl error={formik.errors.satuan}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -372,9 +394,8 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                     <Select
                       sx={{
                         backgroundColor: "white",
-                        height: "32px",
-                        width: "auto",
                       }}
+                      size="small"
                       onChange={(event) => {
                         formik.setFieldValue("satuan", event.target.value);
                       }}
@@ -389,11 +410,10 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                 </Grid>
               </FormControl>
               <FormControl error={formik.errors.harga_jual}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -404,7 +424,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                   <Grid item xs={9}>
                     <OutlinedInput
                       type="number"
-                      sx={{ height: "32px", minWidth: "226px" }}
+                      size="small"
                       placeholder="Masukkan nilai jual"
                       value={formik.values.harga_jual}
                       onChange={(event) =>
@@ -415,11 +435,10 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                 </Grid>
               </FormControl>
               <FormControl error={formik.errors.diskon}>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
@@ -430,7 +449,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                   <Grid item xs={9}>
                     <OutlinedInput
                       type="number"
-                      sx={{ height: "32px", minWidth: "226px" }}
+                      size="small"
                       placeholder="Masukkan diskon"
                       value={formik.values.diskon}
                       onChange={(event) =>
@@ -442,11 +461,10 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
               </FormControl>
               {/* Form Upload Foto Produk */}
               <FormControl>
-                <Grid container marginBottom="10px">
+                <Grid container marginBottom="10px" alignItems="center">
                   <Grid item xs={3}>
                     <FormLabel
                       sx={{
-                        fontSize: "14px",
                         fontWeight: "bold",
                         color: "black",
                       }}
