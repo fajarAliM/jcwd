@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable camelcase */
 import {
   Modal,
@@ -487,7 +488,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                         <Button
                           variant="outlined"
                           onClick={() => inputFile.current.click()}
-                          disabled={files.length === 5}
+                          disabled={files?.length === 5}
                         >
                           Add Image
                         </Button>

@@ -16,6 +16,7 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useState } from "react";
 import ModalEditObat from "../ModalEditObat";
+import DeleteDialog from "../DeleteDialog";
 
 const TableData = ({
   columns,
@@ -44,6 +45,7 @@ const TableData = ({
   };
 
   const [editProduk, setEditProduk] = useState(false);
+  const [deleteProduk, setDeleteProduk] = useState(false);
   const [produkData, setProdukData] = useState({});
   const [selectedId, setSelectedId] = useState(0);
   const [produkImages, setProdukImages] = useState([]);
@@ -125,7 +127,15 @@ const TableData = ({
               >
                 Ubah Produk
               </MenuItem>
-              <MenuItem>Hapus Produk</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setDeleteProduk(true);
+                  setProdukData(val);
+                  setSelectedId(0);
+                }}
+              >
+                Hapus Produk
+              </MenuItem>
             </Menu>
           </TableCell>
         </TableRow>
@@ -135,6 +145,14 @@ const TableData = ({
 
   return (
     <>
+      <DeleteDialog
+        open={deleteProduk}
+        handleClose={() => {
+          setDeleteProduk(false);
+          setSelectedId(0);
+        }}
+        data={produkData}
+      />
       <ModalEditObat
         open={editProduk}
         data={produkData}
