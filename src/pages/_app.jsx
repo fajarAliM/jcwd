@@ -9,6 +9,7 @@ import Footer from "components/Footer";
 import { SnackbarProvider } from "notistack";
 import AuthProvider from "components/AuthProvider";
 import AdminProvider from "components/AdminProvider";
+import CartProvider from "components/CartProvider";
 import { store } from "../redux/store";
 import theme from "../theme";
 
@@ -31,11 +32,13 @@ const MyApp = ({ Component, pageProps }) => {
                 </AdminProvider>
               ) : (
                 <>
-                  <AuthProvider>
-                    <Nav />
-                    <Component {...pageProps} />
-                    <Footer />
-                  </AuthProvider>
+                  <CartProvider>
+                    <AuthProvider>
+                      <Nav />
+                      <Component {...pageProps} />
+                      <Footer />
+                    </AuthProvider>
+                  </CartProvider>
                 </>
               )}
             </>

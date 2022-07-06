@@ -9,15 +9,13 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Image from "next/image";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import KudaMesir from "../../public/Images/KudaMesir.png";
 
-const UserCart = ({ checked = false, setCartChecked }) => {
+const UserCart = ({ checked = false, setCartChecked, val }) => {
   const formik = useFormik({
     initialValues: {
-      quantity: 1,
+      quantity: val.quantity,
     },
     onSubmit: () => {
       // eslint-disable-next-line no-console
@@ -62,7 +60,7 @@ const UserCart = ({ checked = false, setCartChecked }) => {
             }
           />
         </FormGroup>
-        <Image src={KudaMesir} height="100px" width="100px" />
+        <img src={val.product.produk_image_url[0]} alt="imageUrl" />
         <Stack width="100%" pl={4}>
           <Box
             sx={{
@@ -73,7 +71,7 @@ const UserCart = ({ checked = false, setCartChecked }) => {
             }}
           >
             <Typography sx={{ fontSize: "16px" }}>
-              Obat Kuat Kuda Mesir
+              {val.product.nama_produk}
             </Typography>
             <Stack direction="row" alignItems="center" alignSelf="start">
               <Typography
@@ -83,16 +81,25 @@ const UserCart = ({ checked = false, setCartChecked }) => {
                   fontSize: "14px",
                   mr: 2,
                 }}
+                display={val.product.diskon !== "0" ? "block" : "none"}
               >
-                Rp 30.000
+                {`Rp ${(
+                  val.product.harga_jual * val.quantity
+                ).toLocaleString()}`}
               </Typography>
               <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>
-                Rp 25.000
+                Rp{" "}
+                {(
+                  val.product.harga_jual * val.quantity -
+                  (parseInt(val.product.diskon) / 100) *
+                    val.product.harga_jual *
+                    val.quantity
+                ).toLocaleString()}
               </Typography>
             </Stack>
           </Box>
           <Typography sx={{ fontSize: "12px", color: "#213360" }}>
-            1 Strip
+            {formik.values.quantity} {val.product.satuan}
           </Typography>
         </Stack>
       </Box>

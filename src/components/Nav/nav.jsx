@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Badge,
   Box,
   FormControl,
   IconButton,
@@ -25,6 +26,7 @@ import shopee from "../../public/Images/shopee.png";
 
 const Nav = () => {
   const userSelector = useSelector((state) => state.auth);
+  const cartSelector = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -115,7 +117,9 @@ const Nav = () => {
       </FormControl>
       <Link href="/keranjang">
         <IconButton sx={{ ml: "50px" }}>
-          <ShoppingCartIcon sx={{ color: "Brand.500" }} />
+          <Badge badgeContent={cartSelector.items.length} color="error">
+            <ShoppingCartIcon sx={{ color: "Brand.500" }} />
+          </Badge>
         </IconButton>
       </Link>
       <IconButton sx={{ ml: "50px" }}>

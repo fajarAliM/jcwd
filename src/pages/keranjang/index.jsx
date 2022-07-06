@@ -11,14 +11,34 @@ import {
 } from "@mui/material";
 import UserCart from "components/Cart";
 import Link from "next/link";
-import { useState } from "react";
-
-const cartDummy = [1, 2, 3, 4, 5];
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const KeranjangPage = () => {
+  const cartSelector = useSelector((state) => state.cart);
   // eslint-disable-next-line no-unused-vars
-  const [cartItems, setCartItems] = useState(cartDummy);
+  const [cartItems, setCartItems] = useState(cartSelector.items);
   const [checkedItems, setCheckedItems] = useState([]);
+
+  useEffect(() => {
+    if (cartSelector.items) {
+      setCartItems(cartSelector.items);
+    }
+  }, [cartSelector.items]);
+
+  const totalPrice = () => {
+    return cartItems.reduce((init, obj, idx) => {
+      if (!checkedItems.includes(idx)) {
+        return init;
+      }
+      return (
+        init +
+        (obj.product.harga_jual * obj.quantity -
+          (parseInt(obj.product.diskon) / 100) *
+            (obj.product.harga_jual * obj.quantity))
+      );
+    }, 0);
+  };
 
   return (
     <Container sx={{ mt: "56px" }}>
@@ -89,6 +109,7 @@ const KeranjangPage = () => {
                       setCheckedItems(dupItems);
                     }}
                     checked={checkedItems.includes(idx)}
+                    val={item}
                   />
                 );
               })}
@@ -115,14 +136,18 @@ const KeranjangPage = () => {
                   <Typography sx={{ fontWeight: 700 }}>Sub Total</Typography>
                 </Grid>
                 <Grid item xs={8} sx={{ color: "#737A8D", textAlign: "right" }}>
-                  <Typography sx={{ fontWeight: 700 }}>Rp 25.000</Typography>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Rp {totalPrice().toLocaleString()}
+                  </Typography>
                 </Grid>
 
                 <Grid item xs={4}>
                   <Typography sx={{ fontWeight: 700 }}>Total</Typography>
                 </Grid>
                 <Grid item xs={8} sx={{ textAlign: "right" }}>
-                  <Typography sx={{ fontWeight: 700 }}>Rp 25.000</Typography>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Rp {totalPrice().toLocaleString()}
+                  </Typography>
                 </Grid>
               </Grid>
               <Link href="/alamat">
@@ -143,6 +168,7 @@ const KeranjangPage = () => {
           </Grid>
         </Grid>
       </Stack>
+      {/* {cartSelector.items[0].id} */}
     </Container>
   );
 };
