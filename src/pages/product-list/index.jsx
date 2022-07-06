@@ -31,13 +31,17 @@ const ProductList = () => {
   const [page, setPage] = useState(1);
   const [searchValue, setSearchValue] = useState(searchSelector.searchInput);
   const [sortInput, setSortInput] = useState("");
-  const [sortBy, setSortBy] = useState("");
-  const [sortDir, setSortDir] = useState("");
-  const [hargaMinimum, setHargaMinimum] = useState(null);
-  const [hargaMaksimum, setHargaMaksimum] = useState(null);
+  const [sortBy, setSortBy] = useState(router.query._sortBy);
+  const [sortDir, setSortDir] = useState(router.query._sortDir);
+  const [hargaMinimum, setHargaMinimum] = useState(router.query.hargaMinimum);
+  const [hargaMaksimum, setHargaMaksimum] = useState(
+    router.query.hargaMaksimum
+  );
   const [maxPage, setMaxPage] = useState(1);
   const [jumlahProduk, setJumlahProduk] = useState(null);
-  const [kategoriTerpilih, setKategoriTerpilih] = useState(null);
+  const [kategoriTerpilih, setKategoriTerpilih] = useState(
+    router.query.kategoriTerpilih
+  );
 
   const fetchProductList = async () => {
     const limit = 4;
@@ -69,6 +73,26 @@ const ProductList = () => {
     }
   };
 
+  useEffect(() => {
+    if (router.isReady) {
+      if (router.query._sortBy) {
+        setSortBy(router.query._sortBy);
+      }
+      if (router.query._sortDir) {
+        setSortDir(router.query._sortDir);
+      }
+      if (router.query.hargaMinimum) {
+        setHargaMinimum(router.query.hargaMinimum);
+      }
+      if (router.query.hargaMaksimum) {
+        setHargaMaksimum(router.query.hargaMaksimum);
+      }
+      if (router.query.kategoriTerpilih) {
+        setKategoriTerpilih(router.query.kategoriTerpilih);
+      }
+    }
+  }, [router.isReady]);
+
   const fetchNextPage = () => {
     setPage(page + 1);
   };
@@ -80,10 +104,10 @@ const ProductList = () => {
 
   const sortButton = () => {
     if (sortInput == "Highest Price") {
-      setSortBy("harga");
+      setSortBy("harga_jual");
       setSortDir("DESC");
     } else if (sortInput == "Lowest Price") {
-      setSortBy("harga");
+      setSortBy("harga_jual");
       setSortDir("ASC");
     } else if (sortInput == "name_ASC") {
       setSortBy("nama_produk");
@@ -117,15 +141,21 @@ const ProductList = () => {
   useEffect(() => {
     fetchProductList();
 
-    if (sortInput) {
+    if (
+      typeof sortDir === "string" ||
+      typeof hargaMinimum === "string" ||
+      typeof hargaMaksimum === "string" ||
+      typeof kategoriTerpilih === "number" ||
+      typeof searchValue === "string"
+    ) {
       router.push({
         query: {
-          _sortBy: sortBy ? sortBy : undefined,
-          _sortDir: sortDir ? sortDir : undefined,
-          hargaMaksimum: hargaMaksimum || undefined,
-          hargaMinimum: hargaMinimum || undefined,
-          kategoriTerpilih: kategoriTerpilih || undefined,
-          searchProduk: searchValue || undefined,
+          _sortBy: sortBy,
+          _sortDir: sortDir,
+          hargaMaksimum,
+          hargaMinimum,
+          kategoriTerpilih,
+          searchProduk: searchValue,
         },
       });
     }
@@ -143,6 +173,33 @@ const ProductList = () => {
     setSearchValue(searchSelector.searchInput);
     setPage(1);
   }, [searchSelector.searchInput]);
+
+  const sortDefaultValue = () => {
+    if (router.isReady && router.query._sortDir && router.query._sortBy) {
+      if (
+        router.query._sortDir === "DESC" &&
+        router.query._sortBy === "harga_jual"
+      ) {
+        return "Highest Price";
+      }
+      if (
+        router.query._sortDir === "ASC" &&
+        router.query._sortBy === "harga_jual"
+      ) {
+        return "Lowest Price";
+      }
+      if (
+        router.query._sortDir === "DESC" &&
+        router.query._sortBy === "nama_produk"
+      ) {
+        return "name_DESC";
+      }
+      if (router.query._sortDir === "ASC" && router.query._sortBy === "harga") {
+        return "name_ASC";
+      }
+    }
+    return "";
+  };
 
   return (
     <Grid container sx={{ mt: "44px" }}>
@@ -232,7 +289,11 @@ const ProductList = () => {
                 Urutkan
               </Typography>
               <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                <Select onChange={sortInputHandler}>
+                <Select
+                  onChange={sortInputHandler}
+                  defaultValue={sortDefaultValue()}
+                >
+                  <MenuItem value="">None</MenuItem>
                   <MenuItem value="Highest Price">Termahal</MenuItem>
                   <MenuItem value="Lowest Price">Termurah</MenuItem>
                   <MenuItem value="name_ASC">A - Z</MenuItem>
@@ -247,7 +308,6 @@ const ProductList = () => {
           <InfiniteScroll
             dataLength={contentList.length}
             next={fetchNextPage}
-            // eslint-disable-next-line react/jsx-boolean-value
             hasMore={page < maxPage}
             loader={<Typography>Loading...</Typography>}
           >

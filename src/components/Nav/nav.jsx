@@ -85,7 +85,6 @@ const Nav = () => {
         }}
         variant="outlined"
       >
-        {/* <form> */}
         <InputLabel htmlFor="outlined-search" sx={{ ml: 2 }}>
           Cari Obat, Suplemen, Vitamin, produk Kesehatan
         </InputLabel>
@@ -96,7 +95,6 @@ const Nav = () => {
           endAdornment={
             <InputAdornment position="end">
               <IconButton
-                // type="submit"
                 edge="end"
                 sx={{ mr: 1 }}
                 onClick={() => {
@@ -114,7 +112,6 @@ const Nav = () => {
           }
           label="Cari Obat, Suplemen, Vitamin, produk Kesehatan yuk"
         />
-        {/* </form> */}
       </FormControl>
       <Link href="/keranjang">
         <IconButton sx={{ ml: "50px" }}>
@@ -128,7 +125,10 @@ const Nav = () => {
         <Avatar
           onClick={handleClick}
           src={userSelector?.photo_profile}
-          sx={{ ":hover": { cursor: userSelector.id ? "pointer" : "default" } }}
+          sx={{
+            ":hover": { cursor: userSelector.id ? "pointer" : "default" },
+            border: "1px solid #F5F6F9",
+          }}
         />
         {userSelector.id ? (
           <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>

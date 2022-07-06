@@ -1,16 +1,31 @@
+/* eslint-disable no-console */
+/* eslint-disable camelcase */
 import { Box, Button, Stack, Typography } from "@mui/material";
 import CheckOutCard from "components/CheckOut";
 import { BsFillChatDotsFill } from "react-icons/bs";
 
-const DaftarPemesanan = ({ status }) => {
+const DaftarPemesanan = ({ status, total_harga, produk }) => {
+  const renderProduk = () => {
+    return produk?.map((valo) => {
+      return (
+        <CheckOutCard
+          produk_image={valo?.product?.produk_image_url[0]}
+          produk_name={valo?.product?.nama_produk}
+          produk_price={valo?.product?.harga_jual}
+          produk_qty={valo?.quantity}
+        />
+      );
+    });
+  };
   return (
     <Stack>
       <Stack
         sx={{
-          border: "1px solid white",
+          border: "1px solid transparent",
           borderRadius: 3,
           boxShadow: "0 0 15px -10px black",
           mt: "44px",
+          background: "#F7F7F7",
         }}
       >
         <Box
@@ -19,16 +34,28 @@ const DaftarPemesanan = ({ status }) => {
             justifyContent: "space-between",
             paddingY: "34px",
             paddingX: "40px",
-            borderBottom: "2px solid #F5F6F9",
+            borderBottom: "2px solid white",
           }}
         >
           <Typography>Jumat, 5 April 2022, 15:45</Typography>
-          {status === "Dikirim" || status === "Selesai" ? (
+          {status === "Dikirim" ||
+          status === "Selesai" ||
+          status === "Menunggu" ||
+          status === "Diproses" ? (
             <Box
               sx={{
-                border: "1px solid #32A853",
-                color: "#32A853",
-                background: "#87DF9F",
+                border:
+                  status === "Dikirim" || status === "Selesai"
+                    ? "1px solid #32A853"
+                    : "1px solid #CBAF4E",
+                color:
+                  status === "Dikirim" || status === "Selesai"
+                    ? "#32A853"
+                    : "#CBAF4E",
+                background:
+                  status === "Dikirim" || status === "Selesai"
+                    ? "#87DF9F"
+                    : "#FFDE6B",
                 width: "156px",
                 height: "26px",
                 display: "flex",
@@ -44,9 +71,9 @@ const DaftarPemesanan = ({ status }) => {
           ) : (
             <Box
               sx={{
-                border: "1px solid #CBAF4E",
-                color: "#CBAF4E",
-                background: "#FFDE6B",
+                border: "1px solid #999999",
+                color: "#666666",
+                background: "#cccccc",
                 width: "156px",
                 height: "26px",
                 display: "flex",
@@ -65,10 +92,10 @@ const DaftarPemesanan = ({ status }) => {
           sx={{
             paddingX: "40px",
             paddingY: "12px",
-            borderBottom: "1px solid #F5F6F9",
+            borderBottom: "1px solid white",
           }}
         >
-          <CheckOutCard />
+          {renderProduk()}
           <Box
             sx={{
               display: "flex",
@@ -78,13 +105,15 @@ const DaftarPemesanan = ({ status }) => {
             <Box
               sx={{
                 display: "flex",
-                borderTop: "3px solid #F5F6F9",
+                borderTop: "2px solid #C9CCD5",
               }}
             >
               <Typography sx={{ color: "#213360", mr: 2, mt: 2 }}>
                 Sub Total
               </Typography>
-              <Typography sx={{ fontWeight: 700, mt: 2 }}>Rp 25.000</Typography>
+              <Typography sx={{ fontWeight: 700, mt: 2 }}>
+                Rp {total_harga.toLocaleString()}
+              </Typography>
             </Box>
           </Box>
         </Box>

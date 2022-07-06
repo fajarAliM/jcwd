@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable eqeqeq */
 /* eslint-disable no-unused-vars */
 import {
@@ -14,6 +15,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useEffect, useState } from "react";
 import axiosInstance from "config/api";
+import { useRouter } from "next/router";
 
 const Sidebar = ({
   setHargaMinimum,
@@ -21,23 +23,23 @@ const Sidebar = ({
   setPage,
   setKategoriTerpilih,
 }) => {
+  const router = useRouter();
   const [kategori, setKategori] = useState(false);
   const openKategori = () => setKategori(true);
   const closeKategori = () => setKategori(false);
   const [harga, setHarga] = useState(false);
   const openHarga = () => setHarga(true);
   const closeHarga = () => setHarga(false);
-  const [hargaMin, setHargaMin] = useState(null);
-  const [hargaMaks, setHargaMaks] = useState(null);
+  const [hargaMin, setHargaMin] = useState(router.query.hargaMinimum);
+  const [hargaMaks, setHargaMaks] = useState(router.query.hargaMaksimum);
   const [pilihKategori, setPilihKategori] = useState(null);
-  const [category, setCategory] = useState(null);
+  const [category, setCategory] = useState(router.query.setKategoriTerpilih);
 
   const fetchCategory = async () => {
     try {
       const categoryList = await axiosInstance.get("/admin/product-category");
 
       setCategory(categoryList.data.result);
-      console.log(categoryList.data.result);
     } catch (err) {
       console.log(err);
     }
@@ -175,6 +177,7 @@ const Sidebar = ({
         <Collapse in={harga}>
           <FormControl variant="outlined" sx={{ mt: "16px" }}>
             <TextField
+              defaultValue={router.query.hargaMinimum}
               onChange={(e) => setHargaMin(e.target.value)}
               InputProps={{
                 startAdornment: (
@@ -186,6 +189,7 @@ const Sidebar = ({
           </FormControl>
           <FormControl variant="outlined" sx={{ mt: "16px" }}>
             <TextField
+              defaultValue={router.query.hargaMaksimum}
               onChange={(e) => setHargaMaks(e.target.value)}
               InputProps={{
                 startAdornment: (

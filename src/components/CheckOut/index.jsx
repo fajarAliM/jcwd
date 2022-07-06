@@ -1,11 +1,21 @@
+/* eslint-disable camelcase */
 import { Box, Stack, Typography } from "@mui/material";
-import Image from "next/image";
-import KudaMesir from "../../public/Images/KudaMesir.png";
+import { styled } from "@mui/material/styles";
 
-const CheckOutCard = () => {
+const Image = styled("img")({
+  width: "100px",
+  height: "100%",
+});
+
+const CheckOutCard = ({
+  produk_image,
+  produk_name,
+  produk_price,
+  produk_qty,
+}) => {
   return (
     <Box sx={{ display: "flex", mb: "8px" }}>
-      <Image src={KudaMesir} width="100px" height="100%" />
+      <Image src={produk_image} width="100px" height="100%" />
       <Stack width="100%" pl={4}>
         <Box
           sx={{
@@ -15,9 +25,7 @@ const CheckOutCard = () => {
             width: "100%",
           }}
         >
-          <Typography sx={{ fontSize: "16px" }}>
-            Obat Kuat Kuda Mesir
-          </Typography>
+          <Typography sx={{ fontSize: "16px" }}>{produk_name}</Typography>
           <Stack direction="row" alignItems="center" alignSelf="start">
             <Typography
               sx={{
@@ -27,15 +35,15 @@ const CheckOutCard = () => {
                 mr: 2,
               }}
             >
-              Rp 30.000
+              Rp {produk_price.toLocaleString()}
             </Typography>
             <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>
-              Rp 25.000
+              Rp {produk_price.toLocaleString()}
             </Typography>
           </Stack>
         </Box>
         <Typography sx={{ fontSize: "12px", color: "#213360" }}>
-          1 Strip
+          {produk_qty} Strip
         </Typography>
       </Stack>
     </Box>

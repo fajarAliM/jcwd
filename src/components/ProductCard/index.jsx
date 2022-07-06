@@ -28,16 +28,11 @@ const ProductCard = ({ nama_produk, harga, diskon, produk_image, id }) => {
     >
       <Box paddingTop="20px" paddingX="40px" position="relative">
         <Box>
-          <Image
-            src={produk_image}
-            // width={"139px"}
-            // height={"142px"}
-          />
+          <Image src={produk_image} />
         </Box>
         <Paper
           sx={{
             borderRadius: "50%",
-            // maxWidth: "50px",
             minWidth: "45px",
             height: "44px",
             top: "20px",
