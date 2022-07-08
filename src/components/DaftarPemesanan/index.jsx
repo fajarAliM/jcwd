@@ -4,8 +4,18 @@ import { Box, Button, Stack, Typography } from "@mui/material";
 import CheckOutCard from "components/CheckOut";
 import { BsFillChatDotsFill } from "react-icons/bs";
 
-const DaftarPemesanan = ({ status, total_harga, produk }) => {
+const DaftarPemesanan = ({ status, total_harga, produk, detail }) => {
   const renderProduk = () => {
+    if (detail.is_resep) {
+      return (
+        <CheckOutCard
+          produk_image={detail.resep_image_url}
+          produk_name={detail.nomor_resep}
+          produk_price={detail.total_price}
+          isResep={detail.is_resep}
+        />
+      );
+    }
     return produk?.map((valo) => {
       return (
         <CheckOutCard
@@ -96,26 +106,28 @@ const DaftarPemesanan = ({ status, total_harga, produk }) => {
           }}
         >
           {renderProduk()}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "end",
-            }}
-          >
+          {!detail.is_resep ? (
             <Box
               sx={{
                 display: "flex",
-                borderTop: "2px solid #C9CCD5",
+                justifyContent: "end",
               }}
             >
-              <Typography sx={{ color: "#213360", mr: 2, mt: 2 }}>
-                Sub Total
-              </Typography>
-              <Typography sx={{ fontWeight: 700, mt: 2 }}>
-                Rp {total_harga.toLocaleString()}
-              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  borderTop: "2px solid #C9CCD5",
+                }}
+              >
+                <Typography sx={{ color: "#213360", mr: 2, mt: 2 }}>
+                  Sub Total
+                </Typography>
+                <Typography sx={{ fontWeight: 700, mt: 2 }}>
+                  Rp {total_harga.toLocaleString()}
+                </Typography>
+              </Box>
             </Box>
-          </Box>
+          ) : null}
         </Box>
         <Box
           sx={{

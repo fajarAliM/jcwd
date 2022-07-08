@@ -1,32 +1,16 @@
 import { Box, Button, Divider, IconButton, Typography } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import InsertPhotoOutlinedIcon from "@mui/icons-material/InsertPhotoOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
-const DragAndDrop = () => {
-  const [resepImgFile, setResepImgFile] = useState(null);
-  const [resepImgUrl, setResepImgUrl] = useState(undefined);
-  const [preview, setPreview] = useState();
-
-  const onDrop = useCallback((acceptedFiles) => {
-    setResepImgFile(acceptedFiles[0]);
-    setResepImgUrl(acceptedFiles[0]?.name);
-  }, []);
-
-  useEffect(() => {
-    if (!resepImgFile) {
-      setPreview(undefined);
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(resepImgFile);
-    setPreview(objectUrl);
-
-    // eslint-disable-next-line consistent-return
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [resepImgFile]);
-
+const DragAndDrop = ({
+  onDrop,
+  preview,
+  resepImgFile,
+  resepImgUrl,
+  setResepImgFile,
+  setResepImgUrl,
+}) => {
   const { getRootProps, getInputProps, open } = useDropzone({
     onDrop,
     maxFiles: 1,
@@ -38,7 +22,6 @@ const DragAndDrop = () => {
     noKeyboard: true,
     maxSize: 10485786,
   });
-
   return (
     <Box
       {...getRootProps()}

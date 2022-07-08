@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { Box, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import Timer from "components/Timer";
 
 const Image = styled("img")({
   width: "100px",
@@ -12,6 +13,7 @@ const CheckOutCard = ({
   produk_name,
   produk_price,
   produk_qty,
+  isResep,
 }) => {
   return (
     <Box sx={{ display: "flex", mb: "8px" }}>
@@ -27,24 +29,32 @@ const CheckOutCard = ({
         >
           <Typography sx={{ fontSize: "16px" }}>{produk_name}</Typography>
           <Stack direction="row" alignItems="center" alignSelf="start">
-            <Typography
-              sx={{
-                textDecoration: "line-through",
-                color: "#B4B9C7",
-                fontSize: "14px",
-                mr: 2,
-              }}
-            >
-              Rp {produk_price.toLocaleString()}
-            </Typography>
-            <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>
-              Rp {produk_price.toLocaleString()}
-            </Typography>
+            {isResep ? (
+              <Timer />
+            ) : (
+              <>
+                <Typography
+                  sx={{
+                    textDecoration: "line-through",
+                    color: "#B4B9C7",
+                    fontSize: "14px",
+                    mr: 2,
+                  }}
+                >
+                  Rp {produk_price.toLocaleString()}
+                </Typography>
+                <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>
+                  Rp {produk_price.toLocaleString()}
+                </Typography>
+              </>
+            )}
           </Stack>
         </Box>
-        <Typography sx={{ fontSize: "12px", color: "#213360" }}>
-          {produk_qty} Strip
-        </Typography>
+        {produk_qty ? (
+          <Typography sx={{ fontSize: "12px", color: "#213360" }}>
+            {produk_qty} Strip
+          </Typography>
+        ) : null}
       </Stack>
     </Box>
   );
