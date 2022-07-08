@@ -13,12 +13,15 @@ import UserCart from "components/Cart";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 const KeranjangPage = () => {
   const cartSelector = useSelector((state) => state.cart);
   // eslint-disable-next-line no-unused-vars
   const [cartItems, setCartItems] = useState(cartSelector.items);
   const [checkedItems, setCheckedItems] = useState([]);
+  const authSelector = useSelector((state) => state.auth);
+  const router = useRouter();
 
   useEffect(() => {
     if (cartSelector.items) {
@@ -39,6 +42,12 @@ const KeranjangPage = () => {
       );
     }, 0);
   };
+
+  useEffect(() => {
+    if (!authSelector.id) {
+      router.push("/");
+    }
+  }, []);
 
   return (
     <Container sx={{ mt: "56px" }}>
@@ -110,6 +119,7 @@ const KeranjangPage = () => {
                     }}
                     checked={checkedItems.includes(idx)}
                     val={item}
+                    indexInRedux={idx}
                   />
                 );
               })}
@@ -123,7 +133,7 @@ const KeranjangPage = () => {
                 boxShadow: "0 0 15px -10px black",
                 padding: "28px",
                 position: "sticky",
-                top: 10,
+                top: 125,
               }}
             >
               <Typography
@@ -168,7 +178,6 @@ const KeranjangPage = () => {
           </Grid>
         </Grid>
       </Stack>
-      {/* {cartSelector.items[0].id} */}
     </Container>
   );
 };

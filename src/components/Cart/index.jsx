@@ -7,12 +7,27 @@ import {
   IconButton,
   Stack,
   Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useCallback, useState } from "react";
+import axiosInstance from "config/api";
+import _ from "lodash";
+import { useDispatch } from "react-redux";
+import { deleteCart, editQty } from "redux/reducer/cart";
+import { useSnackbar } from "notistack";
 
-const UserCart = ({ checked = false, setCartChecked, val }) => {
+const UserCart = ({ checked = false, setCartChecked, val, indexInRedux }) => {
+  const dispatch = useDispatch();
+  const [openModal, setOpenModal] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+
   const formik = useFormik({
     initialValues: {
       quantity: val.quantity,
@@ -26,21 +41,62 @@ const UserCart = ({ checked = false, setCartChecked, val }) => {
     }),
   });
 
+  const debounceQtyInputHandler = useCallback(
+    _.debounce(async (value) => {
+      await axiosInstance.patch(`/cart/edit-quantity/${val.id}`, {
+        quantity: value,
+      });
+
+      dispatch(
+        editQty({
+          idx: indexInRedux,
+          quantity: value,
+        })
+      );
+    }, 1500),
+    []
+  );
+
   const qtyHandler = (status) => {
+    let { quantity } = formik.values;
     if (status === "increment") {
-      if (formik.values.quantity === "") {
-        formik.setFieldValue("quantity", 1);
+      if (quantity === "") {
+        quantity = 1;
         return;
       }
-      if (formik.values.quantity >= 10) return;
+      if (quantity >= 10) return;
       // eslint-disable-next-line radix
-      formik.setFieldValue("quantity", parseInt(formik.values.quantity) + 1);
+      quantity = parseInt(quantity) + 1;
     } else if (status === "decrement") {
-      if (formik.values.quantity < 1) return;
+      if (quantity <= 1) return;
+      quantity = parseInt(quantity) - 1;
+    }
+    formik.setFieldValue("quantity", quantity);
 
-      formik.setFieldValue("quantity", formik.values.quantity - 1);
+    debounceQtyInputHandler(quantity);
+  };
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const deleteProduct = async () => {
+    try {
+      await axiosInstance.delete(`/cart/delete-cart/${val.id}`);
+      dispatch(deleteCart(indexInRedux));
+      enqueueSnackbar(
+        `${val.product.nama_produk} berhasil di hapus dari keranjang`,
+        { variant: "success" }
+      );
+    } catch (err) {
+      enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
     }
   };
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", mt: "28px" }}>
       <Box sx={{ display: "flex", flexDirection: "row" }}>
@@ -84,16 +140,16 @@ const UserCart = ({ checked = false, setCartChecked, val }) => {
                 display={val.product.diskon !== "0" ? "block" : "none"}
               >
                 {`Rp ${(
-                  val.product.harga_jual * val.quantity
+                  val.product.harga_jual * formik.values.quantity
                 ).toLocaleString()}`}
               </Typography>
               <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>
                 Rp{" "}
                 {(
-                  val.product.harga_jual * val.quantity -
+                  val.product.harga_jual * formik.values.quantity -
                   (parseInt(val.product.diskon) / 100) *
                     val.product.harga_jual *
-                    val.quantity
+                    formik.values.quantity
                 ).toLocaleString()}
               </Typography>
             </Stack>
@@ -123,7 +179,10 @@ const UserCart = ({ checked = false, setCartChecked, val }) => {
             Pindahkan Ke Wishlist
           </Button>
 
-          <IconButton sx={{ color: "black", mr: "5px" }}>
+          <IconButton
+            sx={{ color: "black", mr: "5px" }}
+            onClick={handleOpenModal}
+          >
             <DeleteIcon sx={{ fontSize: "20px" }} />
           </IconButton>
           <Box
@@ -175,6 +234,22 @@ const UserCart = ({ checked = false, setCartChecked, val }) => {
           </Box>
         </Box>
       </Stack>
+      <Dialog open={openModal} onClose={handleCloseModal}>
+        <DialogTitle>Alert!</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Hapus {val.product.nama_produk} dari keranjang?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={handleCloseModal}>
+            Batal
+          </Button>
+          <Button variant="contained" onClick={() => deleteProduct()} autoFocus>
+            Hapus
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

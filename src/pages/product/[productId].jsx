@@ -17,16 +17,18 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/router";
 import axiosInstance from "config/api";
+import { useSnackbar } from "notistack";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "redux/reducer/cart";
 
 const ProductPage = ({ productDetail }) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
+  const authSelector = useSelector((state) => state.auth);
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
       quantity: 1,
-    },
-    onSubmit: () => {
-      // eslint-disable-next-line no-console
-      console.log("berhasil!");
     },
     validationSchema: Yup.object().shape({
       quantity: Yup.number().required().min(1),
@@ -34,24 +36,51 @@ const ProductPage = ({ productDetail }) => {
   });
 
   const qtyHandler = (status) => {
+    let { quantity } = formik.values;
     if (status === "increment") {
-      if (formik.values.quantity === "") {
-        formik.setFieldValue("quantity", 1);
+      if (quantity === "") {
+        quantity = 1;
         return;
       }
-      if (formik.values.quantity >= 10) return;
+      if (quantity >= 10) return;
       // eslint-disable-next-line radix
-      formik.setFieldValue("quantity", parseInt(formik.values.quantity) + 1);
+      quantity = parseInt(quantity) + 1;
     } else if (status === "decrement") {
-      if (formik.values.quantity < 1) return;
+      if (quantity <= 1) return;
+      quantity = parseInt(quantity) - 1;
+    }
+    formik.setFieldValue("quantity", quantity);
+  };
 
-      formik.setFieldValue("quantity", formik.values.quantity - 1);
+  const addToCartButtonHandler = async () => {
+    try {
+      if (!authSelector.id) {
+        router.push("/login");
+        return;
+      }
+
+      const addProductToCart = await axiosInstance.post("/cart/add-to-cart", {
+        productId: router.query.productId,
+        quantity: formik.values.quantity,
+      });
+
+      const cartInfo = addProductToCart.data;
+
+      dispatch(addToCart(cartInfo.data));
+
+      enqueueSnackbar(cartInfo.message, {
+        variant: "success",
+      });
+    } catch (err) {
+      enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
     }
   };
 
   const hargaJual =
     // eslint-disable-next-line no-unsafe-optional-chaining
-    productDetail?.harga - productDetail?.harga * (productDetail?.diskon / 100);
+    productDetail?.harga_jual -
+    // eslint-disable-next-line no-unsafe-optional-chaining
+    productDetail?.harga_jual * (productDetail?.diskon / 100);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -191,11 +220,11 @@ const ProductPage = ({ productDetail }) => {
               Rp{" "}
               {productDetail?.diskon
                 ? hargaJual.toLocaleString()
-                : productDetail?.harga.toLocaleString()}
+                : productDetail?.harga?.toLocaleString()}
               ,-
             </Typography>
             <Typography sx={{ ml: 2, fontSize: "14px" }}>
-              / Strip (2 Tablet)
+              / {productDetail.satuan}
             </Typography>
           </Box>
           {productDetail?.diskon ? (
@@ -208,12 +237,16 @@ const ProductPage = ({ productDetail }) => {
             >
               <Typography
                 sx={{ textDecoration: "line-through", color: "#737A8D", mr: 2 }}
+                display={productDetail.diskon === "0" ? "none" : "block"}
               >
-                Rp {productDetail.harga.toLocaleString()},-
+                Rp {productDetail.harga_jual?.toLocaleString()},-
               </Typography>
               <Box
                 sx={{
-                  border: "1px solid",
+                  border:
+                    productDetail.diskon === "0"
+                      ? "1px transparent"
+                      : "1px solid",
                   color: "#FF6600",
                   borderRadius: 1,
                   width: "40px",
@@ -222,7 +255,11 @@ const ProductPage = ({ productDetail }) => {
                   justifyContent: "center",
                 }}
               >
-                <Typography>{productDetail?.diskon}%</Typography>
+                <Typography
+                  display={productDetail.diskon === "0" ? "none" : "block"}
+                >
+                  {productDetail?.diskon}%
+                </Typography>
               </Box>
             </Box>
           ) : null}
@@ -283,11 +320,15 @@ const ProductPage = ({ productDetail }) => {
             <Typography
               sx={{ color: "#737A8D", ml: 2, mt: 2, fontSize: "12px" }}
             >
-              Sisa 10 Strips
+              Sisa 10 {productDetail.satuan}
             </Typography>
           </Box>
           <Box sx={{ display: "flex", flexDirection: "row", mt: 3 }}>
-            <Button variant="outlined" startIcon={<ShoppingCartOutlinedIcon />}>
+            <Button
+              variant="outlined"
+              startIcon={<ShoppingCartOutlinedIcon />}
+              onClick={addToCartButtonHandler}
+            >
               Keranjang
             </Button>
             <Button
@@ -332,9 +373,7 @@ const ProductPage = ({ productDetail }) => {
               <Typography>Indikasi/Kegunaan</Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography>
-                Untuk membuat pria semakin kuat di ranjang dan istri senang
-              </Typography>
+              <Typography>-</Typography>
             </Grid>
           </Grid>
           <Grid
@@ -347,7 +386,7 @@ const ProductPage = ({ productDetail }) => {
               <Typography>Kandungan/Komposisi</Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography>Royal Gingseng</Typography>
+              <Typography>-</Typography>
             </Grid>
           </Grid>
           <Grid
@@ -360,7 +399,7 @@ const ProductPage = ({ productDetail }) => {
               <Typography>Kemasan</Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography>Dus 10 x 2 Tablet</Typography>
+              <Typography>-</Typography>
             </Grid>
           </Grid>
           <Grid
@@ -373,9 +412,7 @@ const ProductPage = ({ productDetail }) => {
               <Typography>Cara Penyimpanan</Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography>
-                Simpan di saku anda untuk jaga-jaga bila istri mau beraksi
-              </Typography>
+              <Typography>-</Typography>
             </Grid>
           </Grid>
           <Grid
@@ -388,7 +425,7 @@ const ProductPage = ({ productDetail }) => {
               <Typography>Principal</Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography>Haji Mamat</Typography>
+              <Typography>-</Typography>
             </Grid>
           </Grid>
           <Grid
@@ -398,10 +435,10 @@ const ProductPage = ({ productDetail }) => {
             sx={{ mb: 3 }}
           >
             <Grid item xs={6}>
-              <Typography>Nomor Ijin Edar (NIE)</Typography>
+              <Typography>Nomor BPOM</Typography>
             </Grid>
             <Grid item xs={6}>
-              <Typography>XXXXXXXXX</Typography>
+              <Typography>{productDetail.nomor_bpom || "-"}</Typography>
             </Grid>
           </Grid>
         </Box>
