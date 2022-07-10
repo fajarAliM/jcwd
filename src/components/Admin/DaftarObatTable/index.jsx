@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useState } from "react";
+import Link from "next/link";
 import ModalEditObat from "../ModalEditObat";
 import DeleteDialog from "../DeleteDialog";
 import ModalTambahStok from "../ModalTambahStok";
@@ -117,7 +118,9 @@ const TableData = ({
               open={val.id === selectedId}
               onClose={() => open(0)}
             >
-              <MenuItem>Lihat Detail</MenuItem>
+              <Link href={`/admin/kartu-stok/${val.productId}`}>
+                <MenuItem>Lihat Detail</MenuItem>
+              </Link>
               <MenuItem
                 onClick={() => {
                   setTambahStok(true);

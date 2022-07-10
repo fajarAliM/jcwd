@@ -20,7 +20,7 @@ const MyApp = ({ Component, pageProps }) => {
       <ThemeProvider theme={theme}>
         <SnackbarProvider maxSnack={3}>
           {router.pathname === "/admin/login" ||
-          router.pathname === "/admin/kartu_stok" ||
+          router.pathname.startsWith("/admin/kartu-stok") ||
           router.pathname === "/register" ||
           router.pathname === "/login" ? (
             <Component {...pageProps} />
