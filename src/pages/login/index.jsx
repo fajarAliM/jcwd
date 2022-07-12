@@ -34,6 +34,8 @@ import { useSnackbar } from "notistack";
 import { login } from "redux/reducer/auth";
 import axiosInstance from "config/api";
 import jsCookie from "js-cookie";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "config/firebase/firebase";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState("false");
@@ -119,6 +121,32 @@ const LoginPage = () => {
       router.push("/");
     }
   }, [userSelector.id]);
+
+  const googleProvider = new GoogleAuthProvider();
+
+  const signInWithGoogle = async () => {
+    try {
+      const google = await signInWithPopup(auth, googleProvider);
+
+      const res = await axiosInstance.post("/auth/login-with-google", {
+        uid: google.user.uid,
+        username: google.user.displayName,
+        name: google.user.displayName,
+        email: google.user.email,
+        image_url: google.user.photoURL,
+      });
+
+      const userResponse = res.data.result;
+      jsCookie.set("user_auth_token", userResponse.token);
+
+      dispatch(login(userResponse.user));
+      enqueueSnackbar(res?.data?.message, { variant: "success" });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+      enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+    }
+  };
 
   return (
     <>
@@ -341,6 +369,7 @@ const LoginPage = () => {
                 boxShadow: "none",
                 ":hover": { backgroundColor: "#c7bfaf", border: "unset" },
               }}
+              onClick={signInWithGoogle}
             >
               Masuk dengan Google
             </Button>
