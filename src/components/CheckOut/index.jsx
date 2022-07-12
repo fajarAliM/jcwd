@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 import { Box, Stack, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -41,10 +42,10 @@ const CheckOutCard = ({
                     mr: 2,
                   }}
                 >
-                  Rp {produk_price.toLocaleString()}
+                  {/* Rp {produk_price.toLocaleString()} */}
                 </Typography>
                 <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>
-                  Rp {produk_price.toLocaleString()}
+                  {/* Rp {produk_price.toLocaleString()} */}
                 </Typography>
               </>
             )}

@@ -1,23 +1,55 @@
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  // Modal,
-  Stack,
-  Typography,
-} from "@mui/material";
+/* eslint-disable no-unused-vars */
+import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import CheckOutCard from "components/CheckOut";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalIsi from "components/Modal";
 import Link from "next/link";
+import axiosInstance from "config/api";
+import ModalAlamat from "components/ModalAlamat";
 
 const CheckOut = () => {
   const [open, setOpen] = useState(false);
+  const [openAlamat, setOpenAlamat] = useState(false);
+  const [alamatUtama, setAlamatUtama] = useState(null);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleOpenAlamat = () => setOpenAlamat(true);
+  const handleCloseAlamat = () => setOpenAlamat(false);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [ongkir, setOngkir] = useState(null);
+  const fetchMainAddress = async () => {
+    try {
+      const mainAddress = await axiosInstance.get("/address/get-main-address");
 
+      setAlamatUtama(mainAddress.data.result);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    fetchMainAddress();
+  }, [selectedAddress]);
+
+  const fetchOngkir = async () => {
+    try {
+      const dataOngkir = await axiosInstance.post("/address/cost", {
+        origin: "153",
+        destination: selectedAddress.kota_kabupaten_id,
+        weight: 200,
+        courier: "jne",
+      });
+      setOngkir(dataOngkir.data.result[0].costs[0].cost[0].value);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedAddress) {
+      fetchOngkir();
+    }
+  }, [selectedAddress]);
   return (
     <Container sx={{ mt: "56px" }}>
       <Grid container spacing={2} columns={{ xs: 6, md: 12 }}>
@@ -54,21 +86,29 @@ const CheckOut = () => {
                 <Typography
                   sx={{ mr: "2px", fontWeight: 700, fontSize: "14px" }}
                 >
-                  Elon Musk,
+                  {selectedAddress?.nama_penerima || alamatUtama?.nama_penerima}
+                  ,
                 </Typography>
                 <Typography sx={{ fontWeight: 700, fontSize: "14px" }}>
-                  +621234567
+                  {selectedAddress?.no_telepon_penerima ||
+                    alamatUtama?.no_telepon_penerima}
                 </Typography>
               </Box>
               <Button
+                onClick={handleOpenAlamat}
                 sx={{ color: "Brand.500", fontWeight: 700, fontSize: "12px" }}
               >
                 Pilih Alamat Lain
               </Button>
+              <ModalAlamat
+                open={openAlamat}
+                handleClose={handleCloseAlamat}
+                setSelectedAddress={setSelectedAddress}
+              />
             </Box>
             <Stack>
               <Typography sx={{ fontSize: "14px", color: "#213360" }}>
-                Space X
+                {selectedAddress?.label_alamat || alamatUtama?.label_alamat}
               </Typography>
               <Typography
                 sx={{
@@ -78,7 +118,7 @@ const CheckOut = () => {
                   paddingBottom: 2,
                 }}
               >
-                1 Rocket Rd, Hawthorne, CA 90250, United States
+                {selectedAddress?.alamat_lengkap || alamatUtama?.alamat_lengkap}
               </Typography>
             </Stack>
             <Link href="/alamat">
@@ -163,7 +203,7 @@ const CheckOut = () => {
               </Grid>
               <Grid item xs={8} sx={{ textAlign: "right" }}>
                 <Typography sx={{ fontWeight: 700, fontSize: "14px" }}>
-                  Rp 3.000
+                  Rp {ongkir?.toLocaleString()}
                 </Typography>
               </Grid>
             </Grid>

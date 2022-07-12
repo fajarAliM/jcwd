@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unneeded-ternary */
 import {
@@ -28,7 +29,13 @@ const Alamat = () => {
   const [selectedProvinsi, setSelectedProvinsi] = useState(null);
   const [kotaOption, setKotaOption] = useState(null);
   const [selectedKota, setSelectedKota] = useState(null);
-  const router = useRouter();
+  const [mainAddress, setMainAddress] = useState(false);
+  const [checked, setChecked] = useState(false);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+    setMainAddress(!mainAddress);
+  };
   const formik = useFormik({
     initialValues: {
       label: "",
@@ -69,16 +76,35 @@ const Alamat = () => {
         no_telepon_penerima: values.nomorHp,
         alamat_lengkap: values.alamat,
         kode_pos: values.kodePos,
-        provinsi_id: selectedProvinsi,
-        kota_kabupaten_id: selectedKota,
+        provinsi_id: selectedProvinsi.provinsi_id,
+        kota_kabupaten_id: selectedKota.kota_id,
         kecamatan: values.kecamatan,
+        is_main_address: mainAddress,
       };
 
       await axiosInstance.post("/address/add-new-address", newAddress);
       formik.setSubmitting(false);
-      // router.push("/checkout")
     },
   });
+
+  const handleSubmit = async () => {
+    try {
+      const newAddress = {
+        label_alamat: formik.values.label,
+        nama_penerima: `${formik.values.namaDepan}  ${formik.values.namaBelakang}`,
+        no_telepon_penerima: `+62 ${formik.values.nomorHp}`,
+        alamat_lengkap: formik.values.alamat,
+        kode_pos: formik.values.kodePos,
+        provinsi_id: selectedProvinsi.provinsi_id,
+        kota_kabupaten_id: selectedKota.kota_id,
+        kecamatan: formik.values.kecamatan,
+        is_main_address: mainAddress,
+      };
+      await axiosInstance.post("/address/add-new-address", newAddress);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const inputHandler = (event) => {
     const { value, name } = event.target;
@@ -96,7 +122,7 @@ const Alamat = () => {
 
   const fetchKota = async () => {
     try {
-      const cityList = await axiosInstance.get("address/city", {
+      const cityList = await axiosInstance.get("/address/city", {
         params: {
           provinceTerpilih: selectedProvinsi.provinsi_id,
         },
@@ -110,14 +136,12 @@ const Alamat = () => {
   const provinsiHandler = (event) => {
     setSelectedProvinsi({
       provinsi_id: event.target.value,
-      // provinsi: event.target.name,
     });
   };
 
   const kotaHandler = (event) => {
     setSelectedKota({
       kota_id: event.target.value,
-      // kota: event.target.name,
     });
   };
 
@@ -147,7 +171,7 @@ const Alamat = () => {
     } else {
       fetchProvinsi();
     }
-  }, [selectedProvinsi]);
+  }, [selectedProvinsi, selectedKota]);
   return (
     <Box
       justifyContent="center"
@@ -207,7 +231,6 @@ const Alamat = () => {
               <Typography fontSize="14px" color="#737A8D" mb="16px">
                 Nomor HP
               </Typography>
-              {/* input no tlpon diganti pke library */}
               <RoundedInput
                 onChange={inputHandler}
                 name="nomorHp"
@@ -224,7 +247,6 @@ const Alamat = () => {
                 <Typography fontSize="14px" color="#737A8D" mb="16px">
                   Provinsi
                 </Typography>
-                {/* ganti jadi select, tembak ke api */}
                 <Select
                   onChange={provinsiHandler}
                   fullWidth
@@ -237,7 +259,6 @@ const Alamat = () => {
                 <Typography fontSize="14px" color="#737A8D" mb="16px">
                   Kota/Kabupaten
                 </Typography>
-                {/* ganti jadi select, tembak ke api */}
                 <Select
                   onChange={kotaHandler}
                   fullWidth
@@ -276,7 +297,14 @@ const Alamat = () => {
         </Box>
         <Box mt="36px">
           <FormControlLabel
-            control={<Checkbox defaultChecked color="default" />}
+            control={
+              <Checkbox
+                checked={checked}
+                onChange={handleChange}
+                defaultChecked
+                color="default"
+              />
+            }
             label="Simpan sebagai alamat utama"
           />
         </Box>
@@ -291,20 +319,21 @@ const Alamat = () => {
           >
             Batalkan
           </Button>
-          {/* <Link href="checkout"> */}
-          <Button
-            onClick={formik.handleSubmit}
-            disabled={formik.isSubmitting}
-            variant="contained"
-            sx={{
-              width: "50%",
-              height: "52px",
-              marginLeft: "8px",
-            }}
-          >
-            Simpan Alamat
-          </Button>
-          {/* </Link> */}
+          <Link href="checkout">
+            <Button
+              onClick={() => {
+                handleSubmit();
+              }}
+              variant="contained"
+              sx={{
+                width: "50%",
+                height: "52px",
+                marginLeft: "8px",
+              }}
+            >
+              Simpan Alamat
+            </Button>
+          </Link>
         </Box>
       </Box>
     </Box>
