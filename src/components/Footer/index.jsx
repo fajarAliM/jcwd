@@ -2,7 +2,7 @@ import Image from "next/image";
 import { FaTwitter, FaFacebookF } from "react-icons/fa";
 import { RiInstagramFill, RiWhatsappFill } from "react-icons/ri";
 import { Grid, Typography, Box, Stack } from "@mui/material";
-import Healthymed from "public/Images/Healthymed.png";
+import Healthymed from "public/Images/healthymed.png";
 import MailIcon from "@mui/icons-material/Mail";
 import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 

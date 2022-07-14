@@ -213,7 +213,7 @@ const SiapDikirimPage = () => {
             })}
 
             <CardOrder
-              status="Siap Dikirim"
+              status={2}
               orderCode="HTMED129X"
               orderTime="10 Jan 2022, 10:45 WIB"
               expiredResponse="12 Jan 2022, 10:45 WIB"

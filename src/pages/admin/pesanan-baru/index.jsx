@@ -213,9 +213,9 @@ const PesananBaruPage = () => {
             })}
 
             <CardOrder
-              status="Pesanan Baru"
+              status={1}
               orderCode="HTMED129X"
-              orderTime="10 Jan 2022, 10:45 WIB"
+              orderTime="2022-07-13 06:19:39"
               expiredResponse="12 Jan 2022, 10:45 WIB"
               productName="Kursi"
               productQty={3}
@@ -227,11 +227,10 @@ const PesananBaruPage = () => {
               totalPrice={3 * 55000}
             />
             <CardOrder
-              isObatResep
-              status="Pesanan Baru"
+              isObatResep={1}
+              status={1}
               orderCode="HTMED129X"
-              orderTime="10 Jan 2022, 10:45 WIB"
-              expiredResponse="12 Jan 2022, 10:45 WIB"
+              orderTime="2022-07-13 06:19:39"
               productName="Kursi"
               productQty={3}
               productPrice={55000}

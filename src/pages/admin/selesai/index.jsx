@@ -213,7 +213,7 @@ const SelesaiPage = () => {
             })}
 
             <CardOrder
-              status="Pesanan Selesai"
+              status={4}
               orderCode="HTMED129X"
               orderTime="10 Jan 2022, 10:45 WIB"
               expiredResponse="12 Jan 2022, 10:45 WIB"

@@ -18,51 +18,160 @@ import {
   TableCell,
   TableBody,
   Table,
+  tableCellClasses,
+  styled,
+  Paper,
+  IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useSnackbar } from "notistack";
 import Group8725 from "public/Images/Group8725.png";
 import Kursiplastik from "public/Images/kursiplastik.png";
+import * as Yup from "yup";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import axiosInstance from "config/api";
+import { useFormik } from "formik";
+import DeleteIcon from "@mui/icons-material/Delete";
+import moment from "moment";
 
 const ModalSalinanResep = ({
   open,
   handleClose,
   namaPembeli,
-  namaProduk,
   kodeOrder,
   waktuOrder,
-  hargaProduk,
-  hargaTotal,
-  jumlahProduk,
+  fotoResep,
+  transaksiId = 1,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [terimaPesanan, setTerimaPesanan] = useState(false);
   const [selesai, setSelesai] = useState(false);
-  const [kuantitas, setKuantitas] = useState(0);
-  const [namaObat, setNamaObat] = useState("");
-  const [satuan, setSatuan] = useState("Strip");
-  const [orderDate, setOrderDate] = useState("");
+  const [productData, setProductData] = useState([]);
+  const [listObat, setListObat] = useState([]);
 
   const isTerima = () => {
     setTerimaPesanan(true);
   };
 
-  const dateHandle = (event) => {
-    setOrderDate(event.target.value);
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white,
+      align: "center",
+    },
+  }));
+
+  const fetchProduct = async () => {
+    try {
+      const res = await axiosInstance.get("/admin/product");
+      setProductData(res?.data?.result?.rows);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const obatHandle = (event) => {
-    setNamaObat(event.target.value);
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      namaDokter: "",
+      nomorResep: "",
+      obat: "",
+      kuantitas: 0,
+      satuan: "Box",
+    },
+    validationSchema: Yup.object().shape({
+      nomorResep: Yup.string().required(),
+      namaDokter: Yup.string().required(),
+      obat: Yup.number().required(),
+      kuantitas: Yup.number().min(1),
+      satuan: Yup.string(),
+    }),
+    validateOnChange: true,
+  });
+
+  const tambahObatHandleBtn = () => {
+    if (!listObat.length) {
+      setListObat([
+        {
+          ...productData[formik.values.obat],
+          kuantitasObat: formik.values.kuantitas,
+          satuanObat: formik.values.satuan,
+        },
+      ]);
+    } else if (listObat.length) {
+      setListObat([
+        ...listObat,
+        {
+          ...productData[formik.values.obat],
+          kuantitasObat: formik.values.kuantitas,
+          satuanObat: formik.values.satuan,
+        },
+      ]);
+    }
+
+    formik.setFieldValue("obat", formik.initialValues.obat);
+    formik.setFieldValue("kuantitas", 0);
+    formik.setFieldValue("satuan", "Box");
   };
 
-  const satuanHandle = (event) => {
-    setSatuan(event.target.value);
+  const totalPrice = () => {
+    return listObat.reduce((init, obj) => {
+      return (
+        init +
+        (obj.harga_jual * obj.kuantitasObat -
+          (parseInt(obj.diskon) / 100) * (obj.harga_jual * obj.kuantitasObat))
+      );
+    }, 0);
   };
+
+  const submitBtn = async () => {
+    try {
+      const dataObat = listObat.map((val) => {
+        return {
+          quantity: val.kuantitasObat,
+          productId: val.id,
+          transactionListId: transaksiId,
+          nomor_resep: formik.values.nomorResep,
+          price: val.harga_jual - val.harga_jual * (val.diskon / 100),
+          total_price: totalPrice(),
+        };
+      });
+
+      const res = await axiosInstance.post(
+        "/admin/product/custom-order",
+        dataObat
+      );
+      enqueueSnackbar(res?.data?.message, { variant: "success" });
+      setSelesai(false);
+      setTerimaPesanan(true);
+      setListObat([]);
+      isTerima();
+      formik.setFieldValue("namaDokter", formik.initialValues.namaDokter);
+      formik.setFieldValue("nomorResep", formik.initialValues.nomorResep);
+    } catch (err) {
+      console.log(err);
+      enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+    }
+  };
+
+  useEffect(() => {
+    if (!productData.length) {
+      fetchProduct();
+    }
+  }, []);
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal
+      open={open}
+      onClose={() => {
+        handleClose();
+        setTerimaPesanan(false);
+      }}
+    >
       {terimaPesanan ? (
         <Box
           sx={{
@@ -83,7 +192,10 @@ const ModalSalinanResep = ({
         >
           <Box display="flex" justifyContent="flex-end">
             <CloseIcon
-              onClick={handleClose}
+              onClick={() => {
+                handleClose();
+                setTerimaPesanan(false);
+              }}
               sx={{
                 "&:hover": {
                   cursor: "pointer",
@@ -122,106 +234,79 @@ const ModalSalinanResep = ({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: "1090px",
-            height: "auto",
+            width: "75%",
+            maxHeight: "700px",
             bgcolor: "white",
             borderRadius: 2,
             boxShadow: 24,
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            p: 3,
+            p: 2,
           }}
         >
-          <Box>
-            {/* Box Header */}
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              marginBottom="30px"
-            >
-              <Typography fontSize="20px" fontWeight="bold">
-                Buat Salinan Resep
-              </Typography>
-              <CloseIcon
-                onClick={handleClose}
-                sx={{
-                  "&:hover": {
-                    cursor: "pointer",
-                  },
-                }}
-              />
-            </Box>
+          {/* Box Header */}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            marginBottom="30px"
+          >
+            <Typography fontSize="20px" fontWeight="bold">
+              Buat Salinan Resep
+            </Typography>
+            <CloseIcon
+              onClick={handleClose}
+              sx={{
+                "&:hover": {
+                  cursor: "pointer",
+                },
+              }}
+            />
+          </Box>
+          {/* Box for Content */}
+          <Box overflow="auto">
             <Grid container spacing={3}>
               {/* Grid for Image */}
               <Grid item xs={5}>
-                <Image src={Kursiplastik} />
+                <Image src={fotoResep || Kursiplastik} />
               </Grid>
-              <Grid item xs={6}>
+
+              {/* Grid for Add Product */}
+              <Grid item xs={7}>
                 <Grid container spacing={2} marginBottom="16px">
                   <Grid item xs={6}>
-                    <FormControl>
-                      <FormLabel
-                        sx={{
-                          fontSize: "12px",
-                          fontWeight: "bold",
-                          color: "black",
-                        }}
-                      >
-                        No. Pemesanan
-                      </FormLabel>
-                      <OutlinedInput
-                        placeholder="AB000569D"
-                        sx={{ height: "24px", width: "100%" }}
-                      />
-                    </FormControl>
+                    <Typography
+                      sx={{
+                        fontWeight: "bold",
+                        color: "black",
+                      }}
+                    >
+                      Nama Pasien
+                    </Typography>
+                    <Typography fontSize="20px" fontWeight="100">
+                      {namaPembeli}
+                    </Typography>
                   </Grid>
                   <Grid item xs={6}>
-                    <FormControl>
-                      <FormLabel
-                        sx={{
-                          fontSize: "12px",
-                          fontWeight: "bold",
-                          color: "black",
-                        }}
-                      >
-                        Tgl. Pemesanan
-                      </FormLabel>
-                      <OutlinedInput
-                        type="date"
-                        sx={{ height: "24px", width: "100%" }}
-                        onChange={dateHandle}
-                        value={orderDate}
-                      />
-                    </FormControl>
+                    <Typography
+                      sx={{
+                        fontWeight: "bold",
+                        color: "black",
+                      }}
+                    >
+                      Tgl. Pemesanan
+                    </Typography>
+                    <Typography fontSize="20px" fontWeight="100">
+                      {moment(waktuOrder).format("DD MMMM YYYY, hh:mm A")}
+                    </Typography>
                   </Grid>
                 </Grid>
+
                 <Grid container spacing={2} marginBottom="16px">
                   <Grid item xs={12}>
-                    <FormControl>
+                    <FormControl error={formik.errors.namaDokter}>
                       <FormLabel
                         sx={{
-                          fontSize: "12px",
-                          fontWeight: "bold",
-                          color: "black",
-                        }}
-                      >
-                        Nama Pasien
-                      </FormLabel>
-                      <OutlinedInput
-                        fullWidth
-                        placeholder="Masukkan nama pasien"
-                        sx={{ height: "24px", width: "336px" }}
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2} marginBottom="16px">
-                  <Grid item xs={12}>
-                    <FormControl>
-                      <FormLabel
-                        sx={{
-                          fontSize: "12px",
                           fontWeight: "bold",
                           color: "black",
                         }}
@@ -229,13 +314,41 @@ const ModalSalinanResep = ({
                         Nama Dokter
                       </FormLabel>
                       <OutlinedInput
-                        fullWidth
+                        size="small"
                         placeholder="Masukkan nama dokter"
-                        sx={{ height: "24px", width: "336px" }}
+                        sx={{ width: "300px" }}
+                        value={formik.values.namaDokter}
+                        onChange={(e) =>
+                          formik.setFieldValue("namaDokter", e.target.value)
+                        }
                       />
                     </FormControl>
                   </Grid>
                 </Grid>
+                <Grid container spacing={2} marginBottom="16px">
+                  <Grid item xs={12}>
+                    <FormControl error={formik.errors.nomorResep}>
+                      <FormLabel
+                        sx={{
+                          fontWeight: "bold",
+                          color: "black",
+                        }}
+                      >
+                        No. Resep
+                      </FormLabel>
+                      <OutlinedInput
+                        size="small"
+                        placeholder="Masukkan nomor resep"
+                        sx={{ width: "300px" }}
+                        value={formik.values.nomorResep}
+                        onChange={(e) =>
+                          formik.setFieldValue("nomorResep", e.target.value)
+                        }
+                      />
+                    </FormControl>
+                  </Grid>
+                </Grid>
+
                 <Divider />
                 <Tabs indicatorColor="primary" value={1}>
                   <Tab
@@ -246,10 +359,9 @@ const ModalSalinanResep = ({
                 </Tabs>
                 <Grid container spacing={2} marginY="16px">
                   <Grid item xs={12}>
-                    <FormControl>
+                    <FormControl error={formik.errors.obat}>
                       <FormLabel
                         sx={{
-                          fontSize: "12px",
                           fontWeight: "bold",
                           color: "black",
                         }}
@@ -257,25 +369,31 @@ const ModalSalinanResep = ({
                         Nama Obat
                       </FormLabel>
                       <Select
-                        onChange={obatHandle}
-                        value={namaObat}
+                        onChange={(e) =>
+                          formik.setFieldValue("obat", e.target.value)
+                        }
+                        value={formik.values.obat}
+                        size="small"
                         displayEmpty
-                        sx={{ height: "24px", width: "336px" }}
+                        sx={{ width: "336px" }}
                       >
                         <MenuItem disabled value="">
                           Masukkan Nama Obat
                         </MenuItem>
-                        <MenuItem value="Vitamin B">Vitamin B</MenuItem>
+                        {productData.map((val, idx) => {
+                          return (
+                            <MenuItem value={idx}>{val.nama_produk}</MenuItem>
+                          );
+                        })}
                       </Select>
                     </FormControl>
                   </Grid>
                 </Grid>
-                <Grid container spacing={2} marginBottom="16px">
+                <Grid container spacing={1} marginBottom="16px">
                   <Grid item xs={4}>
-                    <FormControl>
+                    <FormControl error={formik.errors.kuantitas}>
                       <FormLabel
                         sx={{
-                          fontSize: "14px",
                           fontWeight: "bold",
                           color: "black",
                         }}
@@ -288,34 +406,49 @@ const ModalSalinanResep = ({
                         alignItems="center"
                       >
                         <RemoveIcon
+                          fontSize="large"
                           sx={{
                             color: "Sidebar.500",
                             ":hover": { color: "Brand.500", cursor: "pointer" },
                           }}
-                          onClick={() => setKuantitas(kuantitas - 1)}
+                          onClick={() => {
+                            if (formik.values.kuantitas < 1) {
+                              formik.setFieldValue("kuantitas", 0);
+                            } else {
+                              formik.setFieldValue(
+                                "kuantitas",
+                                formik.values.kuantitas - 1
+                              );
+                            }
+                          }}
                         />
                         <Typography
-                          fontSize="14px"
+                          fontSize="30px"
                           fontWeight="bold"
                           marginX="15px"
                         >
-                          {kuantitas}
+                          {formik.values.kuantitas}
                         </Typography>
                         <AddIcon
+                          fontSize="large"
                           sx={{
                             color: "Sidebar.500",
                             ":hover": { color: "Brand.500", cursor: "pointer" },
                           }}
-                          onClick={() => setKuantitas(kuantitas + 1)}
+                          onClick={() => {
+                            formik.setFieldValue(
+                              "kuantitas",
+                              formik.values.kuantitas + 1
+                            );
+                          }}
                         />
                       </Box>
                     </FormControl>
                   </Grid>
                   <Grid item xs={4}>
-                    <FormControl>
+                    <FormControl error={formik.errors.satuan}>
                       <FormLabel
                         sx={{
-                          fontSize: "14px",
                           fontWeight: "bold",
                           color: "black",
                         }}
@@ -323,16 +456,21 @@ const ModalSalinanResep = ({
                         Satuan
                       </FormLabel>
                       <Select
+                        size="small"
                         sx={{
                           backgroundColor: "white",
-                          height: "24px",
+                          width: "200px",
                         }}
-                        onChange={satuanHandle}
-                        value={satuan}
+                        onChange={(e) =>
+                          formik.setFieldValue("satuan", e.target.value)
+                        }
+                        value={formik.values.satuan}
                         displayEmpty
+                        defaultValue="Box"
                       >
-                        <MenuItem value="Strip">Strip</MenuItem>
                         <MenuItem value="Box">Box</MenuItem>
+                        <MenuItem value="Strip">Strip</MenuItem>
+                        <MenuItem value="Botol">Botol</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
@@ -340,7 +478,6 @@ const ModalSalinanResep = ({
                     <FormControl>
                       <FormLabel
                         sx={{
-                          fontSize: "12px",
                           fontWeight: "bold",
                           color: "black",
                         }}
@@ -348,267 +485,304 @@ const ModalSalinanResep = ({
                         Dosis
                       </FormLabel>
                       <OutlinedInput
-                        placeholder="AB000569D"
-                        sx={{ height: "24px", width: "100%" }}
+                        size="small"
+                        placeholder="cth. 3 x 1"
+                        sx={{ width: "100%" }}
                       />
                     </FormControl>
                   </Grid>
                 </Grid>
+
+                {/* Box Tambah Obat */}
+                <Box display="flex" justifyContent="flex-end" marginY={2}>
+                  <Button
+                    onClick={tambahObatHandleBtn}
+                    variant="contained"
+                    disabled={!(formik.isValid && formik.dirty)}
+                  >
+                    Tambahkan Obat
+                  </Button>
+                </Box>
                 <Divider />
 
-                {/* Grid for Table */}
-                <Grid
-                  container
-                  flexDirection="column"
-                  marginTop="10px"
-                  overflow="auto"
-                >
-                  <Typography
-                    fontSize="12px"
-                    fontWeight="bold"
-                    marginBottom="18px"
-                  >
-                    Ringkasan Resep
-                  </Typography>
-
-                  <TableContainer>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>No</TableCell>
-                          <TableCell>Nama Obat</TableCell>
-                          <TableCell>Kategori</TableCell>
-                          <TableCell>Kuantitas</TableCell>
-                          <TableCell>Satuan</TableCell>
-                          <TableCell>Dosis</TableCell>
-                          <TableCell>Atur</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell>1</TableCell>
-                          <TableCell>Vitamin B</TableCell>
-                          <TableCell>Obat Bebas</TableCell>
-                          <TableCell>2</TableCell>
-                          <TableCell>Stip</TableCell>
-                          <TableCell>2x1</TableCell>
-                          <TableCell>Oke</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Grid>
+                {listObat.length ? (
+                  <>
+                    {/* Grid for Table */}
+                    <Grid container flexDirection="column" marginTop="10px">
+                      <Typography fontWeight="bold" marginBottom="18px">
+                        Ringkasan Resep
+                      </Typography>
+                      <TableContainer component={Paper}>
+                        <Table aria-label="customized table">
+                          <TableHead>
+                            <TableRow>
+                              <StyledTableCell>No</StyledTableCell>
+                              <StyledTableCell>Nama Obat</StyledTableCell>
+                              <StyledTableCell>Kategori</StyledTableCell>
+                              <StyledTableCell>Kuantitas</StyledTableCell>
+                              <StyledTableCell>Satuan</StyledTableCell>
+                              <StyledTableCell>Dosis</StyledTableCell>
+                              <StyledTableCell>Atur</StyledTableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {listObat.map((val, idx) => {
+                              return (
+                                <TableRow
+                                  sx={{
+                                    ":nth-of-type(even)": {
+                                      backgroundColor: "#D3D3D3",
+                                    },
+                                  }}
+                                >
+                                  <TableCell
+                                    align="center"
+                                    component="th"
+                                    scope="row"
+                                  >
+                                    {idx + 1}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {val.nama_produk}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    Obat Bebas
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {val.kuantitasObat}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {val.satuanObat}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {val.kuantitasObat}x1
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    <IconButton
+                                      sx={{
+                                        ":hover": {
+                                          color: "Brand.500",
+                                        },
+                                      }}
+                                      onClick={() => {
+                                        setListObat((prevValue) => {
+                                          return prevValue.filter(
+                                            (value, prevIdx) => idx !== prevIdx
+                                          );
+                                        });
+                                      }}
+                                    >
+                                      <DeleteIcon />
+                                    </IconButton>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Grid>
+                  </>
+                ) : null}
               </Grid>
             </Grid>
           </Box>
-          <Box display="flex" justifyContent="flex-end" padding="16px">
-            <Button onClick={() => setSelesai(true)} variant="contained">
-              Terima Pesanan
+
+          {/* Box for Button */}
+          <Box display="flex" justifyContent="flex-end" marginTop={2}>
+            <Button
+              onClick={() => setSelesai(true)}
+              variant="contained"
+              disabled={!listObat.length}
+            >
+              Selesai
             </Button>
-            {/* Ringkasan Resep */}
-            <Modal open={selesai} onClose={() => setSelesai(false)}>
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  width: "792px",
-                  height: "auto",
-                  bgcolor: "white",
-                  borderRadius: 2,
-                  boxShadow: 24,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                }}
-              >
-                {/* Box 1 */}
-                <Box sx={{ p: 3 }}>
-                  <Box display="flex" justifyContent="flex-end">
-                    <CloseIcon
-                      onClick={() => setSelesai(false)}
-                      sx={{
-                        "&:hover": {
-                          cursor: "pointer",
-                        },
-                      }}
-                    />
-                  </Box>
-
-                  <Typography
-                    textAlign="center"
-                    fontSize="20px"
-                    fontWeight="bold"
-                  >
-                    Ringkasan Resep
-                  </Typography>
-
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    flexDirection="row"
-                    marginTop="30px"
-                    marginBottom="10px"
-                  >
-                    <Typography sx={{ fontWeight: "bold", fontSize: "12px" }}>
-                      {namaPembeli}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "Sidebar.700",
-                        marginLeft: "10px",
-                        fontSize: "12px",
-                      }}
-                    >
-                      /
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontWeight: "bold",
-                        marginLeft: "10px",
-                        fontSize: "12px",
-                      }}
-                    >
-                      {kodeOrder}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "Sidebar.700",
-                        marginLeft: "10px",
-                        fontSize: "12px",
-                      }}
-                    >
-                      /
-                    </Typography>
-
-                    <Typography
-                      sx={{
-                        color: "gray",
-                        marginLeft: "10px",
-                        fontSize: "12px",
-                      }}
-                    >
-                      {waktuOrder}
-                    </Typography>
-                  </Box>
-
-                  {/* Box List Obat */}
-                  <Box marginBottom="5px">
-                    <Typography fontSize="14px" fontWeight="bold">
-                      {namaProduk}
-                    </Typography>
-                    <Grid container>
-                      <Grid item xs={2}>
-                        <Typography sx={{ fontSize: "12px", color: "gray" }}>
-                          Obat Bebas
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Typography sx={{ fontSize: "12px", color: "gray" }}>
-                          {jumlahProduk} x {hargaProduk}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Typography sx={{ fontSize: "12px", color: "gray" }}>
-                          Strip
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Typography sx={{ fontSize: "12px", color: "gray" }}>
-                          {jumlahProduk} x 1
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Box>
-
-                  {/* Box List Obat 2 */}
-                  <Box>
-                    <Typography fontSize="14px" fontWeight="bold">
-                      Obat Demam
-                    </Typography>
-                    <Grid container>
-                      <Grid item xs={2}>
-                        <Typography sx={{ fontSize: "12px", color: "gray" }}>
-                          Obat Racikan
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Typography sx={{ fontSize: "12px", color: "gray" }}>
-                          2 x 8.500
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Typography sx={{ fontSize: "12px", color: "gray" }}>
-                          Serbuk
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Typography sx={{ fontSize: "12px", color: "gray" }}>
-                          2 x 1
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Box>
+          </Box>
+          {/* Ringkasan Resep */}
+          <Modal open={selesai} onClose={() => setSelesai(false)}>
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "792px",
+                height: "auto",
+                bgcolor: "white",
+                borderRadius: 2,
+                boxShadow: 24,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              {/* Box 1 */}
+              <Box sx={{ p: 3 }}>
+                <Box display="flex" justifyContent="flex-end">
+                  <CloseIcon
+                    onClick={() => setSelesai(false)}
+                    sx={{
+                      "&:hover": {
+                        cursor: "pointer",
+                      },
+                    }}
+                  />
                 </Box>
 
-                {/* Box 2 */}
-                <Box>
-                  {/* Total Harga */}
-                  <Box sx={{ p: 3 }}>
+                <Typography
+                  textAlign="center"
+                  fontSize="20px"
+                  fontWeight="bold"
+                >
+                  Ringkasan Resep
+                </Typography>
+
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  flexDirection="row"
+                  marginTop="30px"
+                  marginBottom="10px"
+                >
+                  <Typography sx={{ fontWeight: "bold", fontSize: "12px" }}>
+                    {namaPembeli}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: "Sidebar.700",
+                      marginLeft: "10px",
+                      fontSize: "12px",
+                    }}
+                  >
+                    /
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                      marginLeft: "10px",
+                      fontSize: "12px",
+                    }}
+                  >
+                    {kodeOrder}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: "Sidebar.700",
+                      marginLeft: "10px",
+                      fontSize: "12px",
+                    }}
+                  >
+                    /
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      color: "gray",
+                      marginLeft: "10px",
+                      fontSize: "12px",
+                    }}
+                  >
+                    {moment(waktuOrder).format("DD MMMM YYYY, hh:mm A")}
+                  </Typography>
+                </Box>
+
+                {/* Box List Obat */}
+                {listObat.map((val) => {
+                  return (
+                    <Box marginBottom="5px">
+                      <Typography fontSize="14px" fontWeight="bold">
+                        {val.nama_produk}
+                      </Typography>
+                      <Grid container>
+                        <Grid item xs={2}>
+                          <Typography sx={{ fontSize: "12px", color: "gray" }}>
+                            Obat Bebas
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={2}>
+                          <Typography sx={{ fontSize: "12px", color: "gray" }}>
+                            {val.kuantitasObat} x {val.harga_jual}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={2}>
+                          <Typography sx={{ fontSize: "12px", color: "gray" }}>
+                            {val.satuanObat}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={2}>
+                          <Typography sx={{ fontSize: "12px", color: "gray" }}>
+                            {val.kuantitasObat} x 1
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  );
+                })}
+              </Box>
+
+              {/* Box 2 */}
+              <Box>
+                {/* Total Harga */}
+                <Box sx={{ p: 3 }}>
+                  <Box
+                    sx={{
+                      borderRadius: "5px",
+                      backgroundColor: "#faf0e8",
+                      padding: "8px",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <Box
                       sx={{
-                        borderRadius: "5px",
-                        backgroundColor: "#faf0e8",
-                        padding: "8px",
                         display: "flex",
                         flexDirection: "row",
-                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Typography
-                          sx={{
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                            marginRight: "8px",
-                          }}
-                        >
-                          Total Harga
-                        </Typography>
-                        <Typography
-                          sx={{ fontSize: "10px", fontWeight: "bold" }}
-                        >
-                          ({jumlahProduk} Obat)
-                        </Typography>
-                      </Box>
                       <Typography
                         sx={{
-                          fontSize: "12px",
+                          fontSize: "14px",
                           fontWeight: "bold",
                           marginRight: "8px",
                         }}
                       >
-                        Rp {hargaTotal},-
+                        Total Harga
+                      </Typography>
+                      <Typography sx={{ fontSize: "10px", fontWeight: "bold" }}>
+                        ({listObat.length} Obat)
                       </Typography>
                     </Box>
-                  </Box>
-                  <Divider orientation="horizontal" />
-                  <Box display="flex" justifyContent="flex-end" padding="16px">
-                    <Button onClick={isTerima} variant="contained">
-                      Terima Pesanan
-                    </Button>
+                    <Typography
+                      sx={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        marginRight: "8px",
+                      }}
+                    >
+                      Rp {totalPrice().toLocaleString()},-
+                    </Typography>
                   </Box>
                 </Box>
+                <Divider orientation="horizontal" />
+                <Box display="flex" justifyContent="flex-end" padding="16px">
+                  <Button
+                    variant="outlined"
+                    sx={{ marginRight: "5px" }}
+                    onClick={() => {
+                      setSelesai(false);
+                    }}
+                  >
+                    Kembali
+                  </Button>
+                  <Button onClick={submitBtn} variant="contained">
+                    Terima Pesanan
+                  </Button>
+                </Box>
               </Box>
-            </Modal>
-          </Box>
+            </Box>
+          </Modal>
         </Box>
       )}
     </Modal>

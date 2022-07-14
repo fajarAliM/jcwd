@@ -213,7 +213,7 @@ const DalamPengirimanPage = () => {
             })}
 
             <CardOrder
-              status="Dalam Pengiriman"
+              status={3}
               orderCode="HTMED129X"
               orderTime="10 Jan 2022, 10:45 WIB"
               expiredResponse="12 Jan 2022, 10:45 WIB"

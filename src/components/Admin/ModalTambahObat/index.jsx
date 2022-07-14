@@ -148,7 +148,13 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
   };
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal
+      open={open}
+      onClose={() => {
+        handleClose();
+        setActiveStep(1);
+      }}
+    >
       {activeStep === 3 ? (
         <Box
           sx={{
