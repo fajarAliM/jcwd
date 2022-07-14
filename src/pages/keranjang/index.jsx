@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   Box,
   Button,
@@ -12,17 +13,19 @@ import {
 import UserCart from "components/Cart";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
+import { price } from "../../redux/reducer/price";
 
 const KeranjangPage = () => {
   const cartSelector = useSelector((state) => state.cart);
   // eslint-disable-next-line no-unused-vars
   const [cartItems, setCartItems] = useState(cartSelector.items);
   const [checkedItems, setCheckedItems] = useState([]);
+  const [totalHarga, setTotalHarga] = useState(null);
   const authSelector = useSelector((state) => state.auth);
   const router = useRouter();
-
+  const dispatch = useDispatch();
   useEffect(() => {
     if (cartSelector.items) {
       setCartItems(cartSelector.items);
@@ -31,7 +34,7 @@ const KeranjangPage = () => {
 
   const totalPrice = () => {
     return cartItems.reduce((init, obj, idx) => {
-      if (!checkedItems.includes(idx)) {
+      if (!checkedItems.includes(obj.id)) {
         return init;
       }
       return (
@@ -48,6 +51,14 @@ const KeranjangPage = () => {
       router.push("/");
     }
   }, []);
+
+  const buttonHandler = () => {
+    dispatch(price({ totalHarga, checkedItems }));
+  };
+
+  useEffect(() => {
+    setTotalHarga(totalPrice());
+  }, [totalPrice]);
 
   return (
     <Container sx={{ mt: "56px" }}>
@@ -82,7 +93,7 @@ const KeranjangPage = () => {
                         onChange={({ target: { checked } }) => {
                           let dupItems = [...checkedItems];
                           if (checked) {
-                            cartItems.forEach((val, idx) => dupItems.push(idx));
+                            cartItems.forEach((val) => dupItems.push(val.id));
                           } else {
                             dupItems = [];
                           }
@@ -108,16 +119,16 @@ const KeranjangPage = () => {
                     setCartChecked={() => {
                       let dupItems = [...checkedItems];
 
-                      if (dupItems.includes(idx)) {
+                      if (dupItems.includes(item.id)) {
                         dupItems = dupItems.filter(
-                          (oldItem) => oldItem !== idx
+                          (oldItem) => oldItem !== item.id
                         );
                       } else {
-                        dupItems.push(idx);
+                        dupItems.push(item.id);
                       }
                       setCheckedItems(dupItems);
                     }}
-                    checked={checkedItems.includes(idx)}
+                    checked={checkedItems.includes(item.id)}
                     val={item}
                     indexInRedux={idx}
                   />
@@ -160,9 +171,11 @@ const KeranjangPage = () => {
                   </Typography>
                 </Grid>
               </Grid>
-              <Link href="/alamat">
+              <Link href="/checkout">
                 <Button
+                  onClick={buttonHandler}
                   variant="contained"
+                  disabled={!totalHarga}
                   sx={{
                     width: "100%",
                     mt: "30px",

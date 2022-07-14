@@ -15,6 +15,7 @@ const CheckOutCard = ({
   produk_price,
   produk_qty,
   isResep,
+  product_diskon,
 }) => {
   return (
     <Box sx={{ display: "flex", mb: "8px" }}>
@@ -42,10 +43,15 @@ const CheckOutCard = ({
                     mr: 2,
                   }}
                 >
-                  {/* Rp {produk_price.toLocaleString()} */}
+                  Rp {produk_price.toLocaleString()}
                 </Typography>
                 <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>
-                  {/* Rp {produk_price.toLocaleString()} */}
+                  Rp{" "}
+                  {(
+                    produk_price * produk_qty -
+                    (parseInt(product_diskon) / 100) *
+                      (produk_price * produk_qty)
+                  ).toLocaleString()}
                 </Typography>
               </>
             )}

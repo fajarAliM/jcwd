@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   Box,
   Button,
@@ -7,19 +8,83 @@ import {
   Typography,
 } from "@mui/material";
 import CheckOutCard from "components/CheckOut";
-import Image from "next/image";
 import { RiFileCopyFill } from "react-icons/ri";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import BCA from "../../public/Images/BCA.png";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Timer from "components/Timer";
+import { useSelector } from "react-redux";
+import axiosInstance from "config/api";
+import { useRouter } from "next/router";
+import { styled } from "@mui/material/styles";
+
+const Image = styled("img")({
+  maxWidth: "120px",
+  maxHeight: "50px",
+  objectFit: "scale-down",
+});
 
 const Konfirmasi = () => {
+  const priceSelector = useSelector((state) => state.price);
   const [bca, setBca] = useState(false);
   const openBca = () => setBca(true);
   const closeBca = () => setBca(false);
+  const [cart, setCart] = useState(null);
+  const [method, setMethod] = useState(null);
+  const router = useRouter();
+  const [methodId, setMethodId] = useState(router.query.paymentMethod);
+
+  const fetchCart = async () => {
+    try {
+      const cartData = await axiosInstance.post("/cart/get-cart-id", {
+        cartId: priceSelector.checkedItems,
+        show: "konfirmasi",
+      });
+      setCart(cartData.data.data.rows);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const renderCart = () => {
+    return cart?.map((val) => {
+      return (
+        <CheckOutCard
+          produk_image={val?.product?.produk_image_url[0]}
+          produk_name={val?.product?.nama_produk}
+          produk_price={val?.product?.harga_jual}
+          produk_qty={val?.quantity}
+          product_diskon={val?.product?.diskon}
+        />
+      );
+    });
+  };
+
+  const fetchPaymentMethod = async () => {
+    try {
+      const methodData = await axiosInstance.post(
+        "/transaction/get-payment-method-id",
+        {
+          id: router.query.paymentMethod,
+        }
+      );
+      setMethod(methodData.data.result);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCart();
+    fetchPaymentMethod();
+  }, [router.query.paymentMethod]);
+
+  useEffect(() => {
+    if (router.isReady) {
+      setMethodId(router.query.paymentMethod);
+    }
+  }, [router.isReady]);
   return (
     <Container
       sx={{
@@ -89,7 +154,7 @@ const Konfirmasi = () => {
             >
               Ringkasan Order
             </Typography>
-            <CheckOutCard />
+            {renderCart()}
             <Box
               sx={{
                 display: "flex",
@@ -106,7 +171,7 @@ const Konfirmasi = () => {
                   Sub Total
                 </Typography>
                 <Typography sx={{ fontWeight: 700, mt: 2 }}>
-                  Rp 75.000
+                  Rp {priceSelector?.totalPrice.toLocaleString()}
                 </Typography>
               </Box>
             </Box>
@@ -132,9 +197,9 @@ const Konfirmasi = () => {
               <Typography
                 sx={{ fontWeight: 700, fontSize: "20px", color: "#213360" }}
               >
-                BCA Virtual Account
+                {method?.nama_metode}
               </Typography>
-              <Image src={BCA} />
+              <Image src={method?.logo} />
             </Box>
             <Box
               sx={{
@@ -175,7 +240,7 @@ const Konfirmasi = () => {
                 Total Pembayaran
               </Typography>
               <Typography sx={{ fontWeight: 700, fontSize: "24px" }}>
-                Rp 25.000
+                Rp {priceSelector?.totalPrice.toLocaleString()}
               </Typography>
             </Stack>
           </Stack>
@@ -240,7 +305,7 @@ const Konfirmasi = () => {
             }}
           >
             <Typography sx={{ fontWeight: 700, fontSize: "16px" }}>
-              ATM BCA
+              {method?.nama_metode}
             </Typography>
             <KeyboardArrowUpIcon />
           </Box>
@@ -255,7 +320,7 @@ const Konfirmasi = () => {
             }}
           >
             <Typography sx={{ fontWeight: 700, fontSize: "16px" }}>
-              ATM BCA
+              {method?.nama_metode}
             </Typography>
             <KeyboardArrowDownIcon />
           </Box>
@@ -268,19 +333,18 @@ const Konfirmasi = () => {
               paddingBottom: "36px",
             }}
           >
-            <Typography>1. Masukkan Kartu ATM BCA & PIN.</Typography>
+            <Typography>1. Masukkan Kartu ATM dan PIN.</Typography>
             <Typography>
-              2. Pilih menu Transaksi Lainnya > Transfer > ke Rekening BCA
-              Virtual Account.
+              2. Pilih menu Transaksi Lainnya lalu Transfer lalu ke Rekening
+              Online.
             </Typography>
             <Typography>
-              3. Masukkan 5 angka kode perusahaan untuk Tokopedia (80777) dan
-              Nomor HP yang kamu daftarkan di akun Tokopedia (Contoh:
-              80777081316951940).
+              3. Masukkan 5 angka kode perusahaan (80777) dan Nomor HP yang kamu
+              daftarkan di akun (Contoh: 80777081316951940).
             </Typography>
             <Typography>
               4. Di halaman konfirmasi, pastikan detil pembayaran sudah sesuai
-              seperti No VA, Nama, Perus/Produk dan Total Tagihan.
+              seperti No Rekening, Nama, Perus/Produk dan Total Tagihan.
             </Typography>
             <Typography>
               5. Pastikan nama kamu dan Total Tagihannya benar.

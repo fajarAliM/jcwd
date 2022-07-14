@@ -30,6 +30,7 @@ const ModalAlamat = ({ open, handleClose, setSelectedAddress }) => {
             paddingY: "5px",
             ":hover": {
               cursor: "pointer",
+              background: "#DCDCDC",
             },
           }}
         >

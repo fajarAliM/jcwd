@@ -7,8 +7,13 @@ import ModalIsi from "components/Modal";
 import Link from "next/link";
 import axiosInstance from "config/api";
 import ModalAlamat from "components/ModalAlamat";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/router";
+import { cumulatedPrice } from "../../redux/reducer/price";
 
 const CheckOut = () => {
+  const priceSelector = useSelector((state) => state.price);
+  const [method, setMethod] = useState(null);
   const [open, setOpen] = useState(false);
   const [openAlamat, setOpenAlamat] = useState(false);
   const [alamatUtama, setAlamatUtama] = useState(null);
@@ -18,6 +23,12 @@ const CheckOut = () => {
   const handleCloseAlamat = () => setOpenAlamat(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [ongkir, setOngkir] = useState(null);
+  const [totalHarga, setTotalHarga] = useState(null);
+  const [cart, setCart] = useState(null);
+  const router = useRouter();
+
+  const dispatch = useDispatch();
+
   const fetchMainAddress = async () => {
     try {
       const mainAddress = await axiosInstance.get("/address/get-main-address");
@@ -27,15 +38,59 @@ const CheckOut = () => {
       console.log(err);
     }
   };
+
+  const fetchCart = async () => {
+    try {
+      const cartData = await axiosInstance.post("/cart/get-cart-id", {
+        cartId: priceSelector.checkedItems,
+      });
+      setCart(cartData.data.data.rows);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const addNewTransaction = async () => {
+    try {
+      const newData = {
+        total_price: totalHarga,
+        cartId: priceSelector.checkedItems,
+      };
+      await axiosInstance.post("/transaction/add-new-transaction", newData);
+      dispatch(cumulatedPrice(totalHarga));
+      router.push(`/konfirmasi?paymentMethod=${method}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const renderCart = () => {
+    return cart?.map((val) => {
+      return (
+        <CheckOutCard
+          produk_image={val?.product?.produk_image_url[0]}
+          produk_name={val?.product?.nama_produk}
+          produk_price={val?.product?.harga_jual}
+          produk_qty={val?.quantity}
+          product_diskon={val?.product?.diskon}
+        />
+      );
+    });
+  };
   useEffect(() => {
     fetchMainAddress();
   }, [selectedAddress]);
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
 
   const fetchOngkir = async () => {
     try {
       const dataOngkir = await axiosInstance.post("/address/cost", {
         origin: "153",
-        destination: selectedAddress.kota_kabupaten_id,
+        destination:
+          selectedAddress.kota_kabupaten_id || alamatUtama.kota_kabupaten_id,
         weight: 200,
         courier: "jne",
       });
@@ -45,11 +100,21 @@ const CheckOut = () => {
     }
   };
 
+  const total = () => {
+    return priceSelector.totalPrice + ongkir;
+  };
+
+  // const buttonHandler = () => {};
+
   useEffect(() => {
-    if (selectedAddress) {
+    if (selectedAddress || alamatUtama) {
       fetchOngkir();
     }
-  }, [selectedAddress]);
+  }, [selectedAddress, alamatUtama]);
+
+  useEffect(() => {
+    setTotalHarga(total());
+  }, [total]);
   return (
     <Container sx={{ mt: "56px" }}>
       <Grid container spacing={2} columns={{ xs: 6, md: 12 }}>
@@ -149,9 +214,7 @@ const CheckOut = () => {
             >
               Ringkasan Order
             </Typography>
-            <CheckOutCard />
-            <CheckOutCard />
-            <CheckOutCard />
+            {renderCart()}
             <Box
               sx={{
                 display: "flex",
@@ -168,7 +231,7 @@ const CheckOut = () => {
                   Sub Total
                 </Typography>
                 <Typography sx={{ fontWeight: 700, mt: 2 }}>
-                  Rp 75.000
+                  Rp {priceSelector.totalPrice.toLocaleString()}
                 </Typography>
               </Box>
             </Box>
@@ -195,7 +258,7 @@ const CheckOut = () => {
               </Grid>
               <Grid item xs={8} sx={{ textAlign: "right" }}>
                 <Typography sx={{ fontWeight: 700, fontSize: "14px" }}>
-                  Rp 25.000
+                  Rp {priceSelector.totalPrice.toLocaleString()}
                 </Typography>
               </Grid>
               <Grid item xs={4} sx={{ mb: "24px" }}>
@@ -226,7 +289,7 @@ const CheckOut = () => {
                 <Typography
                   sx={{ fontWeight: 700, fontSize: "16px", color: "Brand.500" }}
                 >
-                  Rp 25.000
+                  Rp {total().toLocaleString()}
                 </Typography>
               </Grid>
             </Grid>
@@ -245,6 +308,7 @@ const CheckOut = () => {
                 Silahkan pilih metode pembayaran anda disini
               </Typography>
               <Button
+                disabled={!priceSelector.totalPrice}
                 variant="contained"
                 onClick={handleOpen}
                 sx={{
@@ -261,7 +325,30 @@ const CheckOut = () => {
               >
                 Pilih Metode Pembayaran (2)
               </Button>
-              <ModalIsi open={open} handleClose={handleClose} />
+              <ModalIsi
+                open={open}
+                handleClose={handleClose}
+                total={total}
+                setMethod={setMethod}
+              />
+              <Button
+                onClick={addNewTransaction}
+                disabled={!method}
+                variant="contained"
+                sx={{
+                  boxShadow: 0,
+                  mt: "10px",
+                  height: "45px",
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  "&:hover": {
+                    border: 0,
+                    boxShadow: 0,
+                  },
+                }}
+              >
+                Check Out
+              </Button>
             </Stack>
           </Box>
         </Grid>

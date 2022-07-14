@@ -1,6 +1,13 @@
 import { Box, Typography } from "@mui/material";
-import Image from "next/image";
+// import Image from "next/image";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { styled } from "@mui/material/styles";
+
+const Image = styled("img")({
+  width: "85px",
+  height: "25px",
+  objectFit: "scale-down",
+});
 
 const PaymentMethod = ({ image, method, openBca }) => {
   return (

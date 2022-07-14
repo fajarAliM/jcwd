@@ -19,6 +19,10 @@ const cartReducer = createSlice({
     deleteCart: (state, action) => {
       state.items.splice(action.payload, 1);
     },
+    resetCart: (state) => {
+      // eslint-disable-next-line no-param-reassign
+      state.items = [];
+    },
   },
 });
 

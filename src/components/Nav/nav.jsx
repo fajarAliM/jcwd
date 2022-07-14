@@ -149,6 +149,9 @@ const Nav = () => {
                 <MenuItem>
                   <Link href="/profile-page">Profil Saya</Link>
                 </MenuItem>
+                <MenuItem>
+                  <Link href="/proses-pemesanan">Transaksi</Link>
+                </MenuItem>
                 <MenuItem onClick={logoutBtnHandler}>Keluar</MenuItem>
               </Menu>
             ) : null}

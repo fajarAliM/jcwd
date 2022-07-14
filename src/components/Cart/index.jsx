@@ -116,7 +116,11 @@ const UserCart = ({ checked = false, setCartChecked, val, indexInRedux }) => {
             }
           />
         </FormGroup>
-        <img src={val.product.produk_image_url[0]} alt="imageUrl" />
+        <img
+          src={val.product.produk_image_url[0]}
+          alt="imageUrl"
+          width="50px"
+        />
         <Stack width="100%" pl={4}>
           <Box
             sx={{
