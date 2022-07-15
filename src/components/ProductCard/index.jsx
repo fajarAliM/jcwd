@@ -111,36 +111,38 @@ const ProductCard = ({ nama_produk, harga, diskon, produk_image, id }) => {
             {nama_produk}
           </Typography>
         </Box>
-        <Box display="flex" alignItems="center" mt="5px">
-          <Box
-            sx={{
-              border: "1px solid black",
-              borderColor: "red",
-              borderRadius: "4px",
-            }}
-            paddingX="6px"
-            paddingY="5px"
-            marginRight="8px"
-          >
-            <Typography fontSize="12px" color="red">
-              {diskon}
-            </Typography>
-          </Box>
-          <Box marginLeft="8px">
-            <Typography
-              color="#B4B9C7"
+        {diskon !== "0" ? (
+          <Box display="flex" alignItems="center" mt="5px">
+            <Box
               sx={{
-                textDecoration: "line-through",
+                border: "1px solid black",
+                borderColor: "red",
+                borderRadius: "4px",
               }}
+              paddingX="6px"
+              paddingY="5px"
+              marginRight="8px"
             >
-              Rp. {parseInt(harga).toLocaleString()}
-            </Typography>
+              <Typography fontSize="12px" color="red">
+                {diskon}%
+              </Typography>
+            </Box>
+            <Box marginLeft="8px">
+              <Typography
+                color="#B4B9C7"
+                sx={{
+                  textDecoration: "line-through",
+                }}
+              >
+                Rp. {parseInt(harga).toLocaleString()}
+              </Typography>
+            </Box>
           </Box>
-        </Box>
-        <Box display="flex" marginTop="7px">
+        ) : null}
+        <Box display="flex" marginTop={diskon !== "0" ? "7px" : "40px"}>
           <Box maxWidth="103px">
             <Typography fontWeight="bold">
-              Rp. {parseInt(harga).toLocaleString()}
+              Rp. {parseInt(harga - harga * (diskon / 100)).toLocaleString()}
             </Typography>
           </Box>
           <Typography>/ Pack</Typography>

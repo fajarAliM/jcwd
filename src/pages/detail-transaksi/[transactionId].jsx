@@ -27,24 +27,27 @@ const Image = styled("img")({
   objectFit: "scale-down",
 });
 
-const Konfirmasi = () => {
+const DetailTransaksiPage = () => {
   const [uploadPembayaran, setUploadPembayaran] = useState(false);
   const priceSelector = useSelector((state) => state.price);
   const [bca, setBca] = useState(false);
   const openBca = () => setBca(true);
   const closeBca = () => setBca(false);
-  const [cart, setCart] = useState(null);
-  const [method, setMethod] = useState(null);
+  const [cart, setCart] = useState([]);
+  const [method, setMethod] = useState([]);
+  const [transaction, setTransaction] = useState([]);
+  const [proofPayment, setProofPayment] = useState();
   const router = useRouter();
-  const [methodId, setMethodId] = useState(router.query.paymentMethod);
 
   const fetchCart = async () => {
     try {
-      const cartData = await axiosInstance.post("/cart/get-cart-id", {
-        cartId: priceSelector.checkedItems,
-        show: "konfirmasi",
-      });
-      setCart(cartData.data.data.rows);
+      const { transactionId } = router.query;
+      const cartData = await axiosInstance.get(`/transaction/${transactionId}`);
+
+      setCart(cartData.data.result.detailTransaksi);
+      setMethod(cartData.data.result.transaksi.payment_method);
+      setTransaction(cartData.data.result.transaksi);
+      setProofPayment(cartData.data.result.transaksi.proof_of_payment);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err);
@@ -65,31 +68,14 @@ const Konfirmasi = () => {
     });
   };
 
-  const fetchPaymentMethod = async () => {
-    try {
-      const methodData = await axiosInstance.post(
-        "/transaction/get-payment-method-id",
-        {
-          id: router.query.paymentMethod,
-        }
-      );
-      setMethod(methodData.data.result);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
-    fetchCart();
-    fetchPaymentMethod();
-  }, [router.query.paymentMethod]);
-
-  useEffect(() => {
-    if (router.isReady) {
-      setMethodId(router.query.paymentMethod);
+    if (proofPayment) {
+      router.push("/proses-pemesanan");
     }
-  }, [router.isReady]);
+    if (router.query.transactionId) {
+      fetchCart();
+    }
+  }, [router.query.transactionId, proofPayment]);
 
   return (
     <Container
@@ -179,7 +165,7 @@ const Konfirmasi = () => {
                   Sub Total
                 </Typography>
                 <Typography sx={{ fontWeight: 700, mt: 2 }}>
-                  Rp {priceSelector?.totalPrice.toLocaleString()}
+                  Rp {transaction.total_price?.toLocaleString()},-
                 </Typography>
               </Box>
             </Box>
@@ -248,7 +234,7 @@ const Konfirmasi = () => {
                 Total Pembayaran
               </Typography>
               <Typography sx={{ fontWeight: 700, fontSize: "24px" }}>
-                Rp {priceSelector?.totalPrice.toLocaleString()}
+                Rp {transaction.total_price?.toLocaleString()},-
               </Typography>
             </Stack>
           </Stack>
@@ -277,9 +263,9 @@ const Konfirmasi = () => {
             <ModalUploadPembayaran
               openModal={uploadPembayaran}
               handleCloseModal={() => setUploadPembayaran(false)}
-              metodePembayaranId={router.query.paymentMethod}
-              totalPembayaran={priceSelector?.totalPrice}
-              transaksiId={router.query.transaksiId}
+              metodePembayaranId={method?.id}
+              totalPembayaran={transaction?.total_price}
+              transaksiId={transaction?.id}
             />
             <Box sx={{ display: "flex", marginTop: "10px" }}>
               <Link href="/">
@@ -389,4 +375,4 @@ const Konfirmasi = () => {
   );
 };
 
-export default Konfirmasi;
+export default DetailTransaksiPage;

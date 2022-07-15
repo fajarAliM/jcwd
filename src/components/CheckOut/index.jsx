@@ -43,7 +43,9 @@ const CheckOutCard = ({
                     mr: 2,
                   }}
                 >
-                  Rp {produk_price.toLocaleString()}
+                  {product_diskon !== "0"
+                    ? `Rp ${(produk_price * produk_qty).toLocaleString()}`
+                    : ""}
                 </Typography>
                 <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>
                   Rp{" "}

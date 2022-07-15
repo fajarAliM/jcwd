@@ -8,15 +8,25 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import axiosInstance from "config/api";
+import { useRouter } from "next/router";
 
-const ModalUploadPembayaran = ({ openProps }) => {
-  const [openModal, setOpenModal] = useState(openProps);
+const ModalUploadPembayaran = ({
+  openModal,
+  handleCloseModal,
+  transaksiId,
+  metodePembayaranId,
+  totalPembayaran,
+}) => {
   const [buktiPembayaranFile, setBuktiPembayaranFile] = useState(null);
   const [buktiPembayaranPreview, setBuktiPembayaranPreview] = useState();
   const [showAlertNoFileSelected, setShowAlertNoFileSelected] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const onDrop = useCallback((acceptedFiles) => {
     setBuktiPembayaranFile(acceptedFiles[0]);
@@ -34,10 +44,6 @@ const ModalUploadPembayaran = ({ openProps }) => {
     maxSize: 10485786,
   });
 
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
-
   useEffect(() => {
     if (buktiPembayaranFile === null) {
       setBuktiPembayaranPreview(undefined);
@@ -53,13 +59,36 @@ const ModalUploadPembayaran = ({ openProps }) => {
     return () => URL.revokeObjectURL(objectUrl);
   }, [buktiPembayaranFile]);
 
-  const uploadButtonHander = () => {
-    if (!buktiPembayaranFile) {
-      setShowAlertNoFileSelected(true);
-      // return; hrus dinyalain klo udah ada fuction dibawah
-    }
+  const uploadButtonHander = async () => {
+    try {
+      if (!buktiPembayaranFile) {
+        setShowAlertNoFileSelected(true);
+        return;
+      }
 
-    // ini send file ke API
+      const formData = new FormData();
+
+      formData.append("transactionListId", transaksiId);
+      formData.append("payment_image_file", buktiPembayaranFile);
+      formData.append("paymentMethodId", metodePembayaranId);
+      formData.append("totalPrice", totalPembayaran);
+
+      const res = await axiosInstance.post(
+        "/transaction/upload-proof-of-payment",
+        formData
+      );
+
+      setBuktiPembayaranFile(null);
+      setBuktiPembayaranPreview();
+      handleCloseModal();
+
+      enqueueSnackbar(res?.data?.message, { variant: "success" });
+      router.push("/");
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+      enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+    }
   };
 
   return (
@@ -99,8 +128,8 @@ const ModalUploadPembayaran = ({ openProps }) => {
             {buktiPembayaranPreview ? (
               <Image
                 src={buktiPembayaranPreview}
-                width="100%"
-                height="100%"
+                width="2000px"
+                height="1500px"
                 alt={buktiPembayaranFile.name}
               />
             ) : (
@@ -134,7 +163,11 @@ const ModalUploadPembayaran = ({ openProps }) => {
             <Button
               variant="outlined"
               sx={{ width: "100px" }}
-              onClick={handleCloseModal}
+              onClick={() => {
+                handleCloseModal();
+                setBuktiPembayaranFile(null);
+                setBuktiPembayaranPreview();
+              }}
             >
               Batal
             </Button>
