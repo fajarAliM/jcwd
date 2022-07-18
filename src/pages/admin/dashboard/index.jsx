@@ -1,69 +1,243 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/jsx-no-useless-fragment */
 import { Box, Typography, Grid } from "@mui/material";
 import CardCategory from "components/Admin/CardCategory";
 import CardWithCircularBar from "components/Admin/CardWithCircularBar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CardStatistik from "components/Admin/CardStatistik";
 import requiresAdmin from "config/requireAdmin";
+import axiosInstance from "config/api";
+import moment from "moment";
 
 const DashboardPage = () => {
+  const [pemesanan, setPemesanan] = useState([]);
+  const [lastUpdated, setLastUpdated] = useState(moment());
+  const [expStok, setExpStok] = useState({});
+  const [todayTransaction, setTodayTransaction] = useState({});
+  const [todayStok, setTodayStok] = useState({});
+  const [penjualan, setPenjualan] = useState([]);
+  const [categoryPenjualan, setCategoryPenjualan] = useState([]);
+  const [dataPenjualan, setDataPenjualan] = useState([]);
+  const [sortPenjualan, setSortPenjualan] = useState("");
+  const [sortProfit, setSortProfit] = useState("");
+  const [todayRevenue, setTodayRevenue] = useState({});
+  const [profitData, setProfitData] = useState({});
+  const [categoryProfit, setCategoryProfit] = useState([]);
+  const [profit, setProfit] = useState([]);
+
   const penjualanObatOption = {
     stroke: { width: 2, curve: "smooth" },
     xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sept",
-        "Oct",
-        "Nov",
-        "Des",
-      ],
+      categories: categoryPenjualan,
     },
   };
 
-  const penjualanObatSeries = [
-    {
-      name: "Obat Bebas",
-      data: [750, 800, 850, 500, 300, 400, 100, 700, 550, 1200, 850, 300],
-    },
-    {
-      name: "Obat Racikan",
-      data: [300, 200, 450, 500, 600, 550, 700, 770, 600, 800, 1250, 100],
-    },
+  const penjualanObatSeries = dataPenjualan;
+
+  const Month = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
+
+  const convertDataPenjualan = () => {
+    if (sortPenjualan === "Bulanan" || !sortPenjualan) {
+      return;
+    }
+    const category = [];
+    const data = [];
+    penjualan.forEach((val) => {
+      if (val.week) {
+        category.push(moment(val.week).format("DD MMM"));
+        data.push(val.sum);
+      }
+      if (val.year) {
+        category.push(moment(val.year).format("YYYY"));
+        data.push(val.sum);
+      }
+    });
+
+    const arrayOfData = [
+      {
+        name: "Obat Bebas",
+        data,
+      },
+    ];
+
+    setCategoryPenjualan(category);
+    setDataPenjualan(arrayOfData);
+  };
+
+  const covertDataPenjualanByMonth = () => {
+    if (sortPenjualan === "Bulanan" || sortPenjualan === "") {
+      const arr = new Array(parseInt(moment().format("MM"))).fill(0);
+      penjualan.forEach((val) => {
+        arr[parseInt(moment(val.month).format("MM")) - 1] = val.sum;
+      });
+
+      const arrayOfData = [
+        {
+          name: "Obat Bebas",
+          data: arr,
+        },
+      ];
+
+      setCategoryPenjualan(Month);
+      setDataPenjualan(arrayOfData);
+    }
+  };
 
   const profitOption = {
     xaxis: {
-      categories: [
-        "Senin",
-        "Selasa",
-        "Rabu",
-        "Kamis",
-        "Jumat",
-        "Sabtu",
-        "Minggu",
-      ],
+      categories: categoryProfit,
     },
   };
 
-  const profitSeries = [
-    {
-      name: "series-1",
-      data: [3, 5, 6, 4, 8, 7, 9],
-    },
-  ];
+  const profitSeries = profit;
 
-  const [sort, setSort] = useState("");
+  const converProfitDataByMonth = () => {
+    const { revenue, capital } = profitData;
+    const dataArr = new Array(parseInt(moment().format("MM"))).fill(0);
+    revenue?.forEach((val) => {
+      dataArr[parseInt(moment(val.month).format("MM")) - 1] = val.sum;
+    });
 
-  const handleChange = (event) => {
-    setSort(event.target.value);
+    capital?.forEach((val) => {
+      dataArr[parseInt(moment(val.month).format("MM")) - 1] -= val.sum;
+    });
+
+    const data = [
+      {
+        name: "profit",
+        data: dataArr,
+      },
+    ];
+
+    setCategoryProfit(Month);
+    setProfit(data);
   };
+
+  const handleChangePenjualan = (event) => {
+    setSortPenjualan(event.target.value);
+  };
+
+  const handleChangeProfit = (event) => {
+    setSortProfit(event.target.value);
+  };
+
+  const fetchPemesananDataCount = async () => {
+    try {
+      const res = await axiosInstance.post("/report/get-transaction-count");
+      setPemesanan(res.data.result);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
+
+  const fetchExpStok = async () => {
+    try {
+      const res = await axiosInstance.get("/report/get-exp-product");
+      setExpStok(res.data.result);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
+
+  const fetchTodayTransaction = async () => {
+    try {
+      const res = await axiosInstance.get("/report/get-today-transaction");
+      setTodayTransaction(res.data.result);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
+
+  const fetchTodayStok = async () => {
+    try {
+      const res = await axiosInstance.get("/report/get-today-stok");
+      const stokInfo = {
+        todayStok: res.data.result.todayStok.sum,
+        yesterdayStok: res.data.result.yesterdayStok.sum,
+      };
+      setTodayStok(stokInfo);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
+
+  const fetchPenjualan = async () => {
+    try {
+      const res = await axiosInstance.post("/report/get-penjualan", {
+        stateOfDate: sortPenjualan || "Bulanan",
+      });
+      setPenjualan(res.data.result);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
+
+  const fetchRevenue = async () => {
+    try {
+      const res = await axiosInstance.get("/report/get-today-revenue");
+      setTodayRevenue(res.data.result);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
+
+  const fetchProfit = async () => {
+    try {
+      const res = await axiosInstance.post("/report/get-profit");
+      setProfitData(res.data.result);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchPemesananDataCount();
+    setLastUpdated(moment());
+    fetchExpStok();
+    fetchTodayTransaction();
+    fetchTodayStok();
+    fetchRevenue();
+    fetchProfit();
+  }, []);
+
+  useEffect(() => {
+    fetchPenjualan();
+    setLastUpdated(moment());
+  }, [sortPenjualan]);
+
+  useEffect(() => {
+    if (penjualan.length) {
+      convertDataPenjualan();
+      covertDataPenjualanByMonth();
+    }
+  }, [penjualan]);
+
+  useEffect(() => {
+    if (Object.keys(profitData).length) {
+      converProfitDataByMonth();
+    }
+  }, [profitData]);
 
   return (
     <Grid container>
@@ -79,31 +253,95 @@ const DashboardPage = () => {
               component="span"
               sx={{ fontSize: "14px", fontWeight: "bold" }}
             >
-              20 Januari 2022, 14.30 WIB
+              {moment(lastUpdated).format("LLL")}
             </Typography>
           </Typography>
 
           <Grid container spacing={2}>
             <CardWithCircularBar
-              title="Profit Hari Ini"
-              amount="Rp 10.000.000"
-              value="+5.700.000"
-              percentage={25}
-              notation="+"
+              title="Revenue Hari Ini"
+              amount={`Rp. ${todayRevenue?.todayRevenue?.result || 0}`}
+              value={Math.abs(
+                todayRevenue?.todayRevenue?.result -
+                  todayRevenue?.yesterdayRevenue?.result
+              ).toLocaleString()}
+              percentage={
+                isNaN(
+                  Math.abs(
+                    ((todayRevenue?.todayRevenue?.result -
+                      todayRevenue?.yesterdayRevenue?.result) /
+                      todayRevenue?.yesterdayRevenue?.result) *
+                      100
+                  ).toFixed(1)
+                )
+                  ? 0
+                  : Math.abs(
+                      ((todayRevenue?.todayRevenue?.result -
+                        todayRevenue?.yesterdayRevenue?.result) /
+                        todayRevenue?.yesterdayRevenue?.result) *
+                        100
+                    ).toFixed(1)
+              }
+              notation={
+                todayRevenue?.todayRevenue?.result -
+                  todayRevenue?.yesterdayRevenue?.result <
+                0
+                  ? "-"
+                  : "+"
+              }
             />
             <CardWithCircularBar
               title="Total Pemesanan Hari Ini"
-              amount="110"
-              value="-60"
-              percentage={62}
-              notation="-"
+              amount={todayTransaction.todayOrder}
+              value={Math.abs(
+                todayTransaction.todayOrder - todayTransaction.yesterdayOrder
+              )}
+              percentage={
+                isNaN(
+                  Math.abs(
+                    ((todayTransaction.todayOrder -
+                      todayTransaction.yesterdayOrder) /
+                      todayTransaction.yesterdayOrder) *
+                      100
+                  ).toFixed(1)
+                )
+                  ? 0
+                  : Math.abs(
+                      ((todayTransaction.todayOrder -
+                        todayTransaction.yesterdayOrder) /
+                        todayTransaction.yesterdayOrder) *
+                        100
+                    ).toFixed(1)
+              }
+              notation={
+                todayTransaction.todayOrder - todayTransaction.yesterdayOrder <
+                0
+                  ? "-"
+                  : "+"
+              }
             />
             <CardWithCircularBar
-              title="Sisa Hari Ini"
-              amount="110"
-              value="+30"
-              percentage={30}
-              notation="+"
+              title="Sisa Stok Hari Ini"
+              amount={todayStok.todayStok}
+              value={Math.abs(todayStok.todayStok - todayStok.yesterdayStok)}
+              percentage={
+                isNaN(
+                  Math.abs(
+                    ((todayStok.todayStok - todayStok.yesterdayStok) /
+                      todayStok.yesterdayStok) *
+                      100
+                  ).toFixed(1)
+                )
+                  ? 0
+                  : Math.abs(
+                      ((todayStok.todayStok - todayStok.yesterdayStok) /
+                        todayStok.yesterdayStok) *
+                        100
+                    ).toFixed(1)
+              }
+              notation={
+                todayStok.todayStok - todayStok.yesterdayStok < 0 ? "-" : "+"
+              }
             />
           </Grid>
         </Grid>
@@ -125,12 +363,62 @@ const DashboardPage = () => {
               flexDirection: "row",
             }}
           >
-            <CardCategory title="Pesanan Baru" value={7} column={4} />
-            <CardCategory title="Siap Dikirim" value={3} column={4} />
-            <CardCategory title="Sedang Dikirim" value={0} column={4} />
-            <CardCategory title="Selesai" value={7} column={4} />
-            <CardCategory title="Dibatalkan" value={3} column={4} />
-            <CardCategory title="Chat Baru" value={0} column={4} />
+            <CardCategory
+              title="Menunggu Pembayaran"
+              value={pemesanan.reduce((init, val) => {
+                if (val.paymentStatusId === 1) {
+                  return init + val.count;
+                }
+
+                return init;
+              }, 0)}
+              column={4}
+            />
+            <CardCategory
+              title="Pesanan Baru"
+              value={pemesanan.reduce((init, val) => {
+                if (val.paymentStatusId === 2) {
+                  return init + val.count;
+                }
+
+                return init;
+              }, 0)}
+              column={4}
+            />
+            <CardCategory
+              title="Dikirim"
+              value={pemesanan.reduce((init, val) => {
+                if (val.paymentStatusId === 3) {
+                  return init + val.count;
+                }
+
+                return init;
+              }, 0)}
+              column={4}
+            />
+            <CardCategory
+              title="Selesai"
+              value={pemesanan.reduce((init, val) => {
+                if (val.paymentStatusId === 4) {
+                  return init + val.count;
+                }
+
+                return init;
+              }, 0)}
+              column={4}
+            />
+            <CardCategory
+              title="Dibatalkan"
+              value={pemesanan.reduce((init, val) => {
+                if (val.paymentStatusId === 5) {
+                  return init + val.count;
+                }
+
+                return init;
+              }, 0)}
+              column={4}
+            />
+            {/* <CardCategory title="Chat Baru" value={0} column={4} /> */}
           </Grid>
         </Grid>
         <Grid item xs={6}>
@@ -173,7 +461,7 @@ const DashboardPage = () => {
                 <Typography
                   sx={{ fontWeight: "bold", fontSize: "24px", color: "red" }}
                 >
-                  17
+                  {expStok?.expStok?.sum || "-"}
                 </Typography>
               </Box>
               <Box
@@ -189,12 +477,16 @@ const DashboardPage = () => {
                     fontSize: "16px",
                   }}
                 >
-                  Kadaluwarse Bulan Ini
+                  Kadaluwarsa Bulan Ini
                 </Typography>
                 <Typography
-                  sx={{ fontWeight: "bold", fontSize: "24px", color: "yellow" }}
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "24px",
+                    color: "#F4BB44",
+                  }}
                 >
-                  0
+                  {expStok?.expSoon?.sum || "-"}
                 </Typography>
               </Box>
               <Box
@@ -219,7 +511,7 @@ const DashboardPage = () => {
                     color: "#21CDC0",
                   }}
                 >
-                  3
+                  {expStok?.expIn3Months?.sum || "-"}
                 </Typography>
               </Box>
             </Box>
@@ -232,18 +524,18 @@ const DashboardPage = () => {
 
         <CardStatistik
           cardTitle="Profit"
-          cardCaption="Data dinyatakan dalam jutaan rupiah"
           column={6}
           chartOption={profitOption}
           chartSeries={profitSeries}
-          selectHandle={handleChange}
-          selectValue={sort}
+          selectHandle={handleChangeProfit}
+          selectValue={sortProfit}
           chartSort={[
             { sortValue: "Mingguan", sortTitle: "Mingguan" },
             { sortValue: "Bulanan", sortTitle: "Bulanan" },
             { sortValue: "Tahunan", sortTitle: "Tahunan" },
           ]}
           chartType="bar"
+          showSelectOption={false}
         />
 
         <CardStatistik
@@ -251,8 +543,8 @@ const DashboardPage = () => {
           column={6}
           chartOption={penjualanObatOption}
           chartSeries={penjualanObatSeries}
-          selectHandle={handleChange}
-          selectValue={sort}
+          selectHandle={handleChangePenjualan}
+          selectValue={sortPenjualan}
           chartSort={[
             { sortValue: "Mingguan", sortTitle: "Mingguan" },
             { sortValue: "Bulanan", sortTitle: "Bulanan" },

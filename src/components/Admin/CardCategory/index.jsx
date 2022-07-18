@@ -12,6 +12,7 @@ const CardCategory = ({ title, value, column }) => {
           borderRadius: "5px",
           width: "100%",
           maxWidth: "168px",
+          height: "105px",
         }}
       >
         <Typography

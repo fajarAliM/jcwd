@@ -21,6 +21,7 @@ const CardStatistik = ({
   chartSeries,
   chartHeight,
   chartType,
+  showSelectOption = true,
 }) => {
   return (
     <Grid item xs={column} sx={{ marginTop: "16px" }}>
@@ -44,19 +45,21 @@ const CardStatistik = ({
               {cardCaption}
             </Typography>
           </Box>
-          <FormControl>
-            <Select
-              sx={{ width: "141px", height: "24px" }}
-              onChange={selectHandle}
-              value={selectValue}
-            >
-              {chartSort.map((val) => {
-                return (
-                  <MenuItem value={val.sortValue}>{val.sortTitle}</MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
+          {showSelectOption ? (
+            <FormControl>
+              <Select
+                sx={{ width: "141px", height: "24px" }}
+                onChange={selectHandle}
+                value={selectValue}
+              >
+                {chartSort.map((val) => {
+                  return (
+                    <MenuItem value={val.sortValue}>{val.sortTitle}</MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          ) : undefined}
         </Box>
         <Chart
           height={chartHeight}

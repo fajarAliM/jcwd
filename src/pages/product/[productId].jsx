@@ -20,12 +20,29 @@ import axiosInstance from "config/api";
 import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "redux/reducer/cart";
+import { useEffect } from "react";
 
 const ProductPage = ({ productDetail }) => {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const authSelector = useSelector((state) => state.auth);
   const router = useRouter();
+
+  const recordUserActivity = async () => {
+    try {
+      await axiosInstance.post("/product/record-user-product", {
+        product_id: productDetail.id,
+      });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    recordUserActivity();
+  }, []);
+
   const formik = useFormik({
     initialValues: {
       quantity: 1,

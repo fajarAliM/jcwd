@@ -61,6 +61,7 @@ const CardWithCircularBar = ({
               <BsFillArrowDownRightCircleFill fontSize="10px" />
             )}
             <Typography sx={{ fontSize: "10px", marginLeft: "4px" }}>
+              {notation}
               {value.toLocaleString()}
             </Typography>
           </Box>

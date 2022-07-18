@@ -97,6 +97,10 @@ const AdminSidebar = () => {
               submenuTitle: "Ringkasan Statistik",
               href: "/admin/ringkasan-statistik",
             },
+            {
+              submenuTitle: "Product Report",
+              href: "/admin/product-details",
+            },
             { submenuTitle: "Buku Kas", href: "/admin/buku-kas" },
             { submenuTitle: "Laba & Rugi", href: "/admin/laba-&-rugi" },
           ]}
