@@ -1,9 +1,18 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
-import { Box, Typography, Divider, Button, Backdrop } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Divider,
+  Button,
+  Backdrop,
+  Stack,
+} from "@mui/material";
 import axiosInstance from "config/api";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
+import ModalAlamat from "components/ModalAlamat";
 
 const { default: DragAndDrop } = require("components/DragAndDropZone");
 
@@ -13,6 +22,11 @@ const UploadResep = () => {
   const [resepImgUrl, setResepImgUrl] = useState(undefined);
   const [preview, setPreview] = useState();
   const [open, setOpen] = useState(false);
+  const [openAlamat, setOpenAlamat] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+
+  const handleOpenAlamat = () => setOpenAlamat(true);
+  const handleCloseAlamat = () => setOpenAlamat(false);
 
   const onDrop = useCallback((acceptedFiles) => {
     setResepImgFile(acceptedFiles[0]);
@@ -40,6 +54,7 @@ const UploadResep = () => {
     const formData = new FormData();
 
     formData.append("resep_image_file", resepImgFile);
+    formData.append("addressId", selectedAddress.id);
 
     try {
       await axiosInstance.post("/transaction/upload-resep", formData);
@@ -89,31 +104,74 @@ const UploadResep = () => {
         />
         <Box
           display="flex"
+          justifyContent="space-between"
           alignItems="center"
-          justifyContent="flex-end"
-          mt="38px"
+          sx={{ mt: 5 }}
         >
-          <Button
-            variant="outlined"
-            sx={{ marginRight: "28px", width: "125px", height: "42px" }}
+          <Box display="flex">
+            <Stack>
+              <Typography
+                sx={{
+                  mb: 2,
+                  pb: "10px",
+                  borderBottom: "1px solid #D5D7DD",
+                  color: "#737A8D",
+                }}
+              >
+                Alamat Pengiriman:
+              </Typography>
+              <Typography>{selectedAddress?.nama_penerima}</Typography>
+              <Typography>{selectedAddress?.no_telepon_penerima}</Typography>
+              <Typography>{selectedAddress?.label_alamat}</Typography>
+              <Typography>{selectedAddress?.alamat_lengkap}</Typography>
+              <Button
+                variant="contained"
+                onClick={handleOpenAlamat}
+                sx={{
+                  alignSelf: "flex-end",
+                  mt: "5px",
+                  "&:hover": { border: 0 },
+                }}
+              >
+                {!selectedAddress ? "Pilih Alamat" : "Pilih Alamat Lain"}
+              </Button>
+              <ModalAlamat
+                open={openAlamat}
+                handleClose={handleCloseAlamat}
+                setSelectedAddress={setSelectedAddress}
+              />
+            </Stack>
+          </Box>
+
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+            mt="38px"
+            ml="10px"
           >
-            Batal
-          </Button>
-          <Button
-            onClick={() => {
-              uploadFileHandler();
-            }}
-            variant="contained"
-            sx={{ width: "125px", height: "42px" }}
-          >
-            Unggah
-          </Button>
-          <Backdrop
-            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={open}
-          >
-            <CircularProgress color="inherit" />
-          </Backdrop>
+            <Button
+              variant="outlined"
+              sx={{ marginRight: "10px", width: "125px", height: "42px" }}
+            >
+              Batal
+            </Button>
+            <Button
+              onClick={() => {
+                uploadFileHandler();
+              }}
+              variant="contained"
+              sx={{ width: "125px", height: "42px" }}
+            >
+              Unggah
+            </Button>
+            <Backdrop
+              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={open}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
+          </Box>
         </Box>
       </Box>
     </Box>

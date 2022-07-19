@@ -58,6 +58,7 @@ const CheckOut = () => {
         total_price: totalHarga,
         cartId: priceSelector.checkedItems,
         paymentMethodId: method,
+        addressId: selectedAddress.id,
       };
       const res = await axiosInstance.post(
         "/transaction/add-new-transaction",

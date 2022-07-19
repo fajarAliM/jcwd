@@ -1,34 +1,30 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-else-return */
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-nested-ternary */
-import {
-  Grid,
-  Box,
-  Typography,
-  Button,
-  FormControlLabel,
-  Checkbox,
-  Stack,
-  Divider,
-} from "@mui/material";
+import { Grid, Box, Typography, Button, Stack } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import Kursiplastik from "public/Images/kursiplastik.png";
-import Image from "next/image";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import ChatIcon from "@mui/icons-material/Chat";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import { useState } from "react";
 import moment from "moment";
+import { styled } from "@mui/material/styles";
+import ProductCardItems from "components/Admin/ProductCardItems";
 import ModalTerimaPesanan from "../ModalTerimaPesanan";
-import ModalSalinanResep from "../ModalSalinanResep";
+
+const Image = styled("img")({
+  width: "73px",
+  height: "100%",
+  objectFit: "scale-down",
+});
 
 const CardOrder = ({
-  checked = false,
-  setCartChecked,
   status,
   orderCode,
   orderTime,
   productAdded,
   productImage,
-  isObatResep = false,
+  isObatResep,
   productName,
   productQty,
   productPrice,
@@ -38,19 +34,68 @@ const CardOrder = ({
   courier,
   transaksiId,
   totalPrice,
+  product,
+  detail,
 }) => {
+  console.log(isObatResep);
+  // console.log(productName);
   // Status: 1 = "Pesanan Baru", 2 = "Siap Dikirim", 3 = "Dalam Pengiriman", 4 = "Selesai", 5 = "Dibatalkan"
-
+  // console.log(product);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [salinanResep, setSalinanResep] = useState(false);
+  const [obatLain, setObatLain] = useState(false);
+
+  const color = () => {
+    if (status === 1 || status === 2 || status === 3) {
+      return "white";
+    } else if (status === 4) {
+      return "#14C38E";
+    } else if (status === 5) {
+      return "#FF5C5C";
+    }
+  };
+
+  const renderProduct = () => {
+    if (detail.is_resep) {
+      return (
+        <ProductCardItems
+          image={detail.resep_image_url}
+          nama={detail.nomor_resep}
+          harga={detail.total_price}
+          isObatResep={detail.is_resep}
+        />
+      );
+    }
+    return product?.map((valo) => {
+      return (
+        <ProductCardItems
+          image={valo?.product?.produk_image_url[0]}
+          nama={valo?.product?.nama_produk}
+          jumlah={valo?.quantity}
+          harga={valo?.price_when_sold}
+          productImage={productImage}
+          productName={productName}
+          productQty={productQty}
+          productPrice={productPrice}
+          isObatResep={isObatResep}
+          productAdded={productAdded}
+          buyersName={buyersName}
+          orderCode={orderCode}
+          transaksiId={transaksiId}
+          orderTime={orderTime}
+        />
+      );
+    });
+  };
 
   return (
     <>
       {/* Product Component */}
 
       {/* Box 1 */}
+
       <Box
         sx={{
           marginTop: "32px",
@@ -60,8 +105,8 @@ const CardOrder = ({
           width: "100%",
           paddingX: "32px",
           paddingY: "16px",
-          backgroundColor: "white",
         }}
+        backgroundColor={color()}
       >
         <Box
           sx={{
@@ -73,21 +118,6 @@ const CardOrder = ({
         >
           {/* Check Box */}
           <Box display="flex" alignItems="center" flexDirection="row">
-            <FormControlLabel
-              sx={{ marginRight: 0 }}
-              control={
-                <Checkbox
-                  onClick={setCartChecked}
-                  checked={checked}
-                  sx={{
-                    color: "Brand.500",
-                    "&.Mui-checked": {
-                      color: "Brand.500",
-                    },
-                  }}
-                />
-              }
-            />
             <Typography sx={{ fontWeight: "bold" }}>
               {status === 1
                 ? "Pesanan Baru"
@@ -160,77 +190,7 @@ const CardOrder = ({
         <Grid container>
           {/* Box Product Image */}
           <Grid item container xs={3}>
-            <Stack direction="row">
-              <Box
-                sx={{
-                  height: "75px",
-                  width: "75px",
-                  borderRadius: "5px",
-                  border: "1px solid #B4B9C7",
-                }}
-              >
-                <Image src={productImage || Kursiplastik} layout="responsive" />
-              </Box>
-
-              {/* Box Product Title, Qty, etc */}
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  marginX: "20px",
-                }}
-              >
-                {isObatResep && !productAdded ? (
-                  <>
-                    <Typography sx={{ fontSize: "14px", fontWeight: "bolder" }}>
-                      Resep Dokter
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      onClick={() => setSalinanResep(true)}
-                      sx={{
-                        maxHeight: "32px",
-                        fontSize: "12px",
-                      }}
-                    >
-                      Buat Salinan Resep
-                    </Button>
-                    <ModalSalinanResep
-                      open={salinanResep}
-                      handleClose={() => setSalinanResep(false)}
-                      namaPembeli={buyersName}
-                      kodeOrder={orderCode}
-                      fotoResep={productImage}
-                      transaksiId={transaksiId}
-                      waktuOrder={orderTime}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Typography sx={{ fontSize: "14px", fontWeight: "bolder" }}>
-                      {productName}
-                    </Typography>
-                    <Typography sx={{ fontSize: "14px", color: "gray" }}>
-                      {productQty} x {productPrice}
-                    </Typography>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        color: "Brand.500",
-                      }}
-                    >
-                      <Typography sx={{ fontSize: "12px" }}>
-                        lihat {productOrderQty} obat lainnya
-                      </Typography>
-                      <KeyboardArrowDownIcon sx={{ size: "12px" }} />
-                    </Box>
-                  </>
-                )}
-              </Box>
-            </Stack>
-            <Divider orientation="vertical" />
+            <Stack>{renderProduct()}</Stack>
           </Grid>
 
           {/* Box Detail Pengiriman */}
@@ -313,9 +273,6 @@ const CardOrder = ({
               >
                 Total Harga
               </Typography>
-              <Typography sx={{ fontSize: "12px", fontWeight: "bold" }}>
-                ({productQty} Obat)
-              </Typography>
             </Box>
             <Typography
               sx={{
@@ -324,7 +281,7 @@ const CardOrder = ({
                 marginRight: "8px",
               }}
             >
-              Rp {totalPrice},-
+              Rp {totalPrice.toLocaleString()},-
             </Typography>
           </Box>
         )}
@@ -378,6 +335,7 @@ const CardOrder = ({
                   variant="contained"
                   onClick={handleOpen}
                   disabled={isObatResep && !productAdded}
+                  sx={{ "&:hover": { border: 0 } }}
                 >
                   Terima Pesanan
                 </Button>

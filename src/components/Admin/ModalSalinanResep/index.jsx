@@ -25,7 +25,6 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { useSnackbar } from "notistack";
 import Group8725 from "public/Images/Group8725.png";
 import Kursiplastik from "public/Images/kursiplastik.png";
@@ -36,6 +35,13 @@ import axiosInstance from "config/api";
 import { useFormik } from "formik";
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
+// import { styled } from "@mui/material/styles";
+
+const Image = styled("img")({
+  width: "430px",
+  height: "100%",
+  objectFit: "scale-down",
+});
 
 const ModalSalinanResep = ({
   open,
