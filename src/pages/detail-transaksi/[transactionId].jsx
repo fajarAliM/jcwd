@@ -18,8 +18,8 @@ import { useSelector } from "react-redux";
 import axiosInstance from "config/api";
 import { useRouter } from "next/router";
 import { styled } from "@mui/material/styles";
-import ModalUploadPembayaran from "components/ModalUploadPembayaran";
 import moment from "moment";
+import ModalUploadPembayaran from "components/ModalUploadPembayaran";
 
 const Image = styled("img")({
   maxWidth: "120px",

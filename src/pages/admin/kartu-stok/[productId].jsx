@@ -34,17 +34,6 @@ const KartuStok = () => {
 
   const router = useRouter();
 
-  // const handleButtonFilter = () => {
-  //   router.push({
-  //     query: {
-  //       month: moment(month).format("MMMM") || undefined,
-  //       year: year || undefined,
-  //     },
-  //   });
-
-  //   // tinggal mskin function untuk fetch ke API dan set state
-  // };
-
   const fetchProductStock = async () => {
     try {
       const { productId } = router.query;

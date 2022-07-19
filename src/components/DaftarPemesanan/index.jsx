@@ -153,7 +153,7 @@ const DaftarPemesanan = ({ status, total_harga, produk, detail }) => {
           >
             Chat Customer Service
           </Button>
-          {detail.proof_of_payment ? null : (
+          {detail.proof_of_payment || detail.paymentStatusId === 4 ? null : (
             <Box sx={{ display: "flex" }}>
               <Stack sx={{ textAlign: "end" }}>
                 <Typography sx={{ color: "#4F618E", fontSize: "12px" }}>
