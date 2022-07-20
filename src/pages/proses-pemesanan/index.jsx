@@ -27,6 +27,7 @@ import axiosInstance from "config/api";
 import InfiniteScroll from "react-infinite-scroll-component";
 import IsiTab from "components/IsiTab";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
@@ -48,6 +49,7 @@ const ProsesPemesanan = () => {
   const [status, setStatus] = useState(null);
   const [sortBy, setSortBy] = useState(router.query._sortyBy);
   const [sortDir, setSortDir] = useState(router.query._sortyDir);
+  const authSelector = useSelector((state) => state.auth);
 
   const fetchTransactions = async () => {
     try {
@@ -60,6 +62,7 @@ const ProsesPemesanan = () => {
           statusTerpilih: status || undefined,
           _sortBy: sortBy ? sortBy : undefined,
           _sortDir: sortDir ? sortDir : undefined,
+          userId: authSelector.id || undefined,
         },
       });
       setJumlahTransaksi(transactionList.data.result.count);
@@ -273,6 +276,16 @@ const ProsesPemesanan = () => {
               next={fetchNextPage}
               hasMore={page < maxPage}
               loader={<Typography>Loading...</Typography>}
+              endMessage={
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  mt={2}
+                >
+                  <Typography>No more transaction available</Typography>
+                </Box>
+              }
             >
               <IsiTab
                 renderTransactionList={renderTransactionList}
@@ -288,6 +301,11 @@ const ProsesPemesanan = () => {
               next={fetchNextPage}
               hasMore={page < maxPage}
               loader={<Typography>Loading...</Typography>}
+              endMessage={
+                <Box display="flex" alignItems="center" justifyContent="center">
+                  <Typography>No more Product available</Typography>
+                </Box>
+              }
             >
               <IsiTab
                 renderTransactionList={renderTransactionList}
@@ -303,6 +321,11 @@ const ProsesPemesanan = () => {
               next={fetchNextPage}
               hasMore={page < maxPage}
               loader={<Typography>Loading...</Typography>}
+              endMessage={
+                <Box display="flex" alignItems="center" justifyContent="center">
+                  <Typography>No more Product available</Typography>
+                </Box>
+              }
             >
               <IsiTab
                 renderTransactionList={renderTransactionList}
@@ -318,6 +341,11 @@ const ProsesPemesanan = () => {
               next={fetchNextPage}
               hasMore={page < maxPage}
               loader={<Typography>Loading...</Typography>}
+              endMessage={
+                <Box display="flex" alignItems="center" justifyContent="center">
+                  <Typography>No more Product available</Typography>
+                </Box>
+              }
             >
               <IsiTab
                 renderTransactionList={renderTransactionList}
@@ -333,6 +361,11 @@ const ProsesPemesanan = () => {
               next={fetchNextPage}
               hasMore={page < maxPage}
               loader={<Typography>Loading...</Typography>}
+              endMessage={
+                <Box display="flex" alignItems="center" justifyContent="center">
+                  <Typography>No more Product available</Typography>
+                </Box>
+              }
             >
               <IsiTab
                 renderTransactionList={renderTransactionList}
@@ -348,6 +381,11 @@ const ProsesPemesanan = () => {
               next={fetchNextPage}
               hasMore={page < maxPage}
               loader={<Typography>Loading...</Typography>}
+              endMessage={
+                <Box display="flex" alignItems="center" justifyContent="center">
+                  <Typography>No more Product available</Typography>
+                </Box>
+              }
             >
               <IsiTab
                 renderTransactionList={renderTransactionList}

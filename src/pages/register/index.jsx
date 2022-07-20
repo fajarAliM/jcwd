@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Frame from "public/Images/Frame.png";
 import GoogleIcon from "public/Images/google-icon.png";
-import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
+// import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 import {
   OutlinedInput,
   Box,
@@ -34,12 +34,18 @@ import InfoIcon from "@mui/icons-material/Info";
 import axiosInstance from "config/api";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "config/firebase/firebase";
+import jsCookie from "js-cookie";
+import { login } from "redux/reducer/auth";
+import { useDispatch } from "react-redux";
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [term, setTerm] = useState(false);
 
   const router = useRouter();
+  const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
   const termHandle = () => {
@@ -97,6 +103,33 @@ const RegisterPage = () => {
     validateOnChange: false,
   });
 
+  const googleProvider = new GoogleAuthProvider();
+
+  const signInWithGoogle = async () => {
+    try {
+      const google = await signInWithPopup(auth, googleProvider);
+
+      const res = await axiosInstance.post("/auth/login-with-google", {
+        uid: google.user.uid,
+        username: google.user.displayName,
+        name: google.user.displayName,
+        email: google.user.email,
+        image_url: google.user.photoURL,
+      });
+
+      const userResponse = res.data.result;
+      jsCookie.set("user_auth_token", userResponse.token);
+
+      dispatch(login(userResponse.user));
+      enqueueSnackbar(res?.data?.message, { variant: "success" });
+      router.push("/");
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+      // enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+    }
+  };
+
   return (
     <>
       {/* <AdminSidebar /> */}
@@ -146,10 +179,11 @@ const RegisterPage = () => {
                     border: "2px solid transparent",
                   },
                 }}
+                onClick={signInWithGoogle}
               >
                 Daftar dengan Google
               </Button>
-              <Button
+              {/* <Button
                 fullWidth
                 startIcon={
                   <FacebookOutlinedIcon
@@ -163,7 +197,7 @@ const RegisterPage = () => {
                 }}
               >
                 Daftar dengan Facebook
-              </Button>
+              </Button> */}
             </Stack>
             <Divider>atau</Divider>
             <FormControl

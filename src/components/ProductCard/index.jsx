@@ -36,6 +36,10 @@ const ProductCard = ({ nama_produk, harga, diskon, produk_image, id }) => {
         quantity: 1,
       });
 
+      await axiosInstance.post("/product/record-user-product", {
+        product_id: id,
+      });
+
       const cartInfo = addProductToCart.data;
 
       dispatch(addToCart(cartInfo.data));

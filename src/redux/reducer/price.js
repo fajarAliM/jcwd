@@ -12,8 +12,6 @@ const totalPriceReducer = createSlice({
     price: (state, action) => {
       state.totalPrice = action.payload.totalHarga;
       state.checkedItems = action.payload.checkedItems;
-
-      console.log(action.payload.checkedItems);
     },
     cumulatedPrice: (state, action) => {
       state.totalPrice = action.payload;

@@ -59,6 +59,19 @@ const Nav = () => {
     }
   }, []);
 
+  const searchProdukHandler = () => {
+    dispatch(search(searchInput));
+    if (router.pathname === "product-list") {
+      router.push({
+        query: {
+          searchProduk: searchInput,
+        },
+      });
+    } else {
+      router.push(`product-list?searchProduk=${searchInput}`);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -102,12 +115,7 @@ const Nav = () => {
                 edge="end"
                 sx={{ mr: 1 }}
                 onClick={() => {
-                  dispatch(search(searchInput));
-                  router.push({
-                    query: {
-                      searchProduk: searchInput,
-                    },
-                  });
+                  searchProdukHandler();
                 }}
               >
                 <BsSearch />

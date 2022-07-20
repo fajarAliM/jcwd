@@ -53,7 +53,11 @@ const KeranjangPage = () => {
   }, []);
 
   const buttonHandler = () => {
+    localStorage.setItem("selectedItems", JSON.stringify(checkedItems));
+    localStorage.setItem("totalPrice", JSON.stringify(totalHarga));
     dispatch(price({ totalHarga, checkedItems }));
+
+    router.push("/checkout");
   };
 
   useEffect(() => {
@@ -171,22 +175,20 @@ const KeranjangPage = () => {
                   </Typography>
                 </Grid>
               </Grid>
-              <Link href="/checkout">
-                <Button
-                  onClick={buttonHandler}
-                  variant="contained"
-                  disabled={!totalHarga}
-                  sx={{
-                    width: "100%",
-                    mt: "30px",
-                    "&:hover": {
-                      border: 0,
-                    },
-                  }}
-                >
-                  Bayar(4)
-                </Button>
-              </Link>
+              <Button
+                onClick={buttonHandler}
+                variant="contained"
+                disabled={!totalHarga}
+                sx={{
+                  width: "100%",
+                  mt: "30px",
+                  "&:hover": {
+                    border: 0,
+                  },
+                }}
+              >
+                Bayar(4)
+              </Button>
             </Box>
           </Grid>
         </Grid>

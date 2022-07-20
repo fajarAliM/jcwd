@@ -9,7 +9,8 @@ import axiosInstance from "config/api";
 import ModalAlamat from "components/ModalAlamat";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import { cumulatedPrice } from "../../redux/reducer/price";
+import { addToCart } from "redux/reducer/cart";
+import { cumulatedPrice, price } from "../../redux/reducer/price";
 
 const CheckOut = () => {
   const priceSelector = useSelector((state) => state.price);
@@ -26,6 +27,8 @@ const CheckOut = () => {
   const [totalHarga, setTotalHarga] = useState(null);
   const [cart, setCart] = useState(null);
   const router = useRouter();
+  const [selectedCart, setSelectedCart] = useState([]);
+  const [hargaProducts, setHargaProducts] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -43,7 +46,7 @@ const CheckOut = () => {
   const fetchCart = async () => {
     try {
       const cartData = await axiosInstance.post("/cart/get-cart-id", {
-        cartId: priceSelector.checkedItems,
+        cartId: selectedCart,
       });
       setCart(cartData.data.data.rows);
     } catch (err) {
@@ -56,7 +59,7 @@ const CheckOut = () => {
     try {
       const newData = {
         total_price: totalHarga,
-        cartId: priceSelector.checkedItems,
+        cartId: selectedCart,
         paymentMethodId: method,
         addressId: selectedAddress.id,
       };
@@ -64,10 +67,16 @@ const CheckOut = () => {
         "/transaction/add-new-transaction",
         newData
       );
+
+      const fetchNewCart = await axiosInstance.get("/cart/get-cart");
+
+      const CartData = fetchNewCart.data;
+
+      dispatch(addToCart(CartData.data));
       dispatch(cumulatedPrice(totalHarga));
-      router.push(
-        `/konfirmasi?paymentMethod=${method}&transaksiId=${res.data.data.id}&createdAt=${res.data.data.createdAt}`
-      );
+
+      localStorage.clear();
+      router.push(`detail-transaksi/${res.data.data.id}`);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err);
@@ -92,8 +101,29 @@ const CheckOut = () => {
   }, [selectedAddress]);
 
   useEffect(() => {
-    fetchCart();
+    if (selectedCart.length) {
+      fetchCart();
+    }
+  }, [selectedCart, totalHarga]);
+
+  useEffect(() => {
+    if (
+      localStorage.getItem("selectedItems") ||
+      localStorage.getItem("totalPrice")
+    ) {
+      setSelectedCart(JSON.parse(localStorage.getItem("selectedItems")));
+      setHargaProducts(localStorage.getItem("totalPrice"));
+    }
   }, []);
+
+  useEffect(() => {
+    if (hargaProducts || selectedCart) {
+      // eslint-disable-next-line no-shadow
+      const totalHarga = hargaProducts;
+      const checkedItems = selectedCart;
+      dispatch(price({ totalHarga, checkedItems }));
+    }
+  }, [selectedCart, hargaProducts]);
 
   const fetchOngkir = async () => {
     try {
@@ -112,7 +142,7 @@ const CheckOut = () => {
   };
 
   const total = () => {
-    return priceSelector.totalPrice + ongkir;
+    return parseInt(hargaProducts) + ongkir;
   };
 
   // const buttonHandler = () => {};
@@ -243,7 +273,7 @@ const CheckOut = () => {
                   Sub Total
                 </Typography>
                 <Typography sx={{ fontWeight: 700, mt: 2 }}>
-                  Rp {priceSelector.totalPrice.toLocaleString()}
+                  Rp {hargaProducts}
                 </Typography>
               </Box>
             </Box>
@@ -270,7 +300,7 @@ const CheckOut = () => {
               </Grid>
               <Grid item xs={8} sx={{ textAlign: "right" }}>
                 <Typography sx={{ fontWeight: 700, fontSize: "14px" }}>
-                  Rp {priceSelector.totalPrice.toLocaleString()}
+                  Rp {hargaProducts?.toLocaleString()}
                 </Typography>
               </Grid>
               <Grid item xs={4} sx={{ mb: "24px" }}>

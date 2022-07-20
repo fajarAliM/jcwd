@@ -310,6 +310,11 @@ const ProductList = () => {
             next={fetchNextPage}
             hasMore={page < maxPage}
             loader={<Typography>Loading...</Typography>}
+            endMessage={
+              <Box display="flex" alignItems="center" justifyContent="center">
+                <Typography>No more Product available</Typography>
+              </Box>
+            }
           >
             <Grid
               container

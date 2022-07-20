@@ -144,7 +144,7 @@ const LoginPage = () => {
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err);
-      enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+      // enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
     }
   };
 

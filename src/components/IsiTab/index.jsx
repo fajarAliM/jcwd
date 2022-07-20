@@ -86,6 +86,7 @@ const IsiTab = ({ renderTransactionList, setSortBy, setSortDir, setPage }) => {
               <MenuItem value="Terbaru">Terbaru</MenuItem>
               <MenuItem value="Highest Price">Termahal</MenuItem>
               <MenuItem value="Lowest Price">Termurah</MenuItem>
+              <MenuItem value="">None</MenuItem>
             </Select>
           </FormControl>
           <Button
