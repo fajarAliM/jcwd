@@ -30,6 +30,7 @@
     "notistack": "^2.0.5",
     "react": "18.1.0",
     "react-apexcharts": "^1.4.0",
+    "react-countdown": "^2.3.2",
     "react-date-range": "^1.4.0",
     "react-dom": "18.1.0",
     "react-dropzone": "^14.2.1",

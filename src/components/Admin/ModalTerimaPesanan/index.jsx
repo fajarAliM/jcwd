@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
 import { Modal, Typography, Box, Divider, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { useState } from "react";
 import Image from "next/image";
 import Group8725 from "public/Images/Group8725.png";
+import axiosInstance from "config/api";
 
 const ModalTerimaPesanan = ({
   open,
@@ -16,13 +18,24 @@ const ModalTerimaPesanan = ({
   hargaProduk,
   jumlahProdukOrder,
   totalHarga,
+  transaksiId,
 }) => {
   const [terimaPesanan, setTerimaPesanan] = useState(false);
 
-  const isTerima = () => {
-    setTerimaPesanan(true);
+  const acceptTransaction = async (transactionId) => {
+    try {
+      await axiosInstance.post("/admin/accept-transaction", {
+        transactionId,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
+  const acceptHandler = (value) => {
+    setTerimaPesanan(true);
+    acceptTransaction(value);
+  };
   return (
     <Modal open={open} onClose={handleClose}>
       {terimaPesanan ? (
@@ -226,7 +239,10 @@ const ModalTerimaPesanan = ({
             </Box>
             <Divider orientation="horizontal" />
             <Box display="flex" justifyContent="flex-end" padding="16px">
-              <Button onClick={isTerima} variant="contained">
+              <Button
+                onClick={() => acceptHandler(transaksiId)}
+                variant="contained"
+              >
                 Terima Pesanan
               </Button>
             </Box>

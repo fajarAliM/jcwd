@@ -10,6 +10,7 @@ import ModalAlamat from "components/ModalAlamat";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { addToCart } from "redux/reducer/cart";
+import moment from "moment";
 import { cumulatedPrice, price } from "../../redux/reducer/price";
 
 const CheckOut = () => {
@@ -37,6 +38,7 @@ const CheckOut = () => {
       const mainAddress = await axiosInstance.get("/address/get-main-address");
 
       setAlamatUtama(mainAddress.data.result);
+      setSelectedAddress(mainAddress.data.result);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err);
@@ -98,7 +100,7 @@ const CheckOut = () => {
   };
   useEffect(() => {
     fetchMainAddress();
-  }, [selectedAddress]);
+  }, []);
 
   useEffect(() => {
     if (selectedCart.length) {

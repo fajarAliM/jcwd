@@ -3,19 +3,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable eqeqeq */
 /* eslint-disable no-console */
-import {
-  Avatar,
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  MenuItem,
-  Select,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Grid, Stack, Tab, Tabs, Typography } from "@mui/material";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -50,6 +38,7 @@ const ProsesPemesanan = () => {
   const [sortBy, setSortBy] = useState(router.query._sortyBy);
   const [sortDir, setSortDir] = useState(router.query._sortyDir);
   const authSelector = useSelector((state) => state.auth);
+  const [dummy, setDummy] = useState(false);
 
   const fetchTransactions = async () => {
     try {
@@ -104,6 +93,11 @@ const ProsesPemesanan = () => {
           image_url={
             val.is_resep ? val.resep_image_url : val.transaction_details
           }
+          transaksiId={val?.id}
+          reRender={() => {
+            setDummy(!dummy);
+            setPage(1);
+          }}
         />
       );
     });
@@ -120,7 +114,7 @@ const ProsesPemesanan = () => {
         },
       });
     }
-  }, [status, sortBy, sortDir, page]);
+  }, [status, sortBy, sortDir, page, dummy]);
 
   useEffect(() => {
     if (router.isReady) {

@@ -10,7 +10,8 @@ import { useState } from "react";
 import moment from "moment";
 import { styled } from "@mui/material/styles";
 import ProductCardItems from "components/Admin/ProductCardItems";
-import ModalTerimaPesanan from "../ModalTerimaPesanan";
+import ModalTerimaPesanan from "components/Admin/ModalTerimaPesanan";
+import axiosInstance from "config/api";
 
 const Image = styled("img")({
   width: "73px",
@@ -37,15 +38,39 @@ const CardOrder = ({
   product,
   detail,
 }) => {
-  console.log(isObatResep);
-  // console.log(productName);
-  // Status: 1 = "Pesanan Baru", 2 = "Siap Dikirim", 3 = "Dalam Pengiriman", 4 = "Selesai", 5 = "Dibatalkan"
-  // console.log(product);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [salinanResep, setSalinanResep] = useState(false);
   const [obatLain, setObatLain] = useState(false);
+
+  const declineTransaction = async (transactionId) => {
+    try {
+      await axiosInstance.post("/admin/decline-transaction", {
+        transactionId,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const askDelivery = async (transactionId) => {
+    try {
+      await axiosInstance.post("/admin/ask-for-delivery", {
+        transactionId,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const declineHandler = (value) => {
+    declineTransaction(value);
+  };
+
+  const deliveryHandler = (value) => {
+    askDelivery(value);
+  };
 
   const color = () => {
     if (status === 1 || status === 2 || status === 3) {
@@ -325,12 +350,22 @@ const CardOrder = ({
             }}
           >
             {status === 2 ? (
-              <Button variant="contained">Minta Penjemputan</Button>
+              <Button
+                variant="contained"
+                onClick={() => deliveryHandler(transaksiId)}
+              >
+                Minta Penjemputan
+              </Button>
             ) : status === 3 ? (
               <Button variant="contained">Lihat Rincian</Button>
             ) : status === 1 ? (
               <>
-                <Button sx={{ color: "Brand.500" }}>Tolak Pesanan</Button>
+                <Button
+                  onClick={() => declineHandler(transaksiId)}
+                  sx={{ color: "Brand.500" }}
+                >
+                  Tolak Pesanan
+                </Button>
                 <Button
                   variant="contained"
                   onClick={handleOpen}
@@ -340,6 +375,7 @@ const CardOrder = ({
                   Terima Pesanan
                 </Button>
                 <ModalTerimaPesanan
+                  transaksiId={transaksiId}
                   open={open}
                   handleClose={handleClose}
                   hargaProduk={productPrice}

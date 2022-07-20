@@ -3,12 +3,20 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import CheckOutCard from "components/CheckOut";
 import ModalUploadPembayaran from "components/ModalUploadPembayaran";
+import axiosInstance from "config/api";
 import moment from "moment";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { BsFillChatDotsFill } from "react-icons/bs";
 
-const DaftarPemesanan = ({ status, total_harga, produk, detail }) => {
+const DaftarPemesanan = ({
+  status,
+  total_harga,
+  produk,
+  detail,
+  transaksiId,
+  reRender,
+}) => {
   const router = useRouter();
   const [uploadPembayaran, setUploadPembayaran] = useState(false);
   const renderProduk = () => {
@@ -35,6 +43,20 @@ const DaftarPemesanan = ({ status, total_harga, produk, detail }) => {
     });
   };
 
+  const finishTransaction = async (transactionId) => {
+    try {
+      await axiosInstance.post("/transaction/finish-transaction", {
+        transactionId,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const finishHandler = (value) => {
+    finishTransaction(value);
+  };
+
   return (
     <Stack>
       <Stack
@@ -46,67 +68,71 @@ const DaftarPemesanan = ({ status, total_harga, produk, detail }) => {
           background: "#F7F7F7",
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            paddingY: "34px",
-            paddingX: "40px",
-            borderBottom: "2px solid white",
-          }}
-        >
-          <Typography>
-            {moment(detail?.createdAt).format("dddd, DD MMMM YYYY, hh:mm")}
-          </Typography>
-          {status === "Dikirim" ||
-          status === "Selesai" ||
-          status === "Menunggu" ||
-          status === "Diproses" ? (
-            <Box
-              sx={{
-                border:
-                  status === "Dikirim" || status === "Selesai"
-                    ? "1px solid #32A853"
-                    : "1px solid #CBAF4E",
-                color:
-                  status === "Dikirim" || status === "Selesai"
-                    ? "#32A853"
-                    : "#CBAF4E",
-                background:
-                  status === "Dikirim" || status === "Selesai"
-                    ? "#87DF9F"
-                    : "#FFDE6B",
-                width: "156px",
-                height: "26px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: "3px",
-              }}
-            >
-              <Typography sx={{ fontSize: "12px", fontWeight: 400 }}>
-                {status}
-              </Typography>
-            </Box>
-          ) : (
-            <Box
-              sx={{
-                border: "1px solid #999999",
-                color: "#666666",
-                background: "#cccccc",
-                width: "156px",
-                height: "26px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: "3px",
-              }}
-            >
-              <Typography sx={{ fontSize: "12px", fontWeight: 400 }}>
-                {status}
-              </Typography>
-            </Box>
-          )}
+        <Box display="flex" flexDirection="column">
+          <Box
+            sx={{
+              display: "flex",
+              // flexDirection: "column",
+              justifyContent: "space-between",
+              paddingY: "34px",
+              paddingX: "40px",
+              borderBottom: "2px solid white",
+            }}
+          >
+            <Typography>
+              {moment(detail?.createdAt).format("dddd, DD MMMM YYYY, hh:mm")}
+            </Typography>
+            {status === "Dikirim" ||
+            status === "Selesai" ||
+            status === "Menunggu" ||
+            status === "Diproses" ? (
+              <Box
+                sx={{
+                  border:
+                    status === "Dikirim" || status === "Selesai"
+                      ? "1px solid #32A853"
+                      : "1px solid #CBAF4E",
+                  color:
+                    status === "Dikirim" || status === "Selesai"
+                      ? "#32A853"
+                      : "#CBAF4E",
+                  background:
+                    status === "Dikirim" || status === "Selesai"
+                      ? "#87DF9F"
+                      : "#FFDE6B",
+                  width: "156px",
+                  height: "26px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: "3px",
+                }}
+              >
+                <Typography sx={{ fontSize: "12px", fontWeight: 400 }}>
+                  {status}
+                </Typography>
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  border: "1px solid #999999",
+                  color: "#666666",
+                  background: "#cccccc",
+                  width: "156px",
+                  height: "26px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: "3px",
+                }}
+              >
+                <Typography sx={{ fontSize: "12px", fontWeight: 400 }}>
+                  {status}
+                </Typography>
+              </Box>
+            )}
+          </Box>
         </Box>
         <Box
           sx={{
@@ -183,6 +209,17 @@ const DaftarPemesanan = ({ status, total_harga, produk, detail }) => {
               />
             </Box>
           )}
+          {status === "Dikirim" ? (
+            <Button
+              variant="contained"
+              onClick={async () => {
+                await finishHandler(transaksiId);
+                reRender();
+              }}
+            >
+              Selesaikan Pesanan
+            </Button>
+          ) : null}
         </Box>
       </Stack>
     </Stack>

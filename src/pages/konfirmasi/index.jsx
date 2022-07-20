@@ -37,6 +37,8 @@ const Konfirmasi = () => {
   const [method, setMethod] = useState(null);
   const router = useRouter();
   const [methodId, setMethodId] = useState(router.query.paymentMethod);
+  const [timer, setTimer] = useState(null);
+  const [createdAt, setCreatedAt] = useState();
 
   const fetchCart = async () => {
     try {
@@ -51,6 +53,10 @@ const Konfirmasi = () => {
     }
   };
 
+  // useEffect(() => {
+  //   setCreatedAt(cart[0].createdAt);
+  // }, [cart]);
+
   const renderCart = () => {
     return cart?.map((val) => {
       return (
@@ -64,6 +70,12 @@ const Konfirmasi = () => {
       );
     });
   };
+
+  // const renderTimer = () => {
+  //   return cart?.map((val) => {
+  //     return <Timer timer={val?.createdAt} />;
+  //   });
+  // };
 
   const fetchPaymentMethod = async () => {
     try {
@@ -90,6 +102,11 @@ const Konfirmasi = () => {
       setMethodId(router.query.paymentMethod);
     }
   }, [router.isReady]);
+
+  const addCountDown = () => {
+    moment().add(5, "minutes").format("MM/DD/YYYY, hh:mm:ss");
+    setTimer(moment().add(5, "minutes").format("MM/DD/YYYY, hh:mm:ss"));
+  };
 
   return (
     <Container
@@ -138,7 +155,9 @@ const Konfirmasi = () => {
               alignItems: "center",
             }}
           >
-            <Timer />
+            {/* <Timer timer={timer} /> */}
+            {/* {renderTimer()} */}
+            <Timer timer={createdAt} />
           </Box>
         </Box>
         <Box sx={{ mt: "41px" }}>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unneeded-ternary */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import {
@@ -160,6 +161,7 @@ const UploadResep = () => {
               onClick={() => {
                 uploadFileHandler();
               }}
+              disabled={resepImgFile && selectedAddress ? false : true}
               variant="contained"
               sx={{ width: "125px", height: "42px" }}
             >
