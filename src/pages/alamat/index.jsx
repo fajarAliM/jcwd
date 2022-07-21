@@ -102,6 +102,7 @@ const Alamat = () => {
       };
       await axiosInstance.post("/address/add-new-address", newAddress);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   };
@@ -116,6 +117,7 @@ const Alamat = () => {
       const provinsiList = await axiosInstance.get("/address/province");
       setProvinsiOption(provinsiList.data.result);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   };
@@ -129,6 +131,7 @@ const Alamat = () => {
       });
       setKotaOption(cityList.data.result);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   };
@@ -178,13 +181,13 @@ const Alamat = () => {
       display="flex"
       flexDirection="column"
       alignItems="center"
-      my="80px"
+      my={{ xs: "40px", md: "80px" }}
     >
-      <Box>
+      <Box width={{ xs: "100%", md: "50%" }} p={4}>
         <Typography variant="h4" component="h5" fontWeight="bold">
           Alamat Pengiriman
         </Typography>
-        <Box width="616px" mt="50px">
+        <Box mt="50px">
           <Box>
             <Box display="flex" alignItems="baseline" mb="16px">
               <Typography variant="h6" mr="6px" fontWeight="bold">
@@ -205,8 +208,12 @@ const Alamat = () => {
             <Typography variant="h6" fontWeight="bold">
               Info Penerima
             </Typography>
-            <Box display="flex">
-              <Box mt="36px" width="50%" paddingRight="15px">
+            <Box display="flex" flexDirection={{ xs: "column", md: "row" }}>
+              <Box
+                mt="36px"
+                width={{ xs: "100%", md: "50%" }}
+                paddingRight={{ xs: 0, md: "15px" }}
+              >
                 <Typography fontSize="14px" color="#737A8D" mb="16px">
                   Nama Depan
                 </Typography>
@@ -216,7 +223,7 @@ const Alamat = () => {
                   onChange={inputHandler}
                 />
               </Box>
-              <Box mt="36px" width="50%">
+              <Box mt="36px" width={{ xs: "100%", md: "50%" }}>
                 <Typography fontSize="14px" color="#737A8D" mb="16px">
                   Nama Belakang
                 </Typography>
@@ -233,17 +240,19 @@ const Alamat = () => {
               </Typography>
               <RoundedInput
                 onChange={inputHandler}
+                fullWidth
                 name="nomorHp"
                 startAdornment={
                   <InputAdornment position="start">+62</InputAdornment>
                 }
-                sx={{
-                  width: "510px",
-                }}
               />
             </Box>
-            <Box display="flex">
-              <Box mt="36px" width="50%" paddingRight="15px">
+            <Box display="flex" flexDirection={{ xs: "column", md: "row" }}>
+              <Box
+                mt="36px"
+                width={{ xs: "100%", md: "50%" }}
+                paddingRight={{ xs: 0, md: "15px" }}
+              >
                 <Typography fontSize="14px" color="#737A8D" mb="16px">
                   Provinsi
                 </Typography>
@@ -255,7 +264,7 @@ const Alamat = () => {
                   {renderProvinsiList()}
                 </Select>
               </Box>
-              <Box mt="36px" width="50%">
+              <Box mt="36px" width={{ xs: "100%", md: "50%" }}>
                 <Typography fontSize="14px" color="#737A8D" mb="16px">
                   Kota/Kabupaten
                 </Typography>
@@ -269,16 +278,18 @@ const Alamat = () => {
                 </Select>
               </Box>
             </Box>
-            <Box mt="36px" width="50%" paddingRight="15px">
+            <Box
+              mt="36px"
+              width={{ xs: "100%", md: "70%" }}
+              paddingRight={{ xs: 0, md: "15px" }}
+            >
               <Typography fontSize="14px" color="#737A8D" mb="16px">
                 Kecamatan
               </Typography>
               <RoundedInput
                 onChange={inputHandler}
                 name="kecamatan"
-                sx={{
-                  width: "510px",
-                }}
+                fullWidth
               />
             </Box>
             <Box mt="36px">
@@ -287,7 +298,11 @@ const Alamat = () => {
               </Typography>
               <RoundedInput fullWidth name="alamat" onChange={inputHandler} />
             </Box>
-            <Box mt="36px" width="50%" paddingRight="15px">
+            <Box
+              mt="36px"
+              width={{ xs: "100%", md: "50%" }}
+              paddingRight={{ xs: 0, md: "15px" }}
+            >
               <Typography fontSize="14px" color="#737A8D" mb="16px">
                 Kode Pos
               </Typography>

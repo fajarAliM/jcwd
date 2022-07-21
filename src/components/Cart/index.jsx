@@ -194,21 +194,22 @@ const UserCart = ({ checked = false, setCartChecked, val, indexInRedux }) => {
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
+              justifyContent: "space-between",
               border: "1px solid #FF6600",
-              maxWidth: 180,
               borderRadius: 3,
             }}
           >
             <Button
               onClick={() => qtyHandler("decrement")}
               variant="outlined"
-              sx={{
+              sx={() => ({
                 border: 0,
                 fontWeight: "bold",
                 "&:hover": {
                   border: 0,
                 },
-              }}
+                padding: "10px 10% !important",
+              })}
             >
               -
             </Button>

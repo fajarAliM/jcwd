@@ -70,9 +70,9 @@ const KeranjangPage = () => {
         <Typography fontSize="24px" fontWeight={700}>
           Keranjang Saya
         </Typography>
-        <Grid container spacing={2} sx={{ mt: 2 }}>
+        <Grid container spacing={2} columns={12} sx={{ mt: 2 }}>
           {/* LEFT SIDE */}
-          <Grid item xs={8}>
+          <Grid item xs={12} md={8}>
             <Box
               sx={{
                 border: "1px solid white",
@@ -140,7 +140,7 @@ const KeranjangPage = () => {
               })}
             </Box>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Box
               sx={{
                 border: "1px solid white",

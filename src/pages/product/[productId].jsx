@@ -3,7 +3,6 @@ import {
   Breadcrumbs,
   Button,
   Card,
-  Container,
   Grid,
   Link,
   Typography,
@@ -121,16 +120,26 @@ const ProductPage = ({ productDetail }) => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
-      <Container
+      <Box
+        display="flex"
+        flexDirection={{ xs: "column", md: "row" }}
+        p={{ xs: 4, md: 0 }}
+        alignItems={{ xs: "center", md: "unset" }}
         sx={{
-          display: "flex",
-          flexDirection: "row",
+          justifyContent: "center",
           mt: 5,
           borderBottom: "1px solid #D5D7DD",
         }}
       >
         {/* LEFT SIDE */}
-        <Box sx={{ display: "flex", flexDirection: "column", mt: 2, mr: 10 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            mt: 2,
+            mr: 10,
+          }}
+        >
           <Box sx={{ mb: 5 }}>
             <Breadcrumbs sx={{ "&:hover": { cursor: "pointer" } }}>
               <Link underline="none" href="/">
@@ -187,7 +196,7 @@ const ProductPage = ({ productDetail }) => {
                 src={productDetail?.produk_image_url}
               />
             </Card>
-            <Box sx={{ mt: 3 }}>
+            <Box sx={{ mt: 3 }} display={{ xs: "none", md: "block" }}>
               <Button
                 variant="contained"
                 startIcon={<ChatIcon />}
@@ -479,11 +488,14 @@ const ProductPage = ({ productDetail }) => {
             </Grid>
           </Grid>
         </Box>
-      </Container>
+      </Box>
 
       {/* BOTTOM SIDE */}
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <Typography sx={{ fontSize: "25px", color: "#213360", mt: 2, ml: 15 }}>
+      <Box
+        sx={{ display: "flex", flexDirection: "column" }}
+        px={{ xs: 4, md: 15 }}
+      >
+        <Typography ml sx={{ fontSize: "25px", color: "#213360", mt: 2 }}>
           Produk Terkait
         </Typography>
         <Box sx={{ ml: 14, display: "flex", overflow: "visible" }}>
