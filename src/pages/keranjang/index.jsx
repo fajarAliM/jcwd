@@ -187,7 +187,7 @@ const KeranjangPage = () => {
                   },
                 }}
               >
-                Bayar(4)
+                Bayar
               </Button>
             </Box>
           </Grid>

@@ -39,6 +39,7 @@ import Group from "public/Images/Group.png";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { login } from "redux/reducer/auth";
+import Router from "next/router";
 
 const ProfilePage = () => {
   // eslint-disable-next-line no-unused-vars
@@ -53,7 +54,7 @@ const ProfilePage = () => {
   const [tab, setTab] = useState(1);
   const [tambahAlamat, setTambahAlamat] = useState(false);
   // eslint-disable-next-line no-unused-vars
-  const [listAlamat, setListAlamat] = useState(1);
+  const [listAlamat, setListAlamat] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
 
@@ -231,6 +232,15 @@ const ProfilePage = () => {
     setEditPhotoProfile(e.target.files[0]);
   };
 
+  const fetchAlamat = async () => {
+    try {
+      const dataAlamat = await axiosInstance.get("/address/get-all-address");
+      setListAlamat(dataAlamat.data.result.rows);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     if (editPhotoProfile === null) {
       setShowPhotoProfilePreview(undefined);
@@ -245,6 +255,12 @@ const ProfilePage = () => {
     // eslint-disable-next-line consistent-return
     return () => URL.revokeObjectURL(objectUrl);
   }, [editPhotoProfile]);
+
+  useEffect(() => {
+    if (!listAlamat.length) {
+      fetchAlamat();
+    }
+  }, []);
 
   const verificationButtonHandler = async () => {
     try {
@@ -270,7 +286,7 @@ const ProfilePage = () => {
         padding="20px"
       >
         {/* Box Tab */}
-        <Box display="flex" justifyContent="flex-end">
+        <Box display="flex" justifyContent="flex-end" marginBottom="20px">
           <Grid Container>
             <Tabs onChange={tabHandle} value={tab} indicatorColor="primary">
               <Tab value={1} label="Personal Data" />
@@ -775,7 +791,7 @@ const ProfilePage = () => {
             <Box display="flex" justifyContent="flex-end">
               <Button
                 sx={{ color: "Brand.500" }}
-                onClick={() => setTambahAlamat(true)}
+                onClick={() => Router.push("/alamat")}
                 variant="text"
               >
                 Tambah Alamat
@@ -787,27 +803,18 @@ const ProfilePage = () => {
             </Box>
             {listAlamat ? (
               <>
-                <CardAlamat
-                  alamat="Purwadhika Campus BSD BSD Green Office Park, GOP 9 - G Floor"
-                  kec="Serpong"
-                  kab="BSD City"
-                  provinsi="Banten"
-                  kodePos="21990"
-                  label="Purwadhika"
-                  namaPenerima="Johnny G"
-                  nomorTelp="00009999"
-                />
-                <CardAlamat
-                  isMain
-                  alamat="Purwadhika Campus BSD BSD Green Office Park, GOP 9 - G Floor"
-                  kec="Serpong"
-                  kab="BSD City"
-                  provinsi="Banten"
-                  kodePos="21990"
-                  label="Purwadhika"
-                  namaPenerima="Johnny G"
-                  nomorTelp="00009999"
-                />
+                {listAlamat.map((val) => {
+                  return (
+                    <CardAlamat
+                      id={val.id}
+                      alamat={val.alamat_lengkap}
+                      namaPenerima={val.nama_penerima}
+                      nomorTelp={val.no_telepon_penerima}
+                      label={val.label_alamat}
+                      isMain={val.is_main_address}
+                    />
+                  );
+                })}
               </>
             ) : (
               <Box

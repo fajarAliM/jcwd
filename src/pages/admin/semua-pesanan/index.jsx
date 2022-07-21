@@ -63,6 +63,7 @@ const SemuaPesananPage = () => {
       setTransaksi(dataTransaksi.data.result.rows);
       setDataCount(dataTransaksi.data.result.count);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   };
@@ -120,6 +121,8 @@ const SemuaPesananPage = () => {
           courier="JNE-REG"
           orderCode={`HTMED-${val.id}`}
           status={val?.paymentStatusId}
+          orderTime={val?.createdAt}
+          productAdded={val?.productAdded}
           transaksiId={val?.id}
           isObatResep={val?.is_resep}
           productOrderQty={val?.transaction_details.length}

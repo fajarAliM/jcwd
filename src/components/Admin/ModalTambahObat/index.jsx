@@ -23,7 +23,12 @@ import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 
-const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
+const ModalTambahObat = ({
+  open,
+  handleClose,
+  categories = [],
+  addNewProduct,
+}) => {
   const [activeStep, setActiveStep] = useState(1);
   const [files, setFiles] = useState([]);
   const [imageReview, setImageReview] = useState([]);
@@ -131,7 +136,7 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
       setImageReview([]);
       enqueueSnackbar(res?.data?.message, { variant: "success" });
       setActiveStep(3);
-
+      addNewProduct(res.data.message);
       formik.setFieldValue("nama_produk", formik.initialValues.nama_produk);
       formik.setFieldValue("nomor_obat", formik.initialValues.nomor_obat);
       formik.setFieldValue("nomor_bpom", formik.initialValues.nomor_bpom);
@@ -219,288 +224,267 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: "792px",
-            height: "auto",
+            maxHeight: "700px",
             bgcolor: "white",
             borderRadius: 2,
             boxShadow: 24,
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
+            p: 2,
           }}
         >
-          <Box padding={3}>
-            {/* Box Heading */}
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              marginBottom="30px"
-            >
-              <Typography fontSize="20px" fontWeight="bold">
-                Tambah Obat
-              </Typography>
-              <CloseIcon
-                onClick={() => {
-                  handleClose();
-                  formik.setFieldValue(
-                    "nama_produk",
-                    formik.initialValues.nama_produk
-                  );
-                  formik.setFieldValue(
-                    "nomor_obat",
-                    formik.initialValues.nomor_obat
-                  );
-                  formik.setFieldValue(
-                    "nomor_bpom",
-                    formik.initialValues.nomor_bpom
-                  );
-                  formik.setFieldValue("productCategoryId", "");
-                  formik.setFieldValue("satuan", "Box");
-                  formik.setFieldValue("kategori", "");
-                  formik.setFieldValue(
-                    "harga_jual",
-                    formik.initialValues.harga_jual
-                  );
-                  formik.setFieldValue("diskon", formik.initialValues.diskon);
-                }}
-                sx={{
-                  "&:hover": {
-                    cursor: "pointer",
-                  },
-                }}
-              />
-            </Box>
+          {/* Box Header */}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            marginBottom="30px"
+          >
+            <Typography fontSize="20px" fontWeight="bold">
+              Tambah Obat
+            </Typography>
+            <CloseIcon
+              onClick={() => {
+                handleClose();
+                formik.setFieldValue(
+                  "nama_produk",
+                  formik.initialValues.nama_produk
+                );
+                formik.setFieldValue(
+                  "nomor_obat",
+                  formik.initialValues.nomor_obat
+                );
+                formik.setFieldValue(
+                  "nomor_bpom",
+                  formik.initialValues.nomor_bpom
+                );
+                formik.setFieldValue("productCategoryId", "");
+                formik.setFieldValue("satuan", "Box");
+                formik.setFieldValue("kategori", "");
+                formik.setFieldValue(
+                  "harga_jual",
+                  formik.initialValues.harga_jual
+                );
+                formik.setFieldValue("diskon", formik.initialValues.diskon);
+              }}
+              sx={{
+                "&:hover": {
+                  cursor: "pointer",
+                },
+              }}
+            />
+          </Box>
 
-            {/* Body Box */}
-            <Box display="flex" flexDirection="column">
-              <FormControl error={formik.errors.nama_produk}>
-                <Grid container marginBottom="10px" alignItems="center">
-                  <Grid item xs={3}>
-                    <FormLabel
-                      sx={{
-                        fontWeight: "bold",
-                        color: "black",
-                      }}
-                    >
-                      Nama Obat
-                    </FormLabel>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <OutlinedInput
-                      onChange={(event) =>
-                        formik.setFieldValue("nama_produk", event.target.value)
-                      }
-                      size="small"
-                      placeholder="Masukkan nama obat"
-                      value={formik.values.nama_produk}
-                    />
-                  </Grid>
+          {/* Body Box */}
+          <Box display="flex" flexDirection="column" overflow="auto">
+            <FormControl error={formik.errors.nama_produk}>
+              <Grid container marginBottom="10px" alignItems="center">
+                <Grid item xs={3}>
+                  <FormLabel
+                    sx={{
+                      fontWeight: "bold",
+                      color: "black",
+                    }}
+                  >
+                    Nama Obat
+                  </FormLabel>
                 </Grid>
-              </FormControl>
-              <FormControl error={formik.errors.nomor_obat}>
-                <Grid container marginBottom="10px" alignItems="center">
-                  <Grid item xs={3}>
-                    <FormLabel
-                      sx={{
-                        fontWeight: "bold",
-                        color: "black",
-                      }}
-                    >
-                      No. Obat
-                    </FormLabel>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <OutlinedInput
-                      size="small"
-                      placeholder="Masukkan no. obat"
-                      onChange={(event) =>
-                        formik.setFieldValue("nomor_obat", event.target.value)
-                      }
-                      value={formik.values.nomor_obat}
-                    />
-                  </Grid>
+                <Grid item xs={9}>
+                  <OutlinedInput
+                    onChange={(event) =>
+                      formik.setFieldValue("nama_produk", event.target.value)
+                    }
+                    size="small"
+                    placeholder="Masukkan nama obat"
+                    value={formik.values.nama_produk}
+                  />
                 </Grid>
-              </FormControl>
-              <FormControl error={formik.errors.nomor_bpom}>
-                <Grid container marginBottom="10px" alignItems="center">
-                  <Grid item xs={3}>
-                    <FormLabel
-                      sx={{
-                        fontWeight: "bold",
-                        color: "black",
-                      }}
-                    >
-                      No. BPOM
-                    </FormLabel>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <OutlinedInput
-                      size="small"
-                      placeholder="Masukkan no. BPOM"
-                      onChange={(event) =>
-                        formik.setFieldValue("nomor_bpom", event.target.value)
-                      }
-                      value={formik.values.nomor_bpom}
-                    />
-                  </Grid>
+              </Grid>
+            </FormControl>
+            <FormControl error={formik.errors.nomor_obat}>
+              <Grid container marginBottom="10px" alignItems="center">
+                <Grid item xs={3}>
+                  <FormLabel
+                    sx={{
+                      fontWeight: "bold",
+                      color: "black",
+                    }}
+                  >
+                    No. Obat
+                  </FormLabel>
                 </Grid>
-              </FormControl>
-              <FormControl error={formik.errors.kategori}>
-                <Grid container marginBottom="10px" alignItems="center">
-                  <Grid item xs={3}>
-                    <FormLabel
-                      sx={{
-                        fontWeight: "bold",
-                        color: "black",
-                      }}
-                    >
+                <Grid item xs={9}>
+                  <OutlinedInput
+                    size="small"
+                    placeholder="Masukkan no. obat"
+                    onChange={(event) =>
+                      formik.setFieldValue("nomor_obat", event.target.value)
+                    }
+                    value={formik.values.nomor_obat}
+                  />
+                </Grid>
+              </Grid>
+            </FormControl>
+            <FormControl error={formik.errors.nomor_bpom}>
+              <Grid container marginBottom="10px" alignItems="center">
+                <Grid item xs={3}>
+                  <FormLabel
+                    sx={{
+                      fontWeight: "bold",
+                      color: "black",
+                    }}
+                  >
+                    No. BPOM
+                  </FormLabel>
+                </Grid>
+                <Grid item xs={9}>
+                  <OutlinedInput
+                    size="small"
+                    placeholder="Masukkan no. BPOM"
+                    onChange={(event) =>
+                      formik.setFieldValue("nomor_bpom", event.target.value)
+                    }
+                    value={formik.values.nomor_bpom}
+                  />
+                </Grid>
+              </Grid>
+            </FormControl>
+            <FormControl error={formik.errors.kategori}>
+              <Grid container marginBottom="10px" alignItems="center">
+                <Grid item xs={3}>
+                  <FormLabel
+                    sx={{
+                      fontWeight: "bold",
+                      color: "black",
+                    }}
+                  >
+                    Kategori
+                  </FormLabel>
+                </Grid>
+                <Grid item xs={9}>
+                  <Select
+                    defaultValue=""
+                    sx={{
+                      backgroundColor: "white",
+                    }}
+                    size="small"
+                    onChange={(e) => {
+                      formik.setFieldValue("kategori", e.target.value);
+                    }}
+                    value={formik.values.kategori}
+                    autoWidth
+                    displayEmpty
+                  >
+                    <MenuItem disabled value="">
                       Kategori
-                    </FormLabel>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Select
-                      defaultValue=""
-                      sx={{
-                        backgroundColor: "white",
-                      }}
-                      size="small"
-                      onChange={(e) => {
-                        formik.setFieldValue("kategori", e.target.value);
-                      }}
-                      value={formik.values.kategori}
-                      autoWidth
-                      displayEmpty
-                    >
-                      <MenuItem disabled value="">
-                        Kategori
-                      </MenuItem>
-                      {categories?.map((val) => {
-                        return (
-                          <MenuItem value={val.id}>{val.kategori}</MenuItem>
-                        );
-                      })}
-                      {/* <MenuItem value="Obat Bebas">Obat Bebas</MenuItem>
+                    </MenuItem>
+                    {categories?.map((val) => {
+                      return <MenuItem value={val.id}>{val.kategori}</MenuItem>;
+                    })}
+                    {/* <MenuItem value="Obat Bebas">Obat Bebas</MenuItem>
                           <MenuItem value="Obat Resep">Obat Resep</MenuItem> */}
-                    </Select>
-                  </Grid>
+                  </Select>
                 </Grid>
-              </FormControl>
-              <FormControl error={formik.errors.satuan}>
-                <Grid container marginBottom="10px" alignItems="center">
-                  <Grid item xs={3}>
-                    <FormLabel
-                      sx={{
-                        fontWeight: "bold",
-                        color: "black",
-                      }}
-                    >
-                      Satuan
-                    </FormLabel>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Select
-                      sx={{
-                        backgroundColor: "white",
-                      }}
-                      size="small"
-                      onChange={(event) => {
-                        formik.setFieldValue("satuan", event.target.value);
-                      }}
-                      value={formik.values.satuan}
-                      autoWidth
-                    >
-                      <MenuItem value="Box">Box</MenuItem>
-                      <MenuItem value="Strip">Strip</MenuItem>
-                      <MenuItem value="Botol">Botol</MenuItem>
-                    </Select>
-                  </Grid>
+              </Grid>
+            </FormControl>
+            <FormControl error={formik.errors.satuan}>
+              <Grid container marginBottom="10px" alignItems="center">
+                <Grid item xs={3}>
+                  <FormLabel
+                    sx={{
+                      fontWeight: "bold",
+                      color: "black",
+                    }}
+                  >
+                    Satuan
+                  </FormLabel>
                 </Grid>
-              </FormControl>
-              <FormControl error={formik.errors.harga_jual}>
-                <Grid container marginBottom="10px" alignItems="center">
-                  <Grid item xs={3}>
-                    <FormLabel
-                      sx={{
-                        fontWeight: "bold",
-                        color: "black",
-                      }}
-                    >
-                      Nilai Jual (Rp)
-                    </FormLabel>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <OutlinedInput
-                      type="number"
-                      size="small"
-                      placeholder="Masukkan nilai jual"
-                      value={formik.values.harga_jual}
-                      onChange={(event) =>
-                        formik.setFieldValue("harga_jual", event.target.value)
-                      }
-                    />
-                  </Grid>
+                <Grid item xs={9}>
+                  <Select
+                    sx={{
+                      backgroundColor: "white",
+                    }}
+                    size="small"
+                    onChange={(event) => {
+                      formik.setFieldValue("satuan", event.target.value);
+                    }}
+                    value={formik.values.satuan}
+                    autoWidth
+                  >
+                    <MenuItem value="Box">Box</MenuItem>
+                    <MenuItem value="Strip">Strip</MenuItem>
+                    <MenuItem value="Botol">Botol</MenuItem>
+                  </Select>
                 </Grid>
-              </FormControl>
-              <FormControl error={formik.errors.diskon}>
-                <Grid container marginBottom="10px" alignItems="center">
-                  <Grid item xs={3}>
-                    <FormLabel
-                      sx={{
-                        fontWeight: "bold",
-                        color: "black",
-                      }}
-                    >
-                      Diskon (%)
-                    </FormLabel>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <OutlinedInput
-                      type="number"
-                      size="small"
-                      placeholder="Masukkan diskon"
-                      value={formik.values.diskon}
-                      onChange={(event) =>
-                        formik.setFieldValue("diskon", event.target.value)
-                      }
-                    />
-                  </Grid>
+              </Grid>
+            </FormControl>
+            <FormControl error={formik.errors.harga_jual}>
+              <Grid container marginBottom="10px" alignItems="center">
+                <Grid item xs={3}>
+                  <FormLabel
+                    sx={{
+                      fontWeight: "bold",
+                      color: "black",
+                    }}
+                  >
+                    Nilai Jual (Rp)
+                  </FormLabel>
                 </Grid>
-              </FormControl>
-              {/* Form Upload Foto Produk */}
-              <FormControl>
-                <Grid container marginBottom="10px" alignItems="center">
-                  <Grid item xs={3}>
-                    <FormLabel
-                      sx={{
-                        fontWeight: "bold",
-                        color: "black",
-                      }}
-                    >
-                      Gambar Produk
-                    </FormLabel>
-                  </Grid>
-                  <Grid item xs={9}>
-                    {files?.length === 5 ? (
-                      <Tooltip title="Maksimal 5 Gambar" placement="right">
-                        <span>
-                          <input
-                            accept="image/png, image/jpeg, image/jpg"
-                            onChange={handleFile}
-                            ref={inputFile}
-                            type="file"
-                            inputProps={{ multiple: true }}
-                            style={{ display: "none" }}
-                          />
-                          <Button
-                            variant="outlined"
-                            onClick={() => inputFile.current.click()}
-                            disabled={files.length === 5}
-                          >
-                            Add Image
-                          </Button>
-                        </span>
-                      </Tooltip>
-                    ) : (
-                      <>
+                <Grid item xs={9}>
+                  <OutlinedInput
+                    type="number"
+                    size="small"
+                    placeholder="Masukkan nilai jual"
+                    value={formik.values.harga_jual}
+                    onChange={(event) =>
+                      formik.setFieldValue("harga_jual", event.target.value)
+                    }
+                  />
+                </Grid>
+              </Grid>
+            </FormControl>
+            <FormControl error={formik.errors.diskon}>
+              <Grid container marginBottom="10px" alignItems="center">
+                <Grid item xs={3}>
+                  <FormLabel
+                    sx={{
+                      fontWeight: "bold",
+                      color: "black",
+                    }}
+                  >
+                    Diskon (%)
+                  </FormLabel>
+                </Grid>
+                <Grid item xs={9}>
+                  <OutlinedInput
+                    type="number"
+                    size="small"
+                    placeholder="Masukkan diskon"
+                    value={formik.values.diskon}
+                    onChange={(event) =>
+                      formik.setFieldValue("diskon", event.target.value)
+                    }
+                  />
+                </Grid>
+              </Grid>
+            </FormControl>
+            {/* Form Upload Foto Produk */}
+            <FormControl>
+              <Grid container marginBottom="10px" alignItems="center">
+                <Grid item xs={3}>
+                  <FormLabel
+                    sx={{
+                      fontWeight: "bold",
+                      color: "black",
+                    }}
+                  >
+                    Gambar Produk
+                  </FormLabel>
+                </Grid>
+                <Grid item xs={9}>
+                  {files?.length === 5 ? (
+                    <Tooltip title="Maksimal 5 Gambar" placement="right">
+                      <span>
                         <input
                           accept="image/png, image/jpeg, image/jpg"
                           onChange={handleFile}
@@ -512,63 +496,81 @@ const ModalTambahObat = ({ open, handleClose, categories = [] }) => {
                         <Button
                           variant="outlined"
                           onClick={() => inputFile.current.click()}
-                          disabled={files?.length === 5}
+                          disabled={files.length === 5}
                         >
                           Add Image
                         </Button>
-                      </>
-                    )}
-                  </Grid>
-
-                  <Box
-                    display="flex"
-                    marginTop="10px"
-                    maxWidth="100%"
-                    sx={{
-                      overflowX: "auto",
-                    }}
-                  >
-                    {imageReview?.map((file, idx) => {
-                      return (
-                        <Box
-                          sx={{
-                            display: "flex",
-                            borderRadius: "10px",
-                            padding: "5px",
-                          }}
-                        >
-                          <img src={file} height="200px" />
-                          <CloseIcon
-                            sx={{
-                              color: "Sidebar.600",
-                              position: "relative",
-                              right: 30,
-                              alignContent: "flex-end",
-                              ":hover": {
-                                color: "red",
-                                cursor: "pointer",
-                              },
-                            }}
-                            onClick={() => {
-                              setImageReview((prevValue) => {
-                                return prevValue.filter(
-                                  (val, prevIdx) => idx !== prevIdx
-                                );
-                              });
-                              setFiles((prevValue) => {
-                                return prevValue.filter(
-                                  (val, prevIdx) => idx !== prevIdx
-                                );
-                              });
-                            }}
-                          />
-                        </Box>
-                      );
-                    })}
-                  </Box>
+                      </span>
+                    </Tooltip>
+                  ) : (
+                    <>
+                      <input
+                        accept="image/png, image/jpeg, image/jpg"
+                        onChange={handleFile}
+                        ref={inputFile}
+                        type="file"
+                        inputProps={{ multiple: true }}
+                        style={{ display: "none" }}
+                      />
+                      <Button
+                        variant="outlined"
+                        onClick={() => inputFile.current.click()}
+                        disabled={files?.length === 5}
+                      >
+                        Add Image
+                      </Button>
+                    </>
+                  )}
                 </Grid>
-              </FormControl>
-            </Box>
+
+                <Box
+                  display="flex"
+                  marginTop="10px"
+                  maxWidth="100%"
+                  sx={{
+                    overflowX: "auto",
+                  }}
+                >
+                  {imageReview?.map((file, idx) => {
+                    return (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          borderRadius: "10px",
+                          padding: "5px",
+                        }}
+                      >
+                        <img src={file} height="200px" />
+                        <CloseIcon
+                          sx={{
+                            color: "Sidebar.600",
+                            position: "relative",
+                            right: 30,
+                            alignContent: "flex-end",
+                            ":hover": {
+                              color: "red",
+                              cursor: "pointer",
+                            },
+                          }}
+                          onClick={() => {
+                            setImageReview((prevValue) => {
+                              return prevValue.filter(
+                                (val, prevIdx) => idx !== prevIdx
+                              );
+                            });
+                            setFiles((prevValue) => {
+                              return prevValue.filter(
+                                (val, prevIdx) => idx !== prevIdx
+                              );
+                            });
+                          }}
+                        />
+                      </Box>
+                    );
+                  })}
+                </Box>
+              </Grid>
+            </FormControl>
           </Box>
 
           <Box>

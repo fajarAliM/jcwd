@@ -35,13 +35,7 @@ import axiosInstance from "config/api";
 import { useFormik } from "formik";
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
-// import { styled } from "@mui/material/styles";
-
-const Image = styled("img")({
-  width: "430px",
-  height: "100%",
-  objectFit: "scale-down",
-});
+import Image from "next/image";
 
 const ModalSalinanResep = ({
   open,
@@ -76,6 +70,7 @@ const ModalSalinanResep = ({
       const res = await axiosInstance.get("/admin/product");
       setProductData(res?.data?.result?.rows);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   };
@@ -159,6 +154,7 @@ const ModalSalinanResep = ({
       formik.setFieldValue("namaDokter", formik.initialValues.namaDokter);
       formik.setFieldValue("nomorResep", formik.initialValues.nomorResep);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
       enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
     }
@@ -274,7 +270,10 @@ const ModalSalinanResep = ({
             <Grid container spacing={3}>
               {/* Grid for Image */}
               <Grid item xs={5}>
-                <Image src={fotoResep || Kursiplastik} />
+                <Image
+                  src={fotoResep || Kursiplastik}
+                  sx={{ maxWidth: "400px" }}
+                />
               </Grid>
 
               {/* Grid for Add Product */}
@@ -303,7 +302,7 @@ const ModalSalinanResep = ({
                       Tgl. Pemesanan
                     </Typography>
                     <Typography fontSize="20px" fontWeight="100">
-                      {moment(waktuOrder).format("DD MMMM YYYY, hh:mm A")}
+                      {moment(waktuOrder).format("DD MMMM YYYY, HH:mm")}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -396,7 +395,7 @@ const ModalSalinanResep = ({
                   </Grid>
                 </Grid>
                 <Grid container spacing={1} marginBottom="16px">
-                  <Grid item xs={4}>
+                  <Grid item xs={3}>
                     <FormControl error={formik.errors.kuantitas}>
                       <FormLabel
                         sx={{
@@ -451,7 +450,7 @@ const ModalSalinanResep = ({
                       </Box>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={5}>
                     <FormControl error={formik.errors.satuan}>
                       <FormLabel
                         sx={{
@@ -688,7 +687,7 @@ const ModalSalinanResep = ({
                       fontSize: "12px",
                     }}
                   >
-                    {moment(waktuOrder).format("DD MMMM YYYY, hh:mm A")}
+                    {moment(waktuOrder).format("DD MMMM YYYY, HH:mm")}
                   </Typography>
                 </Box>
 
@@ -707,7 +706,8 @@ const ModalSalinanResep = ({
                         </Grid>
                         <Grid item xs={2}>
                           <Typography sx={{ fontSize: "12px", color: "gray" }}>
-                            {val.kuantitasObat} x {val.harga_jual}
+                            {val.kuantitasObat} x{" "}
+                            {val.harga_jual.toLocaleString()}
                           </Typography>
                         </Grid>
                         <Grid item xs={2}>
@@ -767,7 +767,7 @@ const ModalSalinanResep = ({
                         marginRight: "8px",
                       }}
                     >
-                      Rp {totalPrice().toLocaleString()},-
+                      Rp {totalPrice().toLocaleString()}
                     </Typography>
                   </Box>
                 </Box>

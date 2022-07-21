@@ -1,4 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
+import { useSnackbar } from "notistack";
+import axiosInstance from "config/api";
 
 const CardAlamat = ({
   label,
@@ -6,11 +8,22 @@ const CardAlamat = ({
   namaPenerima,
   nomorTelp,
   alamat,
-  provinsi,
-  kab,
-  kec,
-  kodePos,
+  id,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const changeMainAddress = async () => {
+    try {
+      await axiosInstance.patch("/address/change-main-address", {
+        newAddressId: id,
+      });
+      enqueueSnackbar("Change Main Address Success!", { variant: "success" });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -47,15 +60,18 @@ const CardAlamat = ({
         {namaPenerima}
       </Typography>
       <Typography sx={{ fontSize: "12px" }}>{nomorTelp}</Typography>
-      <Typography sx={{ fontSize: "12px" }}>
-        {alamat}, Kec. {kec}, Kab. {kab}, Provisin {provinsi}, {kodePos}
-      </Typography>
+      <Typography sx={{ fontSize: "12px" }}>{alamat}</Typography>
       <Box display="flex" marginTop="10px">
         <Button variant="outlined" fullWidth>
           Hapus Alamat
         </Button>
         {isMain ? null : (
-          <Button variant="contained" sx={{ marginLeft: "10px" }} fullWidth>
+          <Button
+            onClick={changeMainAddress}
+            variant="contained"
+            sx={{ marginLeft: "10px" }}
+            fullWidth
+          >
             Alamat Utama
           </Button>
         )}

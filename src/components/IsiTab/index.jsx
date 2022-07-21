@@ -52,14 +52,14 @@ const IsiTab = ({ renderTransactionList, setSortBy, setSortDir, setPage }) => {
           <Typography sx={{ fontWeight: 700, fontSize: "14px", mr: "10px" }}>
             Jenis Obat
           </Typography>
-          <Button variant="outlined" sx={{ mr: "10px", borderRadius: "17px" }}>
+          <Button variant="contained" sx={{ mr: "10px", borderRadius: "17px" }}>
             Semua Obat
           </Button>
           <Button variant="outlined" sx={{ mr: "10px", borderRadius: "17px" }}>
             Obat Resep
           </Button>
           <Button
-            variant="contained"
+            variant="outlined"
             sx={{
               "&:hover": { border: 0 },
               mr: "10px",

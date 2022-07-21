@@ -29,6 +29,7 @@ const TableData = ({
   handleChangePage,
   totalData,
   categoriesData,
+  updateData,
 }) => {
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -166,16 +167,19 @@ const TableData = ({
   return (
     <>
       <ModalTambahStok
+        dataUpdated={updateData}
         open={tambahStok}
         handleClose={handleClose}
         data={produkData}
       />
       <DeleteDialog
+        dataDeleted={updateData}
         open={deleteProduk}
         handleClose={handleClose}
         data={produkData}
       />
       <ModalEditObat
+        dataEdited={updateData}
         open={editProduk}
         data={produkData}
         handleClose={handleClose}

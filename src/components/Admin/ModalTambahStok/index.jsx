@@ -23,7 +23,7 @@ import { useFormik } from "formik";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
-const ModalTambahStok = ({ open, handleClose, data }) => {
+const ModalTambahStok = ({ open, handleClose, data, dataUpdated }) => {
   const [activeStep, setActiveStep] = useState(1);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -51,6 +51,7 @@ const ModalTambahStok = ({ open, handleClose, data }) => {
         const res = await axiosInstance.post("/admin/stock", productInfo);
         enqueueSnackbar(res?.data?.message, { variant: "success" });
         setActiveStep(3);
+        dataUpdated(res.data.message);
         formik.setFieldValue("jumlah_stok", 0);
         formik.setFieldValue("exp_date", "");
         formik.setFieldValue("price", 0);

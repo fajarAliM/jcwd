@@ -1,23 +1,16 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-else-return */
-/* eslint-disable no-unused-vars */
 /* eslint-disable no-nested-ternary */
-import { Grid, Box, Typography, Button, Stack } from "@mui/material";
+import { Grid, Box, Typography, Button, Tooltip } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ChatIcon from "@mui/icons-material/Chat";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import { useState } from "react";
 import moment from "moment";
-import { styled } from "@mui/material/styles";
+import "moment/locale/id";
 import ProductCardItems from "components/Admin/ProductCardItems";
 import ModalTerimaPesanan from "components/Admin/ModalTerimaPesanan";
 import axiosInstance from "config/api";
-
-const Image = styled("img")({
-  width: "73px",
-  height: "100%",
-  objectFit: "scale-down",
-});
 
 const CardOrder = ({
   status,
@@ -41,8 +34,6 @@ const CardOrder = ({
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [salinanResep, setSalinanResep] = useState(false);
-  const [obatLain, setObatLain] = useState(false);
 
   const declineTransaction = async (transactionId) => {
     try {
@@ -50,6 +41,7 @@ const CardOrder = ({
         transactionId,
       });
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   };
@@ -60,6 +52,7 @@ const CardOrder = ({
         transactionId,
       });
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   };
@@ -89,7 +82,11 @@ const CardOrder = ({
           image={detail.resep_image_url}
           nama={detail.nomor_resep}
           harga={detail.total_price}
+          productAdded={detail.productAdded}
           isObatResep={detail.is_resep}
+          buyersName={detail.user.username}
+          transaksiId={transaksiId}
+          orderCode={orderCode}
         />
       );
     }
@@ -165,7 +162,7 @@ const CardOrder = ({
             </Typography>
             <AccessTimeIcon sx={{ marginLeft: "10px", color: "gray" }} />
             <Typography sx={{ color: "gray" }}>
-              {moment(orderTime).format("DD MMMM YYYY, hh:mm A")}
+              {moment(orderTime).format("DD MMMM YYYY, HH:mm")}
             </Typography>
           </Box>
 
@@ -191,7 +188,7 @@ const CardOrder = ({
                 <Typography>
                   {moment(orderTime)
                     .add(2, "days")
-                    .format("DD MMMM YYYY, hh:mm A")}
+                    .format("DD MMMM YYYY, HH:mm")}
                 </Typography>
               </Box>
             </Box>
@@ -214,8 +211,8 @@ const CardOrder = ({
         {/* Detail Pemesanan */}
         <Grid container>
           {/* Box Product Image */}
-          <Grid item container xs={3}>
-            <Stack>{renderProduct()}</Stack>
+          <Grid item container xs={4}>
+            {renderProduct()}
           </Grid>
 
           {/* Box Detail Pengiriman */}
@@ -269,7 +266,7 @@ const CardOrder = ({
           </Grid>
         </Grid>
 
-        {isObatResep ? null : (
+        {isObatResep && totalPrice === 0 ? null : (
           <Box
             sx={{
               marginTop: "14px",
@@ -306,7 +303,7 @@ const CardOrder = ({
                 marginRight: "8px",
               }}
             >
-              Rp {totalPrice.toLocaleString()},-
+              Rp {totalPrice.toLocaleString()}
             </Typography>
           </Box>
         )}
@@ -366,14 +363,24 @@ const CardOrder = ({
                 >
                   Tolak Pesanan
                 </Button>
-                <Button
-                  variant="contained"
-                  onClick={handleOpen}
-                  disabled={isObatResep && !productAdded}
-                  sx={{ "&:hover": { border: 0 } }}
-                >
-                  Terima Pesanan
-                </Button>
+                {(isObatResep && !productAdded && !detail.proof_of_payment) ||
+                !detail.proof_of_payment ? (
+                  <Tooltip title="Menunggu Pembayaran" placement="top">
+                    <span>
+                      <Button variant="contained" disabled>
+                        Terima Pesanan
+                      </Button>
+                    </span>
+                  </Tooltip>
+                ) : (
+                  <Button
+                    variant="contained"
+                    onClick={handleOpen}
+                    sx={{ "&:hover": { border: 0 } }}
+                  >
+                    Terima Pesanan
+                  </Button>
+                )}
                 <ModalTerimaPesanan
                   transaksiId={transaksiId}
                   open={open}
@@ -386,6 +393,7 @@ const CardOrder = ({
                   namaProduk={productName}
                   totalHarga={totalPrice}
                   waktuOrder={orderTime}
+                  productsData={product}
                 />
               </>
             ) : null}

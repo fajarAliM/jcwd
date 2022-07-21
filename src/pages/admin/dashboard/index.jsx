@@ -357,6 +357,7 @@ const DashboardPage = () => {
             Aktivitas yang perlu kamu ketahui untuk menjaga kepuasan pelanggan
           </Typography>
           <Grid
+            spacing={2}
             container
             sx={{
               display: "flex",

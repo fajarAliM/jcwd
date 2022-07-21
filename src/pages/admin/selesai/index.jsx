@@ -64,6 +64,7 @@ const SelesaiPage = () => {
       setTransaksi(dataTransaksi.data.result.rows);
       setDataCount(dataTransaksi.data.result.count);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   };
@@ -120,6 +121,8 @@ const SelesaiPage = () => {
           productPrice={val?.transaction_details[0]?.price_when_sold}
           courier="JNE-REG"
           orderCode={`HTMED-${val.id}`}
+          orderTime={val?.createdAt}
+          productAdded={val?.productAdded}
           status={val?.paymentStatusId}
           transaksiId={val?.id}
           isObatResep={val?.is_resep}
@@ -179,7 +182,7 @@ const SelesaiPage = () => {
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Box>
                 <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
-                  Semua Pesanan
+                  Pesanan Selesai
                 </Typography>
               </Box>
               <Box display="flex">

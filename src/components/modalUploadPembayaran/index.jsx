@@ -111,7 +111,7 @@ const ModalUploadPembayaran = ({
           flexDirection="column"
           alignItems="center"
         >
-          <Typography variant="h5">Upload bukti Pembayaran</Typography>
+          <Typography variant="h5">Upload Bukti Pembayaran</Typography>
           <Box
             {...getRootProps()}
             height="100%"
@@ -175,6 +175,7 @@ const ModalUploadPembayaran = ({
               variant="contained"
               sx={{ width: "100px" }}
               onClick={uploadButtonHander}
+              disabled={!buktiPembayaranFile}
             >
               Upload
             </Button>

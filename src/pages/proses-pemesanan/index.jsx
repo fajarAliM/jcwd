@@ -154,10 +154,10 @@ const ProsesPemesanan = () => {
           >
             <Avatar
               sx={{ height: "30px", width: "30px" }}
-              src="https://upload.wikimedia.org/wikipedia/commons/3/34/Elon_Musk_Royal_Society_%28crop2%29.jpg"
+              src={authSelector?.photo_profile}
             />
             <Typography sx={{ ml: "20px", fontWeight: 700, fontSize: "14px" }}>
-              Elon Musk
+              {authSelector.nama}
             </Typography>
           </Box>
           <Box
@@ -170,10 +170,6 @@ const ProsesPemesanan = () => {
               paddingX: "40px",
             }}
           >
-            <Box sx={{ display: "flex" }}>
-              <Avatar sx={{ height: "30px", width: "30px", mr: "20px" }} />
-              <Typography>Profil</Typography>
-            </Box>
             <Box sx={{ display: "flex" }}>
               <FormatListBulletedIcon sx={{ mr: "26px" }} />
               <Typography sx={{ color: "Brand.500", fontWeight: 700 }}>

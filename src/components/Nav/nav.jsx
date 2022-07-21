@@ -127,19 +127,19 @@ const Nav = () => {
       </FormControl>
       {userSelector.id ? (
         <>
-          <Link href="/keranjang">
-            <IconButton sx={{ ml: "50px" }}>
-              <Badge
-                badgeContent={cartSelector.items.length}
-                color="error"
-                invisible={cartSelector.items.length === 0}
-              >
-                <ShoppingCartIcon
-                  sx={{ color: "Brand.500", fontSize: "28px" }}
-                />
-              </Badge>
-            </IconButton>
-          </Link>
+          <IconButton
+            onClick={() => router.push("/keranjang")}
+            disabled={!cartSelector.items.length}
+            sx={{ ml: "50px" }}
+          >
+            <Badge
+              badgeContent={cartSelector.items.length}
+              color="error"
+              invisible={cartSelector.items.length === 0}
+            >
+              <ShoppingCartIcon sx={{ color: "Brand.500", fontSize: "28px" }} />
+            </Badge>
+          </IconButton>
           <IconButton sx={{ ml: "50px" }}>
             <NotificationsIcon sx={{ color: "Brand.500", fontSize: "28px" }} />
           </IconButton>
@@ -153,7 +153,12 @@ const Nav = () => {
               }}
             />
             {userSelector.id ? (
-              <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+              <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClick={handleClose}
+                onClose={handleClose}
+              >
                 <MenuItem>
                   <Link href="/profile-page">Profil Saya</Link>
                 </MenuItem>

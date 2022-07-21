@@ -78,8 +78,14 @@ const ProductCard = ({ nama_produk, harga, diskon, produk_image, id }) => {
       onClick={redirectToProductDetail}
     >
       <Box paddingTop="20px" paddingX="40px" position="relative">
-        <Box>
-          <Image src={produk_image} />
+        <Box
+          width="125px"
+          height="125px"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Image src={produk_image} width="100%" height="100%" />
         </Box>
         <Paper
           sx={{
@@ -138,15 +144,34 @@ const ProductCard = ({ nama_produk, harga, diskon, produk_image, id }) => {
                   textDecoration: "line-through",
                 }}
               >
-                Rp. {parseInt(harga).toLocaleString()}
+                Rp {parseInt(harga).toLocaleString()}
               </Typography>
             </Box>
           </Box>
-        ) : null}
-        <Box display="flex" marginTop={diskon !== "0" ? "7px" : "40px"}>
+        ) : (
+          <Box display="flex" alignItems="center" mt="5px">
+            <Box
+              sx={{
+                border: "1px ",
+                borderRadius: "4px",
+              }}
+              paddingX="6px"
+              paddingY="5px"
+              marginRight="8px"
+            >
+              <Typography fontSize="12px" color="red">
+                &nbsp;
+              </Typography>
+            </Box>
+            <Box marginLeft="8px">
+              <Typography color="#B4B9C7">&nbsp;</Typography>
+            </Box>
+          </Box>
+        )}
+        <Box display="flex" marginTop="7px">
           <Box maxWidth="103px">
             <Typography fontWeight="bold">
-              Rp. {parseInt(harga - harga * (diskon / 100)).toLocaleString()}
+              Rp {parseInt(harga - harga * (diskon / 100)).toLocaleString()}
             </Typography>
           </Box>
           <Typography>/ Pack</Typography>

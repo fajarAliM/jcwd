@@ -8,6 +8,7 @@ import Nav from "components/Nav/nav";
 import Footer from "components/Footer";
 import { SnackbarProvider } from "notistack";
 import AuthProvider from "components/AuthProvider";
+import "moment/locale/id";
 import AdminProvider from "components/AdminProvider";
 import CartProvider from "components/CartProvider";
 import { store } from "../redux/store";

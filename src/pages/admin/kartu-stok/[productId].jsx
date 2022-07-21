@@ -53,6 +53,8 @@ const KartuStok = () => {
       const data = res.data.result.rows;
       setDataCount(res.data.result.count);
 
+      console.log(data);
+
       setDataTable(
         data.map((val, idx) => {
           return {

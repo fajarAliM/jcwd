@@ -12,6 +12,7 @@ import { RiFileCopyFill } from "react-icons/ri";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useCallback, useEffect, useState } from "react";
+import { useSnackbar } from "notistack";
 import Link from "next/link";
 import Timer from "components/Timer";
 import { useSelector } from "react-redux";
@@ -39,6 +40,7 @@ const Konfirmasi = () => {
   const [methodId, setMethodId] = useState(router.query.paymentMethod);
   const [timer, setTimer] = useState(null);
   const [createdAt, setCreatedAt] = useState();
+  const { enqueueSnackbar } = useSnackbar();
 
   const fetchCart = async () => {
     try {
@@ -90,6 +92,18 @@ const Konfirmasi = () => {
       // eslint-disable-next-line no-console
       console.log(err);
     }
+  };
+
+  const copyVABtnHandler = () => {
+    navigator.clipboard.writeText("80777082261130123");
+
+    enqueueSnackbar("VA Copied", { variant: "info" });
+  };
+
+  const copyTotalBtnHandler = () => {
+    navigator.clipboard.writeText(priceSelector?.totalPrice);
+
+    enqueueSnackbar("Total Pembayaran Copied", { variant: "info" });
   };
 
   useEffect(() => {
@@ -247,6 +261,7 @@ const Konfirmasi = () => {
                 </Typography>
               </Stack>
               <Button
+                onClick={copyVABtnHandler}
                 endIcon={<RiFileCopyFill />}
                 sx={{
                   color: "Brand.500",
@@ -260,16 +275,39 @@ const Konfirmasi = () => {
                 Salin
               </Button>
             </Box>
-            <Stack sx={{ mt: "32px" }}>
-              <Typography
-                sx={{ fontWeight: 400, fontSize: "14px", color: "#737A8D" }}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mt: "32px",
+                alignItems: "center",
+              }}
+            >
+              <Stack>
+                <Typography
+                  sx={{ fontWeight: 400, fontSize: "14px", color: "#737A8D" }}
+                >
+                  Total Pembayaran
+                </Typography>
+                <Typography sx={{ fontWeight: 700, fontSize: "24px" }}>
+                  Rp {priceSelector?.totalPrice.toLocaleString()}
+                </Typography>
+              </Stack>
+              <Button
+                onClick={copyTotalBtnHandler}
+                endIcon={<RiFileCopyFill />}
+                sx={{
+                  color: "Brand.500",
+                  fontWeight: 700,
+                  "&:hover": {
+                    background: "white",
+                  },
+                  height: "33px",
+                }}
               >
-                Total Pembayaran
-              </Typography>
-              <Typography sx={{ fontWeight: 700, fontSize: "24px" }}>
-                Rp {priceSelector?.totalPrice.toLocaleString()}
-              </Typography>
-            </Stack>
+                Salin
+              </Button>
+            </Box>
           </Stack>
           <Box
             sx={{

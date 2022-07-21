@@ -31,6 +31,7 @@ const ModalEditObat = ({
   data,
   // eslint-disable-next-line no-unused-vars
   produkImages = [],
+  dataEdited,
 }) => {
   const [activeStep, setActiveStep] = useState(1);
   const [imageReview, setImageReview] = useState([]);
@@ -67,7 +68,7 @@ const ModalEditObat = ({
           nama_produk: values.nama_produk,
           nomor_obat: values.nomor_obat,
           nomor_bpom: values.nomor_bpom,
-          kategori: values.kategori,
+          productCategoryId: values.kategori,
           satuan: values.satuan,
           harga_jual: values.harga_jual,
           diskon: values.diskon,
@@ -77,6 +78,7 @@ const ModalEditObat = ({
           productInfo
         );
         enqueueSnackbar(res?.data?.message, { variant: "success" });
+        dataEdited(res.data.message);
         setActiveStep(3);
       } catch (err) {
         // eslint-disable-next-line no-console

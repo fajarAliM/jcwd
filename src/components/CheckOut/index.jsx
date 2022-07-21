@@ -16,6 +16,7 @@ const CheckOutCard = ({
   produk_qty,
   isResep,
   product_diskon,
+  produk_satuan,
 }) => {
   return (
     <Box sx={{ display: "flex", mb: "8px" }}>
@@ -61,7 +62,7 @@ const CheckOutCard = ({
         </Box>
         {produk_qty ? (
           <Typography sx={{ fontSize: "12px", color: "#213360" }}>
-            {produk_qty} Strip
+            {produk_qty} {produk_satuan}
           </Typography>
         ) : null}
       </Stack>

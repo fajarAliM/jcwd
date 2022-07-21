@@ -6,6 +6,7 @@ const ModalAlamat = ({ open, handleClose, setSelectedAddress }) => {
   const [alamat, setAlamat] = useState(null);
   const alamatHandler = (value) => {
     setSelectedAddress(value);
+    handleClose();
   };
   const fetchAlamat = async () => {
     try {

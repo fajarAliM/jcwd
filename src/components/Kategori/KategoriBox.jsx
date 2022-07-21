@@ -1,9 +1,12 @@
 import { Paper, Typography } from "@mui/material";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
-const KategoriBox = ({ imgUrl, imgAlt, title }) => {
+const KategoriBox = ({ imgUrl, imgAlt, title, id }) => {
+  const router = useRouter();
   return (
     <Paper
+      onClick={() => router.push(`/product-list?kategoriTerpilih=${id}`)}
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -13,6 +16,7 @@ const KategoriBox = ({ imgUrl, imgAlt, title }) => {
         height: "119px",
         borderRadius: "16px",
         mx: "8px",
+        ":hover": { cursor: "pointer" },
       }}
     >
       <Image width="64px" height="64px" src={imgUrl} alt={imgAlt} />

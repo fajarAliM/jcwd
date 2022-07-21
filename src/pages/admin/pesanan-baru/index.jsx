@@ -64,6 +64,7 @@ const PesananBaruPage = () => {
       setTransaksi(dataTransaksi.data.result.rows);
       setDataCount(dataTransaksi.data.result.count);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   };
@@ -122,6 +123,8 @@ const PesananBaruPage = () => {
           orderCode={`HTMED-${val.id}`}
           status={val?.paymentStatusId}
           transaksiId={val?.id}
+          orderTime={val?.createdAt}
+          productAdded={val?.productAdded}
           isObatResep={val?.is_resep}
           productOrderQty={val?.transaction_details.length}
           detail={val}

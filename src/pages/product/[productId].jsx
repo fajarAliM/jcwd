@@ -20,13 +20,14 @@ import axiosInstance from "config/api";
 import { useSnackbar } from "notistack";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "redux/reducer/cart";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const ProductPage = ({ productDetail }) => {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const authSelector = useSelector((state) => state.auth);
   const router = useRouter();
+  const [listProdukTerkait, setListProdukTerkait] = useState([]);
 
   const recordUserActivity = async () => {
     try {
@@ -98,6 +99,25 @@ const ProductPage = ({ productDetail }) => {
     productDetail?.harga_jual -
     // eslint-disable-next-line no-unsafe-optional-chaining
     productDetail?.harga_jual * (productDetail?.diskon / 100);
+
+  const fetchProdukTerkait = async () => {
+    try {
+      const res = await axiosInstance.get(
+        `/product/category/${productDetail.productCategoryId}`
+      );
+
+      setListProdukTerkait(res.data.result);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    if (!listProdukTerkait.length) {
+      fetchProdukTerkait();
+    }
+  }, []);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -466,8 +486,18 @@ const ProductPage = ({ productDetail }) => {
         <Typography sx={{ fontSize: "25px", color: "#213360", mt: 2, ml: 15 }}>
           Produk Terkait
         </Typography>
-        <Box sx={{ ml: 14 }}>
-          <ProductCard />
+        <Box sx={{ ml: 14, display: "flex", overflow: "visible" }}>
+          {listProdukTerkait?.map((val) => {
+            return (
+              <ProductCard
+                nama_produk={val?.nama_produk}
+                harga={val?.harga_jual}
+                diskon={val?.diskon}
+                produk_image={val?.produk_image_url[0]}
+                id={val?.id}
+              />
+            );
+          })}
         </Box>
       </Box>
     </Box>

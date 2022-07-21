@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {
   Box,
   Button,
@@ -11,10 +10,10 @@ import CheckOutCard from "components/CheckOut";
 import { RiFileCopyFill } from "react-icons/ri";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useSnackbar } from "notistack";
 import Link from "next/link";
 import Timer from "components/Timer";
-import { useSelector } from "react-redux";
 import axiosInstance from "config/api";
 import { useRouter } from "next/router";
 import { styled } from "@mui/material/styles";
@@ -29,7 +28,6 @@ const Image = styled("img")({
 
 const DetailTransaksiPage = () => {
   const [uploadPembayaran, setUploadPembayaran] = useState(false);
-  const priceSelector = useSelector((state) => state.price);
   const [bca, setBca] = useState(false);
   const openBca = () => setBca(true);
   const closeBca = () => setBca(false);
@@ -38,6 +36,7 @@ const DetailTransaksiPage = () => {
   const [transaction, setTransaction] = useState([]);
   const [proofPayment, setProofPayment] = useState();
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   const fetchCart = async () => {
     try {
@@ -62,10 +61,23 @@ const DetailTransaksiPage = () => {
           produk_name={val?.product?.nama_produk}
           produk_price={val?.product?.harga_jual}
           produk_qty={val?.quantity}
+          produk_satuan={val?.product?.satuan}
           product_diskon={val?.product?.diskon}
         />
       );
     });
+  };
+
+  const copyVABtnHandler = () => {
+    navigator.clipboard.writeText("80777082261130123");
+
+    enqueueSnackbar("VA Copied", { variant: "info" });
+  };
+
+  const copyTotalBtnHandler = () => {
+    navigator.clipboard.writeText(transaction.total_price);
+
+    enqueueSnackbar("Total Pembayaran Copied", { variant: "info" });
   };
 
   useEffect(() => {
@@ -114,7 +126,7 @@ const DetailTransaksiPage = () => {
             <Typography sx={{ fontWeight: 700, fontSize: "16px", mt: "8px" }}>
               {moment(router.query.createdAt)
                 .add(1, "day")
-                .format("dddd, DD MMMM YYYY, hh:mm A")}
+                .format("dddd, DD MMMM YYYY, HH:mm ")}
             </Typography>
           </Stack>
           <Box
@@ -165,7 +177,7 @@ const DetailTransaksiPage = () => {
                   Sub Total
                 </Typography>
                 <Typography sx={{ fontWeight: 700, mt: 2 }}>
-                  Rp {transaction.total_price?.toLocaleString()},-
+                  Rp {transaction.total_price?.toLocaleString()}
                 </Typography>
               </Box>
             </Box>
@@ -214,6 +226,7 @@ const DetailTransaksiPage = () => {
                 </Typography>
               </Stack>
               <Button
+                onClick={copyVABtnHandler}
                 endIcon={<RiFileCopyFill />}
                 sx={{
                   color: "Brand.500",
@@ -227,16 +240,39 @@ const DetailTransaksiPage = () => {
                 Salin
               </Button>
             </Box>
-            <Stack sx={{ mt: "32px" }}>
-              <Typography
-                sx={{ fontWeight: 400, fontSize: "14px", color: "#737A8D" }}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mt: "32px",
+                alignItems: "center",
+              }}
+            >
+              <Stack>
+                <Typography
+                  sx={{ fontWeight: 400, fontSize: "14px", color: "#737A8D" }}
+                >
+                  Total Pembayaran
+                </Typography>
+                <Typography sx={{ fontWeight: 700, fontSize: "24px" }}>
+                  Rp {transaction.total_price?.toLocaleString()}
+                </Typography>
+              </Stack>
+              <Button
+                onClick={copyTotalBtnHandler}
+                endIcon={<RiFileCopyFill />}
+                sx={{
+                  color: "Brand.500",
+                  fontWeight: 700,
+                  "&:hover": {
+                    background: "white",
+                  },
+                  height: "33px",
+                }}
               >
-                Total Pembayaran
-              </Typography>
-              <Typography sx={{ fontWeight: 700, fontSize: "24px" }}>
-                Rp {transaction.total_price?.toLocaleString()},-
-              </Typography>
-            </Stack>
+                Salin
+              </Button>
+            </Box>
           </Stack>
           <Box
             sx={{

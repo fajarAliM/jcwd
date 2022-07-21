@@ -10,7 +10,7 @@ const {
   Button,
 } = require("@mui/material");
 
-const DeleteDialog = ({ open, handleClose, data }) => {
+const DeleteDialog = ({ open, handleClose, data, dataDeleted }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const deleteProduct = async () => {
@@ -21,7 +21,7 @@ const DeleteDialog = ({ open, handleClose, data }) => {
 
       enqueueSnackbar(res?.data?.message, { variant: "success" });
       handleClose();
-      window.location.reload();
+      dataDeleted(res.data.message);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err);

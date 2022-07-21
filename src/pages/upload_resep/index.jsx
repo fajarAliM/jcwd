@@ -61,11 +61,10 @@ const UploadResep = () => {
       await axiosInstance.post("/transaction/upload-resep", formData);
 
       handleBackDrop();
-      setTimeout(async () => {
-        setResepImgFile(null);
-        setOpen(false);
-        router.push("/unggah-resep-berhasil");
-      }, 3000);
+
+      setResepImgFile(null);
+      setOpen(false);
+      router.push("/unggah-resep-berhasil");
     } catch (err) {
       console.log(err);
     }

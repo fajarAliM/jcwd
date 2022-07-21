@@ -92,6 +92,7 @@ const CheckOut = () => {
           produk_image={val?.product?.produk_image_url[0]}
           produk_name={val?.product?.nama_produk}
           produk_price={val?.product?.harga_jual}
+          produk_satuan={val?.product?.satuan}
           produk_qty={val?.quantity}
           product_diskon={val?.product?.diskon}
         />
@@ -183,53 +184,66 @@ const CheckOut = () => {
             >
               Alamat Pengiriman
             </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                mt: "16px",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Box sx={{ display: "flex" }}>
-                <Typography
-                  sx={{ mr: "2px", fontWeight: 700, fontSize: "14px" }}
+            {selectedAddress?.nama_penerima || alamatUtama?.nama_penerima ? (
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    mt: "16px",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  {selectedAddress?.nama_penerima || alamatUtama?.nama_penerima}
-                  ,
-                </Typography>
-                <Typography sx={{ fontWeight: 700, fontSize: "14px" }}>
-                  {selectedAddress?.no_telepon_penerima ||
-                    alamatUtama?.no_telepon_penerima}
-                </Typography>
-              </Box>
-              <Button
-                onClick={handleOpenAlamat}
-                sx={{ color: "Brand.500", fontWeight: 700, fontSize: "12px" }}
-              >
-                Pilih Alamat Lain
-              </Button>
-              <ModalAlamat
-                open={openAlamat}
-                handleClose={handleCloseAlamat}
-                setSelectedAddress={setSelectedAddress}
-              />
-            </Box>
-            <Stack>
-              <Typography sx={{ fontSize: "14px", color: "#213360" }}>
-                {selectedAddress?.label_alamat || alamatUtama?.label_alamat}
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  color: "#4F618E",
-                  borderBottom: "2px solid #F5F6F9",
-                  paddingBottom: 2,
-                }}
-              >
-                {selectedAddress?.alamat_lengkap || alamatUtama?.alamat_lengkap}
-              </Typography>
-            </Stack>
+                  <Box sx={{ display: "flex" }}>
+                    <Typography
+                      sx={{ mr: "2px", fontWeight: 700, fontSize: "14px" }}
+                    >
+                      {selectedAddress?.nama_penerima ||
+                        alamatUtama?.nama_penerima}
+                      {selectedAddress?.nama_penerima ||
+                      alamatUtama?.nama_penerima
+                        ? ","
+                        : null}
+                    </Typography>
+                    <Typography sx={{ fontWeight: 700, fontSize: "14px" }}>
+                      {selectedAddress?.no_telepon_penerima ||
+                        alamatUtama?.no_telepon_penerima}
+                    </Typography>
+                  </Box>
+                  <Button
+                    onClick={handleOpenAlamat}
+                    sx={{
+                      color: "Brand.500",
+                      fontWeight: 700,
+                      fontSize: "12px",
+                    }}
+                  >
+                    Pilih Alamat Lain
+                  </Button>
+                  <ModalAlamat
+                    open={openAlamat}
+                    handleClose={handleCloseAlamat}
+                    setSelectedAddress={setSelectedAddress}
+                  />
+                </Box>
+                <Stack>
+                  <Typography sx={{ fontSize: "14px", color: "#213360" }}>
+                    {selectedAddress?.label_alamat || alamatUtama?.label_alamat}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: "14px",
+                      color: "#4F618E",
+                      borderBottom: "2px solid #F5F6F9",
+                      paddingBottom: 2,
+                    }}
+                  >
+                    {selectedAddress?.alamat_lengkap ||
+                      alamatUtama?.alamat_lengkap}
+                  </Typography>
+                </Stack>
+              </>
+            ) : null}
             <Link href="/alamat">
               <Button
                 startIcon={<AddBoxIcon />}
@@ -275,7 +289,7 @@ const CheckOut = () => {
                   Sub Total
                 </Typography>
                 <Typography sx={{ fontWeight: 700, mt: 2 }}>
-                  Rp {hargaProducts}
+                  Rp {parseInt(hargaProducts).toLocaleString()}
                 </Typography>
               </Box>
             </Box>
@@ -302,7 +316,7 @@ const CheckOut = () => {
               </Grid>
               <Grid item xs={8} sx={{ textAlign: "right" }}>
                 <Typography sx={{ fontWeight: 700, fontSize: "14px" }}>
-                  Rp {hargaProducts?.toLocaleString()}
+                  Rp {parseInt(hargaProducts).toLocaleString()}
                 </Typography>
               </Grid>
               <Grid item xs={4} sx={{ mb: "24px" }}>
@@ -367,7 +381,7 @@ const CheckOut = () => {
                   },
                 }}
               >
-                Pilih Metode Pembayaran (2)
+                Pilih Metode Pembayaran
               </Button>
               <ModalIsi
                 open={open}

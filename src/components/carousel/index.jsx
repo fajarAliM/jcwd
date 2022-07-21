@@ -47,11 +47,11 @@ const Item = ({ name, description, image, subDescription }) => {
   return (
     <Box
       sx={{
-        // width: "100%",
-        // height: "100%",
         display: "flex",
         justifyContent: "space-between",
         flexDirection: "row",
+        backgroundColor: "#92C3D1",
+        height: "232px",
       }}
     >
       <Box sx={{ maxWidth: "100%", maxHeight: "100%", p: 5, flex: 1 }}>
@@ -65,7 +65,7 @@ const Item = ({ name, description, image, subDescription }) => {
           {subDescription}
         </Typography>
       </Box>
-      <Box sx={{ height: "100%" }}>
+      <Box sx={{ height: "100%", marginRight: "-55px" }}>
         <Image style={{ objectFit: "cover" }} src={image} />
       </Box>
     </Box>
