@@ -13,6 +13,7 @@ import ModalTerimaPesanan from "components/Admin/ModalTerimaPesanan";
 import axiosInstance from "config/api";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
+import ModalBuktiPembayaran from "../ModalBuktiPembayaran";
 
 const CardOrder = ({
   status,
@@ -34,6 +35,7 @@ const CardOrder = ({
   detail,
 }) => {
   const [open, setOpen] = useState(false);
+  const [buktiPembayaran, setBuktiPembayaran] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [showAllProduct, setShowAllProduct] = useState(false);
@@ -400,10 +402,40 @@ const CardOrder = ({
             >
               Chat Pembeli
             </Typography>
-            <ReceiptIcon sx={{ marginRight: "10px" }} />
-            <Typography sx={{ fontSize: "14px", fontWeight: "bold" }}>
-              Detail Pemesanan
-            </Typography>
+            {detail?.proof_of_payment ? (
+              <>
+                <ReceiptIcon
+                  onClick={() => {
+                    setBuktiPembayaran(true);
+                  }}
+                  sx={{
+                    marginRight: "10px",
+                    ":hover": {
+                      cursor: "pointer",
+                    },
+                  }}
+                />
+                <Typography
+                  onClick={() => {
+                    setBuktiPembayaran(true);
+                  }}
+                  sx={{
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    ":hover": {
+                      cursor: "pointer",
+                    },
+                  }}
+                >
+                  Lihat Bukti Pembayaran
+                </Typography>
+              </>
+            ) : null}
+            <ModalBuktiPembayaran
+              open={buktiPembayaran}
+              handleClose={() => setBuktiPembayaran(false)}
+              gambarBuktiPembayaran={detail?.proof_of_payment?.bukti_transfer}
+            />
           </Box>
           <Box
             sx={{

@@ -16,7 +16,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import axiosInstance from "config/api";
 import _ from "lodash";
 import { useDispatch } from "react-redux";
@@ -26,6 +26,7 @@ import { useSnackbar } from "notistack";
 const UserCart = ({ checked = false, setCartChecked, val, indexInRedux }) => {
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
+  const [listStock, setListStock] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
 
   const formik = useFormik({
@@ -96,6 +97,27 @@ const UserCart = ({ checked = false, setCartChecked, val, indexInRedux }) => {
       enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
     }
   };
+
+  const fetchProductData = async () => {
+    try {
+      const res = await axiosInstance.get(`/product/${val.productId}`);
+
+      setListStock(res.data.result.stocks);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
+
+  const totalStock = () => {
+    return listStock?.reduce((previousValue, currentValue) => {
+      return previousValue + currentValue.jumlah_stok;
+    }, 0);
+  };
+
+  useEffect(() => {
+    fetchProductData();
+  });
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", mt: "28px" }}>
@@ -233,6 +255,7 @@ const UserCart = ({ checked = false, setCartChecked, val, indexInRedux }) => {
                   border: 0,
                 },
               }}
+              disabled={totalStock() === formik.values.quantity}
             >
               +
             </Button>

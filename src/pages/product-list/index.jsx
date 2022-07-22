@@ -132,6 +132,7 @@ const ProductList = () => {
             diskon={val?.diskon}
             produk_image={val?.produk_image_url[0]}
             id={val?.id}
+            stocks={val?.stocks}
           />
         </Grid>
       );

@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "redux/reducer/cart";
 import { useEffect, useState } from "react";
 
-const ProductPage = ({ productDetail }) => {
+const ProductPage = ({ productDetail, stock }) => {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const authSelector = useSelector((state) => state.auth);
@@ -117,6 +117,12 @@ const ProductPage = ({ productDetail }) => {
       fetchProdukTerkait();
     }
   }, []);
+
+  const totalStock = () => {
+    return stock?.reduce((previousValue, currentValue) => {
+      return previousValue + currentValue.jumlah_stok;
+    }, 0);
+  };
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -309,92 +315,93 @@ const ProductPage = ({ productDetail }) => {
               </Box>
             </Box>
           ) : null}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                border: "1px solid #FF6600",
-                maxWidth: 180,
-                borderRadius: 3,
-                mt: 2,
-              }}
-            >
-              <Button
-                onClick={() => qtyHandler("decrement")}
-                variant="outlined"
+          {totalStock() > 0 ? (
+            <>
+              <Box
                 sx={{
-                  border: 0,
-                  fontWeight: "bold",
-                  "&:hover": {
-                    border: 0,
-                  },
+                  display: "flex",
+                  alignItems: "center",
                 }}
               >
-                -
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    border: "1px solid #FF6600",
+                    maxWidth: 180,
+                    borderRadius: 3,
+                    mt: 2,
+                  }}
+                >
+                  <Button
+                    onClick={() => qtyHandler("decrement")}
+                    variant="outlined"
+                    sx={{
+                      border: 0,
+                      fontWeight: "bold",
+                      "&:hover": {
+                        border: 0,
+                      },
+                    }}
+                  >
+                    -
+                  </Button>
+                  <Typography
+                    sx={{
+                      border: 0,
+                      color: "#FF6600",
+                      width: "50px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {formik.values.quantity}
+                  </Typography>
+                  <Button
+                    onClick={() => qtyHandler("increment")}
+                    variant="outlined"
+                    sx={{
+                      border: 0,
+                      fontWeight: "bold",
+                      "&:hover": {
+                        border: 0,
+                      },
+                    }}
+                    disabled={totalStock() === formik.values.quantity}
+                  >
+                    +
+                  </Button>
+                </Box>
+                <Typography
+                  sx={{ color: "#737A8D", ml: 2, mt: 2, fontSize: "12px" }}
+                >
+                  Sisa {totalStock()} {productDetail.satuan}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "row", mt: 3 }}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={<ShoppingCartOutlinedIcon />}
+                  onClick={addToCartButtonHandler}
+                >
+                  Keranjang
+                </Button>
+                <Button variant="outlined" sx={{ ml: 1, maxWidth: "20px" }}>
+                  <FavoriteBorderIcon sx={{ fontSize: "20px" }} />
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <Box sx={{ display: "flex", flexDirection: "row", mt: 3 }}>
+              <Button fullWidth variant="contained" disabled>
+                Stok Habis
               </Button>
-              <Typography
-                sx={{
-                  border: 0,
-                  color: "#FF6600",
-                  width: "50px",
-                  textAlign: "center",
-                }}
-              >
-                {formik.values.quantity}
-              </Typography>
-              <Button
-                onClick={() => qtyHandler("increment")}
-                variant="outlined"
-                sx={{
-                  border: 0,
-                  fontWeight: "bold",
-                  "&:hover": {
-                    border: 0,
-                  },
-                }}
-              >
-                +
+              <Button variant="outlined" sx={{ ml: 1, maxWidth: "20px" }}>
+                <FavoriteBorderIcon sx={{ fontSize: "20px" }} />
               </Button>
             </Box>
-            <Typography
-              sx={{ color: "#737A8D", ml: 2, mt: 2, fontSize: "12px" }}
-            >
-              Sisa 10 {productDetail.satuan}
-            </Typography>
-          </Box>
-          <Box sx={{ display: "flex", flexDirection: "row", mt: 3 }}>
-            <Button
-              variant="outlined"
-              startIcon={<ShoppingCartOutlinedIcon />}
-              onClick={addToCartButtonHandler}
-            >
-              Keranjang
-            </Button>
-            <Button
-              variant="contained"
-              sx={{
-                boxShadow: 0,
-                ml: 1,
-                width: "145px",
-                "&:hover": {
-                  boxShadow: 0,
-                  border: 0,
-                },
-              }}
-            >
-              Beli
-            </Button>
-            <Button variant="outlined" sx={{ ml: 1, maxWidth: "20px" }}>
-              <FavoriteBorderIcon sx={{ fontSize: "20px" }} />
-            </Button>
-          </Box>
+          )}
           <Box
             sx={{
               display: "flex",
@@ -532,6 +539,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       productDetail: res?.data?.result,
+      stock: res?.data?.result?.stocks,
     },
   };
 }

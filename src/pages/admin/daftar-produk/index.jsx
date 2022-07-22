@@ -36,7 +36,7 @@ const DaftarProduk = () => {
   const [sortBy, setSortBy] = useState(router.query.sort_by);
   const [sortDir, setSortDir] = useState(router.query.sort_dir);
   const [addNewData, setAddNewData] = useState(undefined);
-  const [updateData, setUpdateData] = useState(undefined);
+  const [updateData, setUpdateData] = useState(false);
   const [filterCategory, setFilterCategory] = useState(
     router.query.filter_by_category
   );

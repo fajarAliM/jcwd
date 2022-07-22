@@ -22,6 +22,7 @@ import axiosInstance from "config/api";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
+import { nanoid } from "@reduxjs/toolkit";
 
 const ModalTambahObat = ({
   open,
@@ -136,7 +137,7 @@ const ModalTambahObat = ({
       setImageReview([]);
       enqueueSnackbar(res?.data?.message, { variant: "success" });
       setActiveStep(3);
-      addNewProduct(res.data.message);
+      addNewProduct(nanoid(64));
       formik.setFieldValue("nama_produk", formik.initialValues.nama_produk);
       formik.setFieldValue("nomor_obat", formik.initialValues.nomor_obat);
       formik.setFieldValue("nomor_bpom", formik.initialValues.nomor_bpom);

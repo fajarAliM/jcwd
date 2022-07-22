@@ -23,6 +23,7 @@ import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import AddIcon from "@mui/icons-material/Add";
+import { nanoid } from "@reduxjs/toolkit";
 
 const ModalEditObat = ({
   open,
@@ -78,7 +79,7 @@ const ModalEditObat = ({
           productInfo
         );
         enqueueSnackbar(res?.data?.message, { variant: "success" });
-        dataEdited(res.data.message);
+        dataEdited(nanoid(64));
         setActiveStep(3);
       } catch (err) {
         // eslint-disable-next-line no-console

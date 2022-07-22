@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Group8725 from "public/Images/Group8725.png";
 import axiosInstance from "config/api";
+import moment from "moment";
 
 const ModalTerimaPesanan = ({
   open,
@@ -163,7 +164,7 @@ const ModalTerimaPesanan = ({
               <Typography
                 sx={{ color: "gray", marginLeft: "10px", fontSize: "12px" }}
               >
-                {waktuOrder}
+                {moment(waktuOrder).format("DD MMMM YYYY, HH:mm")}
               </Typography>
             </Box>
             {productsData.map((val) => {

@@ -9,34 +9,32 @@ import Link from "next/link";
 import CarouselCard from "components/carousel";
 import axiosInstance from "config/api";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import kejardiskon from "../public/Images/kejardiskon.png";
 
 const Home = () => {
-  const [product, setProduct] = useState([]);
+  const [popularProduct, setPopularProduct] = useState([]);
   const [productWithDiscount, setProductWithDiscount] = useState([]);
 
-  const fetchProductList = async () => {
-    const limit = 6;
+  const fetchPopularProduct = async () => {
     try {
-      const productList = await axiosInstance.get("/product", {
-        params: {
-          _limit: limit,
-        },
-      });
-      setProduct(productList.data.result.rows);
+      const productList = await axiosInstance.get("/product/popular");
+      setPopularProduct(productList.data.result);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const renderProductList = () => {
-    return product?.map((val) => {
+  const renderPopularProduct = () => {
+    return popularProduct?.map((val) => {
       return (
         <ProductCard
-          nama_produk={val?.nama_produk}
-          harga={val?.harga_jual}
-          diskon={val?.diskon}
-          produk_image={val?.produk_image_url[0]}
-          id={val?.id}
+          nama_produk={val?.product?.nama_produk}
+          harga={val?.product?.harga_jual}
+          diskon={val?.product?.diskon}
+          produk_image={val?.product?.produk_image_url[0]}
+          id={val?.product?.id}
+          stocks={val?.product?.stocks}
         />
       );
     });
@@ -60,15 +58,18 @@ const Home = () => {
           diskon={val?.diskon}
           produk_image={val?.produk_image_url[0]}
           id={val?.id}
+          stocks={val?.stocks}
         />
       );
     });
   };
 
   useEffect(() => {
-    fetchProductList();
+    fetchPopularProduct();
     fetchProductWithDiscount();
   }, []);
+
+  console.log(popularProduct);
   return (
     <Box>
       <Container>
@@ -76,7 +77,7 @@ const Home = () => {
         <UnggahResep />
         <Kategori />
         <Divider sx={{ marginY: "30px" }} />
-        <Box>
+        <Box maxWidth="100vw">
           <Box display="flex" justifyContent="space-between">
             <Typography variant="h5">Kejar Diskon Hari Ini</Typography>
             <Link href="/product-list">
@@ -92,11 +93,65 @@ const Home = () => {
               </Typography>
             </Link>
           </Box>
-          <Box sx={{ display: "flex" }}>{renderProductWithDiscount()}</Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              overflow: "auto",
+              "::-webkit-scrollbar": {
+                display: "none",
+              },
+              maxWidth: "100vw",
+            }}
+          >
+            <Image
+              width="301px"
+              height="395px"
+              position="relative"
+              src={kejardiskon}
+            />
+            <Box
+              sx={{
+                display: "flex",
+                position: "relative",
+                ml: "100px",
+                width: "100%",
+              }}
+            >
+              {renderProductWithDiscount()}
+            </Box>
+          </Box>
         </Box>
-        {/* <Box sx={{ display: "flex", overflowX: "scroll" }}>
-          {renderProductList()}
-        </Box> */}
+        <Divider sx={{ marginY: "30px" }} />
+        <Box>
+          <Box display="flex" justifyContent="space-between">
+            <Typography variant="h5">Popular Product</Typography>
+            <Link href="/product-list">
+              <Typography
+                color="Brand.500"
+                sx={{
+                  ":hover": {
+                    cursor: "pointer",
+                  },
+                }}
+              >
+                Lihat Semua
+              </Typography>
+            </Link>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              overflow: "scroll",
+              "::-webkit-scrollbar": {
+                display: "none",
+              },
+            }}
+          >
+            {renderPopularProduct()}
+          </Box>
+        </Box>
+
         <BannerJaminan />
         <MetodePembayaran />
       </Container>

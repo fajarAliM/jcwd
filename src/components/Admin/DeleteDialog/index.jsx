@@ -1,3 +1,4 @@
+import { nanoid } from "@reduxjs/toolkit";
 import axiosInstance from "config/api";
 import { useSnackbar } from "notistack";
 
@@ -21,7 +22,7 @@ const DeleteDialog = ({ open, handleClose, data, dataDeleted }) => {
 
       enqueueSnackbar(res?.data?.message, { variant: "success" });
       handleClose();
-      dataDeleted(res.data.message);
+      dataDeleted(nanoid(64));
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err);

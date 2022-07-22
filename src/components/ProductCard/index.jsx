@@ -16,7 +16,14 @@ const Image = styled("img")({
   objectFit: "scale-down",
 });
 
-const ProductCard = ({ nama_produk, harga, diskon, produk_image, id }) => {
+const ProductCard = ({
+  nama_produk,
+  harga,
+  diskon,
+  produk_image,
+  id,
+  stocks,
+}) => {
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const authSelector = useSelector((state) => state.auth);
@@ -62,6 +69,12 @@ const ProductCard = ({ nama_produk, harga, diskon, produk_image, id }) => {
     setLikedStatus(!likedStatus);
   };
 
+  const totalStock = () => {
+    return stocks?.reduce((previousValue, currentValue) => {
+      return previousValue + currentValue.jumlah_stok;
+    }, 0);
+  };
+
   return (
     <Paper
       elevation={2}
@@ -77,6 +90,7 @@ const ProductCard = ({ nama_produk, harga, diskon, produk_image, id }) => {
           transform: "translateY(-5px)",
           boxShadow: "0px 12px 20px -12px black",
         },
+        backgroundColor: totalStock() > 0 ? "white" : "#EFEFEF",
       }}
       onClick={redirectToProductDetail}
     >
@@ -180,14 +194,20 @@ const ProductCard = ({ nama_produk, harga, diskon, produk_image, id }) => {
           <Typography>/ Pack</Typography>
         </Box>
         <Box mt="10px">
-          <Button
-            fullWidth
-            variant="outlined"
-            color="success"
-            onClick={addToCartButtonHandler}
-          >
-            Keranjang
-          </Button>
+          {totalStock() > 0 ? (
+            <Button
+              fullWidth
+              variant="outlined"
+              color="success"
+              onClick={addToCartButtonHandler}
+            >
+              Keranjang
+            </Button>
+          ) : (
+            <Button fullWidth variant="contained" disabled>
+              Habis
+            </Button>
+          )}
         </Box>
       </Box>
     </Paper>
