@@ -6,6 +6,7 @@ import "../styles/globals.css";
 import { Provider } from "react-redux";
 import Nav from "components/Nav/nav";
 import Footer from "components/Footer";
+import NavbarBottom from "components/NavbarBottom";
 import { SnackbarProvider } from "notistack";
 import AuthProvider from "components/AuthProvider";
 import "moment/locale/id";
@@ -38,6 +39,7 @@ const MyApp = ({ Component, pageProps }) => {
                       <Nav />
                       <Component {...pageProps} />
                       <Footer />
+                      <NavbarBottom />
                     </AuthProvider>
                   </CartProvider>
                 </>

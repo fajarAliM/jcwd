@@ -258,8 +258,7 @@ const DibatalkanPage = () => {
                     Urutkan
                   </MenuItem>
                   <MenuItem value="Terbaru">Terbaru</MenuItem>
-                  <MenuItem value="Harga Tertinggi">Harga Tertinggi</MenuItem>
-                  <MenuItem value="Harga Terendah">Harga Terendah</MenuItem>
+                  <MenuItem value="Terlama">Terlama</MenuItem>
                 </Select>
               </FormControl>
               <Button

@@ -498,7 +498,15 @@ const ProductPage = ({ productDetail }) => {
         <Typography ml sx={{ fontSize: "25px", color: "#213360", mt: 2 }}>
           Produk Terkait
         </Typography>
-        <Box sx={{ ml: 14, display: "flex", overflow: "visible" }}>
+        <Box
+          sx={{
+            // ml: 14,
+            display: "flex",
+            overflow: "visible",
+            width: "100vw",
+            overflowX: "scroll",
+          }}
+        >
           {listProdukTerkait?.map((val) => {
             return (
               <ProductCard

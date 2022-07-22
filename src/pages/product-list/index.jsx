@@ -204,7 +204,7 @@ const ProductList = () => {
   return (
     <Grid container sx={{ mt: "44px" }}>
       <Grid item sm={0} md={3} order={{ xs: 2, md: 1 }}>
-        <Stack sx={{ ml: "90px" }}>
+        <Stack sx={{ ml: { xs: "10px", md: "90px" } }}>
           <Box sx={{ display: "flex", flexDirection: "column", mt: 2, mr: 8 }}>
             <Box sx={{ mb: 5 }} display={{ xs: "none", sm: "block" }}>
               <Breadcrumbs

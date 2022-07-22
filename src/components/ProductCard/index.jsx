@@ -73,7 +73,10 @@ const ProductCard = ({ nama_produk, harga, diskon, produk_image, id }) => {
         marginBottom: "16px",
         marginTop: "24px",
         pb: "20px",
-        "&:hover": { background: "#EFEFEF", cursor: "pointer" },
+        "&:hover": {
+          transform: "translateY(-5px)",
+          boxShadow: "0px 12px 20px -12px black",
+        },
       }}
       onClick={redirectToProductDetail}
     >

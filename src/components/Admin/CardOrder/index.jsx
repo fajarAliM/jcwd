@@ -11,6 +11,8 @@ import "moment/locale/id";
 import ProductCardItems from "components/Admin/ProductCardItems";
 import ModalTerimaPesanan from "components/Admin/ModalTerimaPesanan";
 import axiosInstance from "config/api";
+import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
+import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 
 const CardOrder = ({
   status,
@@ -34,6 +36,7 @@ const CardOrder = ({
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [showAllProduct, setShowAllProduct] = useState(false);
 
   const declineTransaction = async (transactionId) => {
     try {
@@ -90,26 +93,47 @@ const CardOrder = ({
         />
       );
     }
-    return product?.map((valo) => {
-      return (
-        <ProductCardItems
-          image={valo?.product?.produk_image_url[0]}
-          nama={valo?.product?.nama_produk}
-          jumlah={valo?.quantity}
-          harga={valo?.price_when_sold}
-          productImage={productImage}
-          productName={productName}
-          productQty={productQty}
-          productPrice={productPrice}
-          isObatResep={isObatResep}
-          productAdded={productAdded}
-          buyersName={buyersName}
-          orderCode={orderCode}
-          transaksiId={transaksiId}
-          orderTime={orderTime}
-        />
-      );
-    });
+    if (showAllProduct) {
+      return product?.map((valo) => {
+        return (
+          <ProductCardItems
+            image={valo?.product?.produk_image_url[0]}
+            nama={valo?.product?.nama_produk}
+            jumlah={valo?.quantity}
+            harga={valo?.price_when_sold}
+            productImage={productImage}
+            productName={productName}
+            productQty={productQty}
+            productPrice={productPrice}
+            isObatResep={isObatResep}
+            productAdded={productAdded}
+            buyersName={buyersName}
+            orderCode={orderCode}
+            transaksiId={transaksiId}
+            orderTime={orderTime}
+          />
+        );
+      });
+    }
+
+    return (
+      <ProductCardItems
+        image={product[0]?.product?.produk_image_url[0]}
+        nama={product[0]?.product?.nama_produk}
+        jumlah={product[0]?.quantity}
+        harga={product[0]?.price_when_sold}
+        productImage={productImage}
+        productName={productName}
+        productQty={productQty}
+        productPrice={productPrice}
+        isObatResep={isObatResep}
+        productAdded={productAdded}
+        buyersName={buyersName}
+        orderCode={orderCode}
+        transaksiId={transaksiId}
+        orderTime={orderTime}
+      />
+    );
   };
 
   return (
@@ -213,6 +237,47 @@ const CardOrder = ({
           {/* Box Product Image */}
           <Grid item container xs={4}>
             {renderProduct()}
+            {!isObatResep && product.length > 1 && !showAllProduct ? (
+              <Box
+                display="flex"
+                alignItems="center"
+                sx={{
+                  color: "Brand.500",
+                  "&:hover": {
+                    cursor: "pointer",
+                  },
+                }}
+                onClick={() => {
+                  setShowAllProduct(true);
+                }}
+              >
+                <Typography marginLeft={2} my={1}>
+                  Lihat {product.length - 1} obat lainnya{" "}
+                </Typography>
+                <KeyboardArrowDownRoundedIcon />
+              </Box>
+            ) : undefined}
+            {!isObatResep && product.length > 1 && showAllProduct ? (
+              <Box
+                display="flex"
+                alignItems="center"
+                sx={{
+                  color: "Brand.500",
+                  width: "100%",
+                  "&:hover": {
+                    cursor: "pointer",
+                  },
+                }}
+                onClick={() => {
+                  setShowAllProduct(false);
+                }}
+              >
+                <Typography marginLeft={2} my={1}>
+                  Tutup
+                </Typography>
+                <KeyboardArrowUpRoundedIcon />
+              </Box>
+            ) : undefined}
           </Grid>
 
           {/* Box Detail Pengiriman */}

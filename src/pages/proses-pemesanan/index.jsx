@@ -128,266 +128,290 @@ const ProsesPemesanan = () => {
   }, [router.isReady]);
 
   return (
-    <Grid container sx={{ mt: "56px", ml: "96px" }}>
-      <Grid item xs={3}>
-        <Stack
-          sx={{
-            border: "1px solid white",
-            borderRadius: 3,
-            boxShadow: "0 0 15px -10px black",
-            display: "flex",
-            paddingY: "28px",
-            height: "484px",
-            width: "300px",
-            position: "sticky",
-            top: "120px",
-          }}
-        >
-          <Box
+    <Box width="100vw" paddingLeft="96px">
+      <Grid container sx={{ mt: "56px" }}>
+        <Grid item xs={3}>
+          <Stack
             sx={{
+              border: "1px solid white",
+              borderRadius: 3,
+              boxShadow: "0 0 15px -10px black",
               display: "flex",
-              alignItems: "center",
-              borderBottom: "2px solid #F5F6F9",
-              paddingBottom: "30px",
-              paddingX: "40px",
+              paddingY: "28px",
+              height: "484px",
+              width: "300px",
+              position: "sticky",
+              top: "120px",
             }}
           >
-            <Avatar
-              sx={{ height: "30px", width: "30px" }}
-              src={authSelector?.photo_profile}
-            />
-            <Typography sx={{ ml: "20px", fontWeight: 700, fontSize: "14px" }}>
-              {authSelector.nama}
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              height: "inherit",
-              py: "20px",
-              paddingX: "40px",
-            }}
-          >
-            <Box sx={{ display: "flex" }}>
-              <FormatListBulletedIcon sx={{ mr: "26px" }} />
-              <Typography sx={{ color: "Brand.500", fontWeight: 700 }}>
-                Proses Pemesanan
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex" }}>
-              <PaymentsIcon sx={{ mr: "26px" }} />
-              <Typography>Metode Pembayaran</Typography>
-            </Box>
-            <Box sx={{ display: "flex" }}>
-              <LocationOnIcon sx={{ mr: "26px" }} />
-              <Typography>Alamat Pengiriman</Typography>
-            </Box>
-            <Box sx={{ display: "flex" }}>
-              <FavoriteIcon sx={{ mr: "26px" }} />
-              <Typography>Wishlist</Typography>
-            </Box>
-            <Box sx={{ display: "flex" }}>
-              <EmailIcon sx={{ mr: "26px" }} />
-              <Typography>Pesan Bantuan</Typography>
-            </Box>
-          </Box>
-        </Stack>
-      </Grid>
-      <Grid item xs={9}>
-        <Stack
-          sx={{
-            border: "1px solid white",
-            borderRadius: 3,
-            boxShadow: "0 0 15px -10px black",
-            py: "28px",
-            px: "40px",
-            width: "900px",
-          }}
-        >
-          <Typography
-            sx={{ fontWeight: 700, fontSize: "20px", color: "#213360" }}
-          >
-            Daftar Pemesanan
-          </Typography>
-          <Box sx={{ borderBottom: "1px solid #F5F6F9" }}>
-            <Tabs
-              variant="fullWidth"
-              value={value}
-              onChange={handleChange}
+            <Box
               sx={{
-                ".MuiTabs-indicator": {
-                  backgroundColor: "Brand.500",
-                },
+                display: "flex",
+                alignItems: "center",
+                borderBottom: "2px solid #F5F6F9",
+                paddingBottom: "30px",
+                paddingX: "40px",
               }}
             >
-              <Tab
-                label="Semua"
-                value={0}
-                sx={{ textTransform: "none" }}
-                onClick={() => statusHandler(0)}
+              <Avatar
+                sx={{ height: "30px", width: "30px" }}
+                src={authSelector?.photo_profile}
               />
-              <Tab
-                label="Menunggu"
-                value={1}
-                sx={{ textTransform: "none" }}
-                onClick={() => statusHandler(1)}
-              />
-              <Tab
-                label="Diproses"
-                value={2}
-                sx={{ textTransform: "none" }}
-                onClick={() => statusHandler(2)}
-              />
-              <Tab
-                label="Dikirim"
-                value={3}
-                sx={{ textTransform: "none" }}
-                onClick={() => statusHandler(3)}
-              />
-              <Tab
-                label="Selesai"
-                value={4}
-                sx={{ textTransform: "none" }}
-                onClick={() => statusHandler(4)}
-              />
-              <Tab
-                label="Dibatalkan"
-                value={5}
-                sx={{ textTransform: "none" }}
-                onClick={() => statusHandler(5)}
-              />
-            </Tabs>
-          </Box>
-          <TabPanel value={value} index={0}>
-            <InfiniteScroll
-              dataLength={contentList.length}
-              next={fetchNextPage}
-              hasMore={page < maxPage}
-              loader={<Typography>Loading...</Typography>}
-              endMessage={
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  mt={2}
-                >
-                  <Typography>No more transaction available</Typography>
-                </Box>
-              }
+              <Typography
+                sx={{ ml: "20px", fontWeight: 700, fontSize: "14px" }}
+              >
+                {authSelector.nama}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                height: "inherit",
+                py: "20px",
+                paddingX: "40px",
+              }}
             >
-              <IsiTab
-                renderTransactionList={renderTransactionList}
-                setSortBy={setSortBy}
-                setSortDir={setSortDir}
-                setPage={setPage}
-              />
-            </InfiniteScroll>
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            <InfiniteScroll
-              dataLength={contentList.length}
-              next={fetchNextPage}
-              hasMore={page < maxPage}
-              loader={<Typography>Loading...</Typography>}
-              endMessage={
-                <Box display="flex" alignItems="center" justifyContent="center">
-                  <Typography>No more Product available</Typography>
-                </Box>
-              }
+              <Box sx={{ display: "flex" }}>
+                <FormatListBulletedIcon sx={{ mr: "26px" }} />
+                <Typography sx={{ color: "Brand.500", fontWeight: 700 }}>
+                  Proses Pemesanan
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex" }}>
+                <PaymentsIcon sx={{ mr: "26px" }} />
+                <Typography>Metode Pembayaran</Typography>
+              </Box>
+              <Box sx={{ display: "flex" }}>
+                <LocationOnIcon sx={{ mr: "26px" }} />
+                <Typography>Alamat Pengiriman</Typography>
+              </Box>
+              <Box sx={{ display: "flex" }}>
+                <FavoriteIcon sx={{ mr: "26px" }} />
+                <Typography>Wishlist</Typography>
+              </Box>
+              <Box sx={{ display: "flex" }}>
+                <EmailIcon sx={{ mr: "26px" }} />
+                <Typography>Pesan Bantuan</Typography>
+              </Box>
+            </Box>
+          </Stack>
+        </Grid>
+        <Grid item xs={9}>
+          <Stack
+            sx={{
+              border: "1px solid white",
+              borderRadius: 3,
+              boxShadow: "0 0 15px -10px black",
+              py: "28px",
+              px: "40px",
+              width: "900px",
+            }}
+          >
+            <Typography
+              sx={{ fontWeight: 700, fontSize: "20px", color: "#213360" }}
             >
-              <IsiTab
-                renderTransactionList={renderTransactionList}
-                setSortBy={setSortBy}
-                setSortDir={setSortDir}
-                setPage={setPage}
-              />
-            </InfiniteScroll>
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-            <InfiniteScroll
-              dataLength={contentList.length}
-              next={fetchNextPage}
-              hasMore={page < maxPage}
-              loader={<Typography>Loading...</Typography>}
-              endMessage={
-                <Box display="flex" alignItems="center" justifyContent="center">
-                  <Typography>No more Product available</Typography>
-                </Box>
-              }
-            >
-              <IsiTab
-                renderTransactionList={renderTransactionList}
-                setSortBy={setSortBy}
-                setSortDir={setSortDir}
-                setPage={setPage}
-              />
-            </InfiniteScroll>
-          </TabPanel>
-          <TabPanel value={value} index={3}>
-            <InfiniteScroll
-              dataLength={contentList.length}
-              next={fetchNextPage}
-              hasMore={page < maxPage}
-              loader={<Typography>Loading...</Typography>}
-              endMessage={
-                <Box display="flex" alignItems="center" justifyContent="center">
-                  <Typography>No more Product available</Typography>
-                </Box>
-              }
-            >
-              <IsiTab
-                renderTransactionList={renderTransactionList}
-                setSortBy={setSortBy}
-                setSortDir={setSortDir}
-                setPage={setPage}
-              />
-            </InfiniteScroll>
-          </TabPanel>
-          <TabPanel value={value} index={4}>
-            <InfiniteScroll
-              dataLength={contentList.length}
-              next={fetchNextPage}
-              hasMore={page < maxPage}
-              loader={<Typography>Loading...</Typography>}
-              endMessage={
-                <Box display="flex" alignItems="center" justifyContent="center">
-                  <Typography>No more Product available</Typography>
-                </Box>
-              }
-            >
-              <IsiTab
-                renderTransactionList={renderTransactionList}
-                setSortBy={setSortBy}
-                setSortDir={setSortDir}
-                setPage={setPage}
-              />
-            </InfiniteScroll>
-          </TabPanel>
-          <TabPanel value={value} index={5}>
-            <InfiniteScroll
-              dataLength={contentList.length}
-              next={fetchNextPage}
-              hasMore={page < maxPage}
-              loader={<Typography>Loading...</Typography>}
-              endMessage={
-                <Box display="flex" alignItems="center" justifyContent="center">
-                  <Typography>No more Product available</Typography>
-                </Box>
-              }
-            >
-              <IsiTab
-                renderTransactionList={renderTransactionList}
-                setSortBy={setSortBy}
-                setSortDir={setSortDir}
-                setPage={setPage}
-              />
-            </InfiniteScroll>
-          </TabPanel>
-        </Stack>
+              Daftar Pemesanan
+            </Typography>
+            <Box sx={{ borderBottom: "1px solid #F5F6F9" }}>
+              <Tabs
+                variant="fullWidth"
+                value={value}
+                onChange={handleChange}
+                sx={{
+                  ".MuiTabs-indicator": {
+                    backgroundColor: "Brand.500",
+                  },
+                }}
+              >
+                <Tab
+                  label="Semua"
+                  value={0}
+                  sx={{ textTransform: "none" }}
+                  onClick={() => statusHandler(0)}
+                />
+                <Tab
+                  label="Menunggu"
+                  value={1}
+                  sx={{ textTransform: "none" }}
+                  onClick={() => statusHandler(1)}
+                />
+                <Tab
+                  label="Diproses"
+                  value={2}
+                  sx={{ textTransform: "none" }}
+                  onClick={() => statusHandler(2)}
+                />
+                <Tab
+                  label="Dikirim"
+                  value={3}
+                  sx={{ textTransform: "none" }}
+                  onClick={() => statusHandler(3)}
+                />
+                <Tab
+                  label="Selesai"
+                  value={4}
+                  sx={{ textTransform: "none" }}
+                  onClick={() => statusHandler(4)}
+                />
+                <Tab
+                  label="Dibatalkan"
+                  value={5}
+                  sx={{ textTransform: "none" }}
+                  onClick={() => statusHandler(5)}
+                />
+              </Tabs>
+            </Box>
+            <TabPanel value={value} index={0}>
+              <InfiniteScroll
+                dataLength={contentList.length}
+                next={fetchNextPage}
+                hasMore={page < maxPage}
+                loader={<Typography>Loading...</Typography>}
+                endMessage={
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    mt={2}
+                  >
+                    <Typography>No more transaction available</Typography>
+                  </Box>
+                }
+              >
+                <IsiTab
+                  renderTransactionList={renderTransactionList}
+                  setSortBy={setSortBy}
+                  setSortDir={setSortDir}
+                  setPage={setPage}
+                />
+              </InfiniteScroll>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <InfiniteScroll
+                dataLength={contentList.length}
+                next={fetchNextPage}
+                hasMore={page < maxPage}
+                loader={<Typography>Loading...</Typography>}
+                endMessage={
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Typography>No more Product available</Typography>
+                  </Box>
+                }
+              >
+                <IsiTab
+                  renderTransactionList={renderTransactionList}
+                  setSortBy={setSortBy}
+                  setSortDir={setSortDir}
+                  setPage={setPage}
+                />
+              </InfiniteScroll>
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              <InfiniteScroll
+                dataLength={contentList.length}
+                next={fetchNextPage}
+                hasMore={page < maxPage}
+                loader={<Typography>Loading...</Typography>}
+                endMessage={
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Typography>No more Product available</Typography>
+                  </Box>
+                }
+              >
+                <IsiTab
+                  renderTransactionList={renderTransactionList}
+                  setSortBy={setSortBy}
+                  setSortDir={setSortDir}
+                  setPage={setPage}
+                />
+              </InfiniteScroll>
+            </TabPanel>
+            <TabPanel value={value} index={3}>
+              <InfiniteScroll
+                dataLength={contentList.length}
+                next={fetchNextPage}
+                hasMore={page < maxPage}
+                loader={<Typography>Loading...</Typography>}
+                endMessage={
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Typography>No more Product available</Typography>
+                  </Box>
+                }
+              >
+                <IsiTab
+                  renderTransactionList={renderTransactionList}
+                  setSortBy={setSortBy}
+                  setSortDir={setSortDir}
+                  setPage={setPage}
+                />
+              </InfiniteScroll>
+            </TabPanel>
+            <TabPanel value={value} index={4}>
+              <InfiniteScroll
+                dataLength={contentList.length}
+                next={fetchNextPage}
+                hasMore={page < maxPage}
+                loader={<Typography>Loading...</Typography>}
+                endMessage={
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Typography>No more Product available</Typography>
+                  </Box>
+                }
+              >
+                <IsiTab
+                  renderTransactionList={renderTransactionList}
+                  setSortBy={setSortBy}
+                  setSortDir={setSortDir}
+                  setPage={setPage}
+                />
+              </InfiniteScroll>
+            </TabPanel>
+            <TabPanel value={value} index={5}>
+              <InfiniteScroll
+                dataLength={contentList.length}
+                next={fetchNextPage}
+                hasMore={page < maxPage}
+                loader={<Typography>Loading...</Typography>}
+                endMessage={
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Typography>No more Product available</Typography>
+                  </Box>
+                }
+              >
+                <IsiTab
+                  renderTransactionList={renderTransactionList}
+                  setSortBy={setSortBy}
+                  setSortDir={setSortDir}
+                  setPage={setPage}
+                />
+              </InfiniteScroll>
+            </TabPanel>
+          </Stack>
+        </Grid>
       </Grid>
-    </Grid>
+    </Box>
   );
 };
 

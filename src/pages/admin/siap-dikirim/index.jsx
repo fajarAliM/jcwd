@@ -66,6 +66,7 @@ const SiapDikirimPage = () => {
       setTransaksi(dataTransaksi.data.result.rows);
       setDataCount(dataTransaksi.data.result.count);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   };
@@ -259,8 +260,7 @@ const SiapDikirimPage = () => {
                     Urutkan
                   </MenuItem>
                   <MenuItem value="Terbaru">Terbaru</MenuItem>
-                  <MenuItem value="Harga Tertinggi">Harga Tertinggi</MenuItem>
-                  <MenuItem value="Harga Terendah">Harga Terendah</MenuItem>
+                  <MenuItem value="Terlama">Terlama</MenuItem>
                 </Select>
               </FormControl>
               <Button

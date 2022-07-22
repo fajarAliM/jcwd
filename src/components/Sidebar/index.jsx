@@ -83,18 +83,24 @@ const Sidebar = ({
     fetchCategory();
   }, []);
   return (
-    <Box display="flex" flexDirection={{ xs: "row", md: "column" }}>
+    <Box
+      display="flex"
+      flexDirection={{ xs: "row", md: "column" }}
+      alignItems="center"
+      justifyContent="center"
+      mb={{ xs: 4, md: 0 }}
+    >
       <Stack
         sx={{
-          maxWidth: "300px",
+          width: { xs: "30%", md: "300px" },
           paddingX: "28px",
           paddingY: "29px",
           border: "1px solid white",
           borderRadius: 3,
           boxShadow: "0 0 15px -10px black",
-          mb: "32px",
+          mb: { xs: 0, md: "32px" },
           display: "flex",
-          minHeight: "75px",
+          height: "75px",
         }}
         flexDirection={{ xs: "row", md: "column" }}
       >
@@ -105,7 +111,11 @@ const Sidebar = ({
           }}
         >
           <Typography
-            sx={{ fontWeight: 700, fontSize: "16px", color: "Brand.500" }}
+            sx={{
+              fontWeight: { xs: 400, md: 700 },
+              fontSize: "16px",
+              color: "Brand.500",
+            }}
           >
             KATEGORI
           </Typography>
@@ -123,7 +133,7 @@ const Sidebar = ({
             <KeyboardArrowUpIcon
               onClick={closeKategori}
               sx={{
-                fontWeight: 700,
+                fontWeight: { xs: 400, md: 700 },
                 fontSize: "25px",
                 color: "#213360",
                 "&:hover": { cursor: "pointer" },
@@ -137,18 +147,22 @@ const Sidebar = ({
       </Stack>
       <Stack
         sx={{
-          maxWidth: "300px",
+          width: { xs: "30%", md: "300px" },
           paddingX: "28px",
           paddingY: "29px",
           border: "1px solid white",
           borderRadius: 3,
           boxShadow: "0 0 15px -10px black",
-          minHeight: "75px",
+          height: "75px",
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography
-            sx={{ fontWeight: 700, fontSize: "16px", color: "Brand.500" }}
+            sx={{
+              fontWeight: { xs: 400, md: 700 },
+              fontSize: "16px",
+              color: "Brand.500",
+            }}
           >
             HARGA
           </Typography>
@@ -156,7 +170,7 @@ const Sidebar = ({
             <KeyboardArrowDownIcon
               onClick={openHarga}
               sx={{
-                fontWeight: 700,
+                fontWeight: { xs: 400, md: 700 },
                 fontSize: "25px",
                 color: "#213360",
                 "&:hover": { cursor: "pointer" },

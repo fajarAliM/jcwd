@@ -8,7 +8,12 @@ import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
 
 const Footer = () => {
   return (
-    <Box direction="column" fontFamily="sans-serif" color="#213360">
+    <Box
+      direction="column"
+      fontFamily="sans-serif"
+      color="#213360"
+      display={{ xs: "none", md: "unset" }}
+    >
       <Grid spacing={3} columns={13} container paddingX="96px" paddingY="60px">
         <Grid item xs={4}>
           <Box height="50px" marginBottom="35px">

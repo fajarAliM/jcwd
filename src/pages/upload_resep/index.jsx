@@ -70,7 +70,7 @@ const UploadResep = () => {
     }
   };
   return (
-    <Box paddingX="250px">
+    <Box paddingX={{ xs: 0, md: "250px" }}>
       <Typography mt="54px" fontWeight="bold" variant="h4">
         Kirim Resep
       </Typography>
