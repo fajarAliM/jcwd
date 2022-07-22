@@ -40,6 +40,8 @@ const SemuaPesananPage = () => {
   const [namaUser, setNamaUser] = useState(router.query.username);
   const [dataCount, setDataCount] = useState([]);
   const [rowPerPage, setRowPerPage] = useState(5);
+  const [dummy, setDummy] = useState(false);
+  const [isLoadingQueryParams, setIsLoadingQueryParams] = useState(true);
 
   const filterHandle = (event) => {
     setSortFilter(event.target.value);
@@ -53,11 +55,11 @@ const SemuaPesananPage = () => {
     try {
       const dataTransaksi = await axiosInstance.get("/transaction", {
         params: {
-          _page: page,
+          _page: parseInt(page),
           _sortBy: sortBy ? sortBy : undefined,
-          _sortDir: sortDir ? sortDir : undefined,
+          _sortDir: sortDir ? sortDir : "ASC",
           username: namaUser,
-          _limit: rowPerPage,
+          _limit: parseInt(rowPerPage),
         },
       });
       setTransaksi(dataTransaksi.data.result.rows);
@@ -79,6 +81,10 @@ const SemuaPesananPage = () => {
       if (router.query.username) {
         setNamaUser(router.query.username);
       }
+      if (router.query.page) {
+        setPage(parseInt(router.query.page));
+      }
+      setIsLoadingQueryParams(false);
     }
   }, [router.isReady]);
 
@@ -127,22 +133,41 @@ const SemuaPesananPage = () => {
           isObatResep={val?.is_resep}
           productOrderQty={val?.transaction_details.length}
           detail={val}
+          reRender={() => {
+            setDummy(!dummy);
+          }}
         />
       );
     });
   };
   useEffect(() => {
-    fetchTransaksi();
-    if (typeof sortDir === "string" || typeof namaUser === "string") {
-      router.push({
-        query: {
-          _sortBy: sortBy,
-          _sortDir: sortDir,
-          username: namaUser,
-        },
-      });
+    if (!isLoadingQueryParams) {
+      if (
+        typeof sortDir === "string" ||
+        typeof namaUser === "string" ||
+        (typeof page === "number" && !Number.isNaN(page))
+      ) {
+        fetchTransaksi();
+        router.push({
+          query: {
+            _sortBy: sortBy,
+            _sortDir: sortDir,
+            username: namaUser,
+            page: page || 1,
+          },
+        });
+      }
     }
-  }, [page, sortBy, sortDir, namaUser, rowPerPage]);
+  }, [
+    page,
+    sortBy,
+    sortDir,
+    namaUser,
+    rowPerPage,
+    dummy,
+    router.isReady,
+    isLoadingQueryParams,
+  ]);
 
   const sortDefaultValue = () => {
     if (router.isReady && router.query._sortDir && router.query._sortBy) {
@@ -300,7 +325,7 @@ const SemuaPesananPage = () => {
                     defaultPage={1}
                     siblingCount={0}
                     count={ceil(dataCount / rowPerPage)}
-                    page={page}
+                    page={parseInt(router.query.page)}
                     onChange={handleChangePage}
                     color="primary"
                   />

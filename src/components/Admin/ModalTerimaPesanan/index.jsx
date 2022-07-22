@@ -15,6 +15,7 @@ const ModalTerimaPesanan = ({
   totalHarga,
   transaksiId,
   productsData = [],
+  reRender,
 }) => {
   const [terimaPesanan, setTerimaPesanan] = useState(false);
 
@@ -229,7 +230,10 @@ const ModalTerimaPesanan = ({
             <Divider orientation="horizontal" />
             <Box display="flex" justifyContent="flex-end" padding="16px">
               <Button
-                onClick={() => acceptHandler(transaksiId)}
+                onClick={async () => {
+                  await acceptHandler(transaksiId);
+                  reRender();
+                }}
                 variant="contained"
               >
                 Terima Pesanan

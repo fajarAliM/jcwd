@@ -83,7 +83,7 @@ const ModalUploadPembayaran = ({
       handleCloseModal();
 
       enqueueSnackbar(res?.data?.message, { variant: "success" });
-      router.push("/");
+      router.push("/proses-pemesanan");
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err);

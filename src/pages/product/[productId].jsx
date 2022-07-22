@@ -143,7 +143,7 @@ const ProductPage = ({ productDetail, stock }) => {
             display: "flex",
             flexDirection: "column",
             mt: 2,
-            mr: 10,
+            mr: { xs: 0, md: 10 },
           }}
         >
           <Box sx={{ mb: 5 }}>

@@ -3,7 +3,19 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable eqeqeq */
 /* eslint-disable no-console */
-import { Avatar, Box, Grid, Stack, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  FormControl,
+  Grid,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -12,10 +24,10 @@ import EmailIcon from "@mui/icons-material/Email";
 import { useEffect, useState } from "react";
 import DaftarPemesanan from "components/DaftarPemesanan";
 import axiosInstance from "config/api";
-import InfiniteScroll from "react-infinite-scroll-component";
 import IsiTab from "components/IsiTab";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
+import { ceil } from "lodash";
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
@@ -32,21 +44,20 @@ const ProsesPemesanan = () => {
   const [value, setValue] = useState(0);
   const [contentList, setContentList] = useState([]);
   const [page, setPage] = useState(1);
-  const [maxPage, setMaxPage] = useState(1);
-  const [jumlahTransaksi, setJumlahTransaksi] = useState(null);
   const [status, setStatus] = useState(null);
   const [sortBy, setSortBy] = useState(router.query._sortyBy);
   const [sortDir, setSortDir] = useState(router.query._sortyDir);
   const authSelector = useSelector((state) => state.auth);
   const [dummy, setDummy] = useState(false);
+  const [dataCount, setDataCount] = useState([]);
+  const [rowPerPage, setRowPerPage] = useState(3);
+  const [isLoadingQueryParams, setIsLoadingQueryParams] = useState(true);
 
   const fetchTransactions = async () => {
     try {
-      const limit = 4;
-
       const transactionList = await axiosInstance.get("/transaction", {
         params: {
-          _limit: limit,
+          _limit: rowPerPage,
           _page: page,
           statusTerpilih: status || undefined,
           _sortBy: sortBy ? sortBy : undefined,
@@ -54,23 +65,11 @@ const ProsesPemesanan = () => {
           userId: authSelector.id || undefined,
         },
       });
-      setJumlahTransaksi(transactionList.data.result.count);
-      if (page == 1) {
-        setContentList(transactionList.data.result.rows);
-      } else {
-        setContentList((prevList) => [
-          ...prevList,
-          ...transactionList.data.result.rows,
-        ]);
-      }
-      setMaxPage(Math.ceil(transactionList.data.result.count / limit));
+      setContentList(transactionList.data.result.rows);
+      setDataCount(transactionList.data.result.count);
     } catch (err) {
       console.log(err);
     }
-  };
-
-  const fetchNextPage = () => {
-    setPage(page + 1);
   };
 
   const statusHandler = (stat) => {
@@ -104,17 +103,31 @@ const ProsesPemesanan = () => {
   };
 
   useEffect(() => {
-    fetchTransactions();
-
-    if (typeof sortDir === "string") {
-      router.push({
-        query: {
-          _sortBy: sortBy,
-          _sortDir: sortDir,
-        },
-      });
+    if (!isLoadingQueryParams) {
+      if (
+        typeof sortDir === "string" ||
+        typeof status === "string" ||
+        (typeof page === "number" && !Number.isNaN(page))
+      ) {
+        fetchTransactions();
+      }
     }
-  }, [status, sortBy, sortDir, page, dummy]);
+    router.push({
+      query: {
+        _sortBy: sortBy,
+        _sortDir: sortDir,
+        page: page || 1,
+      },
+    });
+  }, [
+    status,
+    sortBy,
+    sortDir,
+    page,
+    dummy,
+    isLoadingQueryParams,
+    router.isReady,
+  ]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -124,294 +137,444 @@ const ProsesPemesanan = () => {
       if (router.query._sortDir) {
         setSortDir(router.query._sortDir);
       }
+
+      setIsLoadingQueryParams(false);
     }
   }, [router.isReady]);
 
+  const handleChangeRowsPerPage = (event) => {
+    setRowPerPage(event.target.value);
+    setPage(1);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
   return (
-    <Box width="100vw" paddingLeft="96px">
-      <Grid container sx={{ mt: "56px" }}>
-        <Grid item xs={3}>
-          <Stack
+    <Grid container sx={{ mt: "56px", ml: "96px" }}>
+      <Grid item xs={3}>
+        <Stack
+          sx={{
+            border: "1px solid white",
+            borderRadius: 3,
+            boxShadow: "0 0 15px -10px black",
+            display: "flex",
+            paddingY: "28px",
+            height: "484px",
+            width: "300px",
+            position: "sticky",
+            top: "120px",
+          }}
+        >
+          <Box
             sx={{
-              border: "1px solid white",
-              borderRadius: 3,
-              boxShadow: "0 0 15px -10px black",
               display: "flex",
-              paddingY: "28px",
-              height: "484px",
-              width: "300px",
-              position: "sticky",
-              top: "120px",
+              alignItems: "center",
+              borderBottom: "2px solid #F5F6F9",
+              paddingBottom: "30px",
+              paddingX: "40px",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                borderBottom: "2px solid #F5F6F9",
-                paddingBottom: "30px",
-                paddingX: "40px",
-              }}
-            >
-              <Avatar
-                sx={{ height: "30px", width: "30px" }}
-                src={authSelector?.photo_profile}
-              />
-              <Typography
-                sx={{ ml: "20px", fontWeight: 700, fontSize: "14px" }}
-              >
-                {authSelector.nama}
+            <Avatar
+              sx={{ height: "30px", width: "30px" }}
+              src={authSelector?.photo_profile}
+            />
+            <Typography sx={{ ml: "20px", fontWeight: 700, fontSize: "14px" }}>
+              {authSelector.nama}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              height: "inherit",
+              py: "20px",
+              paddingX: "40px",
+            }}
+          >
+            <Box sx={{ display: "flex" }}>
+              <FormatListBulletedIcon sx={{ mr: "26px" }} />
+              <Typography sx={{ color: "Brand.500", fontWeight: 700 }}>
+                Proses Pemesanan
               </Typography>
             </Box>
-            <Box
+            <Box sx={{ display: "flex" }}>
+              <PaymentsIcon sx={{ mr: "26px" }} />
+              <Typography>Metode Pembayaran</Typography>
+            </Box>
+            <Box sx={{ display: "flex" }}>
+              <LocationOnIcon sx={{ mr: "26px" }} />
+              <Typography>Alamat Pengiriman</Typography>
+            </Box>
+            <Box sx={{ display: "flex" }}>
+              <FavoriteIcon sx={{ mr: "26px" }} />
+              <Typography>Wishlist</Typography>
+            </Box>
+            <Box sx={{ display: "flex" }}>
+              <EmailIcon sx={{ mr: "26px" }} />
+              <Typography>Pesan Bantuan</Typography>
+            </Box>
+          </Box>
+        </Stack>
+      </Grid>
+      <Grid item xs={9}>
+        <Stack
+          sx={{
+            border: "1px solid white",
+            borderRadius: 3,
+            boxShadow: "0 0 15px -10px black",
+            py: "28px",
+            px: "40px",
+            width: "900px",
+          }}
+        >
+          <Typography
+            sx={{ fontWeight: 700, fontSize: "20px", color: "#213360" }}
+          >
+            Daftar Pemesanan
+          </Typography>
+          <Box sx={{ borderBottom: "1px solid #F5F6F9" }}>
+            <Tabs
+              variant="fullWidth"
+              value={value}
+              onChange={handleChange}
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                height: "inherit",
-                py: "20px",
-                paddingX: "40px",
+                ".MuiTabs-indicator": {
+                  backgroundColor: "Brand.500",
+                },
               }}
             >
-              <Box sx={{ display: "flex" }}>
-                <FormatListBulletedIcon sx={{ mr: "26px" }} />
-                <Typography sx={{ color: "Brand.500", fontWeight: 700 }}>
-                  Proses Pemesanan
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex" }}>
-                <PaymentsIcon sx={{ mr: "26px" }} />
-                <Typography>Metode Pembayaran</Typography>
-              </Box>
-              <Box sx={{ display: "flex" }}>
-                <LocationOnIcon sx={{ mr: "26px" }} />
-                <Typography>Alamat Pengiriman</Typography>
-              </Box>
-              <Box sx={{ display: "flex" }}>
-                <FavoriteIcon sx={{ mr: "26px" }} />
-                <Typography>Wishlist</Typography>
-              </Box>
-              <Box sx={{ display: "flex" }}>
-                <EmailIcon sx={{ mr: "26px" }} />
-                <Typography>Pesan Bantuan</Typography>
-              </Box>
-            </Box>
-          </Stack>
-        </Grid>
-        <Grid item xs={9}>
-          <Stack
-            sx={{
-              border: "1px solid white",
-              borderRadius: 3,
-              boxShadow: "0 0 15px -10px black",
-              py: "28px",
-              px: "40px",
-              width: "900px",
-            }}
-          >
-            <Typography
-              sx={{ fontWeight: 700, fontSize: "20px", color: "#213360" }}
+              <Tab
+                label="Semua"
+                value={0}
+                sx={{ textTransform: "none" }}
+                onClick={() => statusHandler(0)}
+              />
+              <Tab
+                label="Menunggu"
+                value={1}
+                sx={{ textTransform: "none" }}
+                onClick={() => statusHandler(1)}
+              />
+              <Tab
+                label="Diproses"
+                value={2}
+                sx={{ textTransform: "none" }}
+                onClick={() => statusHandler(2)}
+              />
+              <Tab
+                label="Dikirim"
+                value={3}
+                sx={{ textTransform: "none" }}
+                onClick={() => statusHandler(3)}
+              />
+              <Tab
+                label="Selesai"
+                value={4}
+                sx={{ textTransform: "none" }}
+                onClick={() => statusHandler(4)}
+              />
+              <Tab
+                label="Dibatalkan"
+                value={5}
+                sx={{ textTransform: "none" }}
+                onClick={() => statusHandler(5)}
+              />
+            </Tabs>
+          </Box>
+          <TabPanel value={value} index={0}>
+            <IsiTab
+              renderTransactionList={renderTransactionList}
+              setSortBy={setSortBy}
+              setSortDir={setSortDir}
+              setPage={setPage}
+            />
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="flex-end"
+              sx={{ mt: 5 }}
             >
-              Daftar Pemesanan
-            </Typography>
-            <Box sx={{ borderBottom: "1px solid #F5F6F9" }}>
-              <Tabs
-                variant="fullWidth"
-                value={value}
-                onChange={handleChange}
-                sx={{
-                  ".MuiTabs-indicator": {
-                    backgroundColor: "Brand.500",
-                  },
-                }}
-              >
-                <Tab
-                  label="Semua"
-                  value={0}
-                  sx={{ textTransform: "none" }}
-                  onClick={() => statusHandler(0)}
-                />
-                <Tab
-                  label="Menunggu"
-                  value={1}
-                  sx={{ textTransform: "none" }}
-                  onClick={() => statusHandler(1)}
-                />
-                <Tab
-                  label="Diproses"
-                  value={2}
-                  sx={{ textTransform: "none" }}
-                  onClick={() => statusHandler(2)}
-                />
-                <Tab
-                  label="Dikirim"
-                  value={3}
-                  sx={{ textTransform: "none" }}
-                  onClick={() => statusHandler(3)}
-                />
-                <Tab
-                  label="Selesai"
-                  value={4}
-                  sx={{ textTransform: "none" }}
-                  onClick={() => statusHandler(4)}
-                />
-                <Tab
-                  label="Dibatalkan"
-                  value={5}
-                  sx={{ textTransform: "none" }}
-                  onClick={() => statusHandler(5)}
-                />
-              </Tabs>
+              <Box display="flex" flexDirection="row" alignContent="center">
+                <Typography sx={{ marginRight: "5px" }}>
+                  Transaksi per halaman
+                </Typography>
+                <FormControl sx={{ marginRight: "30px" }}>
+                  <Select
+                    sx={{
+                      borderRadius: "5px",
+                      minWidth: "68px",
+                      height: "28px",
+                      backgroundColor: "white",
+                      borderColor: "Brand.500",
+                    }}
+                    onChange={handleChangeRowsPerPage}
+                    defaultValue={3}
+                    size="small"
+                  >
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                  </Select>
+                </FormControl>
+                <Stack spacing={2}>
+                  <Pagination
+                    defaultPage={1}
+                    siblingCount={0}
+                    count={ceil(dataCount / rowPerPage)}
+                    page={page}
+                    onChange={handleChangePage}
+                    color="primary"
+                  />
+                </Stack>
+              </Box>
             </Box>
-            <TabPanel value={value} index={0}>
-              <InfiniteScroll
-                dataLength={contentList.length}
-                next={fetchNextPage}
-                hasMore={page < maxPage}
-                loader={<Typography>Loading...</Typography>}
-                endMessage={
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    mt={2}
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <IsiTab
+              renderTransactionList={renderTransactionList}
+              setSortBy={setSortBy}
+              setSortDir={setSortDir}
+              setPage={setPage}
+            />
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="flex-end"
+              sx={{ mt: 5 }}
+            >
+              <Box display="flex" flexDirection="row" alignContent="center">
+                <Typography sx={{ marginRight: "5px" }}>
+                  Transaksi per halaman
+                </Typography>
+                <FormControl sx={{ marginRight: "30px" }}>
+                  <Select
+                    sx={{
+                      borderRadius: "5px",
+                      minWidth: "68px",
+                      height: "28px",
+                      backgroundColor: "white",
+                      borderColor: "Brand.500",
+                    }}
+                    onChange={handleChangeRowsPerPage}
+                    defaultValue={3}
+                    size="small"
                   >
-                    <Typography>No more transaction available</Typography>
-                  </Box>
-                }
-              >
-                <IsiTab
-                  renderTransactionList={renderTransactionList}
-                  setSortBy={setSortBy}
-                  setSortDir={setSortDir}
-                  setPage={setPage}
-                />
-              </InfiniteScroll>
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              <InfiniteScroll
-                dataLength={contentList.length}
-                next={fetchNextPage}
-                hasMore={page < maxPage}
-                loader={<Typography>Loading...</Typography>}
-                endMessage={
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                  </Select>
+                </FormControl>
+                <Stack spacing={2}>
+                  <Pagination
+                    defaultPage={1}
+                    siblingCount={0}
+                    count={ceil(dataCount / rowPerPage)}
+                    page={page}
+                    onChange={handleChangePage}
+                    color="primary"
+                  />
+                </Stack>
+              </Box>
+            </Box>
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <IsiTab
+              renderTransactionList={renderTransactionList}
+              setSortBy={setSortBy}
+              setSortDir={setSortDir}
+              setPage={setPage}
+            />
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="flex-end"
+              sx={{ mt: 5 }}
+            >
+              <Box display="flex" flexDirection="row" alignContent="center">
+                <Typography sx={{ marginRight: "5px" }}>
+                  Transaksi per halaman
+                </Typography>
+                <FormControl sx={{ marginRight: "30px" }}>
+                  <Select
+                    sx={{
+                      borderRadius: "5px",
+                      minWidth: "68px",
+                      height: "28px",
+                      backgroundColor: "white",
+                      borderColor: "Brand.500",
+                    }}
+                    onChange={handleChangeRowsPerPage}
+                    defaultValue={3}
+                    size="small"
                   >
-                    <Typography>No more Product available</Typography>
-                  </Box>
-                }
-              >
-                <IsiTab
-                  renderTransactionList={renderTransactionList}
-                  setSortBy={setSortBy}
-                  setSortDir={setSortDir}
-                  setPage={setPage}
-                />
-              </InfiniteScroll>
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-              <InfiniteScroll
-                dataLength={contentList.length}
-                next={fetchNextPage}
-                hasMore={page < maxPage}
-                loader={<Typography>Loading...</Typography>}
-                endMessage={
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                  </Select>
+                </FormControl>
+                <Stack spacing={2}>
+                  <Pagination
+                    defaultPage={1}
+                    siblingCount={0}
+                    count={ceil(dataCount / rowPerPage)}
+                    page={page}
+                    onChange={handleChangePage}
+                    color="primary"
+                  />
+                </Stack>
+              </Box>
+            </Box>
+          </TabPanel>
+          <TabPanel value={value} index={3}>
+            <IsiTab
+              renderTransactionList={renderTransactionList}
+              setSortBy={setSortBy}
+              setSortDir={setSortDir}
+              setPage={setPage}
+            />
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="flex-end"
+              sx={{ mt: 5 }}
+            >
+              <Box display="flex" flexDirection="row" alignContent="center">
+                <Typography sx={{ marginRight: "5px" }}>
+                  Transaksi per halaman
+                </Typography>
+                <FormControl sx={{ marginRight: "30px" }}>
+                  <Select
+                    sx={{
+                      borderRadius: "5px",
+                      minWidth: "68px",
+                      height: "28px",
+                      backgroundColor: "white",
+                      borderColor: "Brand.500",
+                    }}
+                    onChange={handleChangeRowsPerPage}
+                    defaultValue={3}
+                    size="small"
                   >
-                    <Typography>No more Product available</Typography>
-                  </Box>
-                }
-              >
-                <IsiTab
-                  renderTransactionList={renderTransactionList}
-                  setSortBy={setSortBy}
-                  setSortDir={setSortDir}
-                  setPage={setPage}
-                />
-              </InfiniteScroll>
-            </TabPanel>
-            <TabPanel value={value} index={3}>
-              <InfiniteScroll
-                dataLength={contentList.length}
-                next={fetchNextPage}
-                hasMore={page < maxPage}
-                loader={<Typography>Loading...</Typography>}
-                endMessage={
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                  </Select>
+                </FormControl>
+                <Stack spacing={2}>
+                  <Pagination
+                    defaultPage={1}
+                    siblingCount={0}
+                    count={ceil(dataCount / rowPerPage)}
+                    page={page}
+                    onChange={handleChangePage}
+                    color="primary"
+                  />
+                </Stack>
+              </Box>
+            </Box>
+          </TabPanel>
+          <TabPanel value={value} index={4}>
+            <IsiTab
+              renderTransactionList={renderTransactionList}
+              setSortBy={setSortBy}
+              setSortDir={setSortDir}
+              setPage={setPage}
+            />
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="flex-end"
+              sx={{ mt: 5 }}
+            >
+              <Box display="flex" flexDirection="row" alignContent="center">
+                <Typography sx={{ marginRight: "5px" }}>
+                  Transaksi per halaman
+                </Typography>
+                <FormControl sx={{ marginRight: "30px" }}>
+                  <Select
+                    sx={{
+                      borderRadius: "5px",
+                      minWidth: "68px",
+                      height: "28px",
+                      backgroundColor: "white",
+                      borderColor: "Brand.500",
+                    }}
+                    onChange={handleChangeRowsPerPage}
+                    defaultValue={3}
+                    size="small"
                   >
-                    <Typography>No more Product available</Typography>
-                  </Box>
-                }
-              >
-                <IsiTab
-                  renderTransactionList={renderTransactionList}
-                  setSortBy={setSortBy}
-                  setSortDir={setSortDir}
-                  setPage={setPage}
-                />
-              </InfiniteScroll>
-            </TabPanel>
-            <TabPanel value={value} index={4}>
-              <InfiniteScroll
-                dataLength={contentList.length}
-                next={fetchNextPage}
-                hasMore={page < maxPage}
-                loader={<Typography>Loading...</Typography>}
-                endMessage={
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                  </Select>
+                </FormControl>
+                <Stack spacing={2}>
+                  <Pagination
+                    defaultPage={1}
+                    siblingCount={0}
+                    count={ceil(dataCount / rowPerPage)}
+                    page={page}
+                    onChange={handleChangePage}
+                    color="primary"
+                  />
+                </Stack>
+              </Box>
+            </Box>
+          </TabPanel>
+          <TabPanel value={value} index={5}>
+            <IsiTab
+              renderTransactionList={renderTransactionList}
+              setSortBy={setSortBy}
+              setSortDir={setSortDir}
+              setPage={setPage}
+            />
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="flex-end"
+              sx={{ mt: 5 }}
+            >
+              <Box display="flex" flexDirection="row" alignContent="center">
+                <Typography sx={{ marginRight: "5px" }}>
+                  Transaksi per halaman
+                </Typography>
+                <FormControl sx={{ marginRight: "30px" }}>
+                  <Select
+                    sx={{
+                      borderRadius: "5px",
+                      minWidth: "68px",
+                      height: "28px",
+                      backgroundColor: "white",
+                      borderColor: "Brand.500",
+                    }}
+                    onChange={handleChangeRowsPerPage}
+                    defaultValue={3}
+                    size="small"
                   >
-                    <Typography>No more Product available</Typography>
-                  </Box>
-                }
-              >
-                <IsiTab
-                  renderTransactionList={renderTransactionList}
-                  setSortBy={setSortBy}
-                  setSortDir={setSortDir}
-                  setPage={setPage}
-                />
-              </InfiniteScroll>
-            </TabPanel>
-            <TabPanel value={value} index={5}>
-              <InfiniteScroll
-                dataLength={contentList.length}
-                next={fetchNextPage}
-                hasMore={page < maxPage}
-                loader={<Typography>Loading...</Typography>}
-                endMessage={
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <Typography>No more Product available</Typography>
-                  </Box>
-                }
-              >
-                <IsiTab
-                  renderTransactionList={renderTransactionList}
-                  setSortBy={setSortBy}
-                  setSortDir={setSortDir}
-                  setPage={setPage}
-                />
-              </InfiniteScroll>
-            </TabPanel>
-          </Stack>
-        </Grid>
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                  </Select>
+                </FormControl>
+                <Stack spacing={2}>
+                  <Pagination
+                    defaultPage={1}
+                    siblingCount={0}
+                    count={ceil(dataCount / rowPerPage)}
+                    page={page}
+                    onChange={handleChangePage}
+                    color="primary"
+                  />
+                </Stack>
+              </Box>
+            </Box>
+          </TabPanel>
+        </Stack>
       </Grid>
-    </Box>
+    </Grid>
   );
 };
 

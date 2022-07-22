@@ -33,6 +33,7 @@ const CardOrder = ({
   totalPrice,
   product,
   detail,
+  reRender,
 }) => {
   const [open, setOpen] = useState(false);
   const [buktiPembayaran, setBuktiPembayaran] = useState(false);
@@ -446,7 +447,10 @@ const CardOrder = ({
             {status === 2 ? (
               <Button
                 variant="contained"
-                onClick={() => deliveryHandler(transaksiId)}
+                onClick={async () => {
+                  await deliveryHandler(transaksiId);
+                  reRender();
+                }}
               >
                 Minta Penjemputan
               </Button>
@@ -455,7 +459,10 @@ const CardOrder = ({
             ) : status === 1 ? (
               <>
                 <Button
-                  onClick={() => declineHandler(transaksiId)}
+                  onClick={async () => {
+                    await declineHandler(transaksiId);
+                    reRender();
+                  }}
                   sx={{ color: "Brand.500" }}
                 >
                   Tolak Pesanan
@@ -491,6 +498,7 @@ const CardOrder = ({
                   totalHarga={totalPrice}
                   waktuOrder={orderTime}
                   productsData={product}
+                  reRender={reRender}
                 />
               </>
             ) : null}

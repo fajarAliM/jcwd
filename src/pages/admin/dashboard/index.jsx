@@ -260,7 +260,9 @@ const DashboardPage = () => {
           <Grid container spacing={2}>
             <CardWithCircularBar
               title="Revenue Hari Ini"
-              amount={`Rp. ${todayRevenue?.todayRevenue?.result || 0}`}
+              amount={`Rp. ${
+                todayRevenue?.todayRevenue?.result?.toLocaleString() || 0
+              }`}
               value={Math.abs(
                 todayRevenue?.todayRevenue?.result -
                   todayRevenue?.yesterdayRevenue?.result

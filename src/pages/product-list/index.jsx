@@ -11,6 +11,7 @@ import {
   FormControl,
   Grid,
   MenuItem,
+  Pagination,
   Select,
   Stack,
   Typography,
@@ -18,10 +19,10 @@ import {
 import ProductCard from "components/ProductCard";
 import Sidebar from "components/Sidebar";
 import axiosInstance from "config/api";
+import { ceil } from "lodash";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
 
 const ProductList = () => {
@@ -42,32 +43,27 @@ const ProductList = () => {
   const [kategoriTerpilih, setKategoriTerpilih] = useState(
     router.query.kategoriTerpilih
   );
+  const [dataCount, setDataCount] = useState([]);
+  const [rowPerPage, setRowPerPage] = useState(8);
+
+  const [isLoadingQueryParams, setIsLoadingQueryParams] = useState(true);
 
   const fetchProductList = async () => {
-    const limit = 4;
     try {
       const productList = await axiosInstance.get("/product", {
         params: {
           _sortBy: sortBy ? sortBy : undefined,
           _sortDir: sortDir ? sortDir : undefined,
-          _limit: limit,
-          _page: page,
+          _limit: parseInt(rowPerPage),
+          _page: parseInt(page),
           hargaMinimum: hargaMinimum || undefined,
           hargaMaksimum: hargaMaksimum || undefined,
           kategoriTerpilih: kategoriTerpilih || undefined,
           searchProduk: searchValue,
         },
       });
-      setJumlahProduk(productList.data.result.count);
-      if (page == 1) {
-        setContentList(productList.data.result.rows);
-      } else {
-        setContentList((prevProduct) => [
-          ...prevProduct,
-          ...productList.data.result.rows,
-        ]);
-      }
-      setMaxPage(Math.ceil(productList.data.result.count / limit));
+      setContentList(productList.data.result.rows);
+      setDataCount(productList.data.result.count);
     } catch (err) {
       console.log(err);
     }
@@ -90,12 +86,14 @@ const ProductList = () => {
       if (router.query.kategoriTerpilih) {
         setKategoriTerpilih(router.query.kategoriTerpilih);
       }
-    }
-  }, [router.isReady]);
+      if (router.query.page) {
+        setPage(parseInt(router.query.page));
+      }
 
-  const fetchNextPage = () => {
-    setPage(page + 1);
-  };
+      setIsLoadingQueryParams(false);
+    }
+    // console.log(router.query.page);
+  }, [router.isReady]);
 
   const sortInputHandler = (event) => {
     const { value } = event.target;
@@ -140,25 +138,28 @@ const ProductList = () => {
   };
 
   useEffect(() => {
-    fetchProductList();
-
-    if (
-      typeof sortDir === "string" ||
-      typeof hargaMinimum === "string" ||
-      typeof hargaMaksimum === "string" ||
-      typeof kategoriTerpilih === "number" ||
-      typeof searchValue === "string"
-    ) {
-      router.push({
-        query: {
-          _sortBy: sortBy,
-          _sortDir: sortDir,
-          hargaMaksimum,
-          hargaMinimum,
-          kategoriTerpilih,
-          searchProduk: searchValue,
-        },
-      });
+    if (!isLoadingQueryParams) {
+      if (
+        typeof sortDir === "string" ||
+        typeof hargaMinimum === "string" ||
+        typeof hargaMaksimum === "string" ||
+        typeof kategoriTerpilih === "number" ||
+        typeof searchValue === "string" ||
+        (typeof page === "number" && !Number.isNaN(page))
+      ) {
+        fetchProductList();
+        router.push({
+          query: {
+            _sortBy: sortBy,
+            _sortDir: sortDir,
+            hargaMaksimum,
+            hargaMinimum,
+            kategoriTerpilih,
+            searchProduk: searchValue,
+            page: page || 1,
+          },
+        });
+      }
     }
   }, [
     page,
@@ -168,11 +169,16 @@ const ProductList = () => {
     hargaMinimum,
     kategoriTerpilih,
     searchValue,
+    rowPerPage,
+    router.isReady,
+    isLoadingQueryParams,
   ]);
 
   useEffect(() => {
-    setSearchValue(searchSelector.searchInput);
-    setPage(1);
+    if (searchSelector.searchInput) {
+      setSearchValue(searchSelector.searchInput);
+      setPage(1);
+    }
   }, [searchSelector.searchInput]);
 
   const sortDefaultValue = () => {
@@ -200,6 +206,20 @@ const ProductList = () => {
       }
     }
     return "";
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowPerPage(event.target.value);
+    setPage(1);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+    // router.push({
+    //   query: {
+    //     page: newPage,
+    //   },
+    // });
   };
 
   return (
@@ -306,25 +326,53 @@ const ProductList = () => {
               </Button>
             </Box>
           </Box>
-          <InfiniteScroll
-            dataLength={contentList.length}
-            next={fetchNextPage}
-            hasMore={page < maxPage}
-            loader={<Typography>Loading...</Typography>}
-            endMessage={
-              <Box display="flex" alignItems="center" justifyContent="center">
-                <Typography>No more Product available</Typography>
-              </Box>
-            }
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="flex-end"
+            sx={{ mt: 3 }}
           >
-            <Grid
-              container
-              rowSpacing="24px"
-              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-            >
-              {renderProductList()}
-            </Grid>
-          </InfiniteScroll>
+            <Box display="flex" flexDirection="row" alignContent="center">
+              <Typography sx={{ marginRight: "5px" }}>
+                Transaksi per halaman
+              </Typography>
+              <FormControl sx={{ marginRight: "30px" }}>
+                <Select
+                  sx={{
+                    borderRadius: "5px",
+                    minWidth: "68px",
+                    height: "28px",
+                    backgroundColor: "white",
+                    borderColor: "Brand.500",
+                  }}
+                  onChange={handleChangeRowsPerPage}
+                  defaultValue={8}
+                  size="small"
+                >
+                  <MenuItem value={2}>2</MenuItem>
+                  <MenuItem value={4}>4</MenuItem>
+                  <MenuItem value={8}>8</MenuItem>
+                </Select>
+              </FormControl>
+              <Stack spacing={2}>
+                <Pagination
+                  defaultPage={page}
+                  siblingCount={0}
+                  count={ceil(dataCount / rowPerPage)}
+                  page={page}
+                  onChange={handleChangePage}
+                  color="primary"
+                />
+              </Stack>
+            </Box>
+          </Box>
+          <Grid
+            container
+            rowSpacing="24px"
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          >
+            {renderProductList()}
+          </Grid>
         </Stack>
       </Grid>
     </Grid>

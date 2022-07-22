@@ -244,7 +244,13 @@ const ProductDetails = () => {
           options={allProduct}
           getOptionLabel={(val) => val.label}
           sx={{ width: 300 }}
-          onChange={(event, value) => setSelectedProduct(value.id)}
+          onChange={(event, value) => {
+            if (value) {
+              setSelectedProduct(value.id);
+            } else {
+              setSelectedProduct(null);
+            }
+          }}
           renderInput={(params) => (
             <TextField {...params} label="Select Product" />
           )}
