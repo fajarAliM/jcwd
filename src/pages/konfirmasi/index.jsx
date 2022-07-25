@@ -121,6 +121,7 @@ const Konfirmasi = () => {
     moment().add(5, "minutes").format("MM/DD/YYYY, hh:mm:ss");
     setTimer(moment().add(5, "minutes").format("MM/DD/YYYY, hh:mm:ss"));
   };
+  console.log(timer);
 
   return (
     <Container
@@ -171,7 +172,7 @@ const Konfirmasi = () => {
           >
             {/* <Timer timer={timer} /> */}
             {/* {renderTimer()} */}
-            <Timer timer={createdAt} />
+            <Timer timer={timer} />
           </Box>
         </Box>
         <Box sx={{ mt: "41px" }}>

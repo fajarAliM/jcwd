@@ -28,6 +28,7 @@ import IsiTab from "components/IsiTab";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { ceil } from "lodash";
+import moment from "moment";
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
@@ -97,6 +98,7 @@ const ProsesPemesanan = () => {
             setDummy(!dummy);
             setPage(1);
           }}
+          time={moment(val?.createdAt).format("MM/DD/YYYY")}
         />
       );
     });

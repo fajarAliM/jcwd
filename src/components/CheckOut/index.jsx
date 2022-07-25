@@ -17,6 +17,7 @@ const CheckOutCard = ({
   isResep,
   product_diskon,
   produk_satuan,
+  time,
 }) => {
   return (
     <Box sx={{ display: "flex", mb: "8px" }}>
@@ -33,7 +34,7 @@ const CheckOutCard = ({
           <Typography sx={{ fontSize: "16px" }}>{produk_name}</Typography>
           <Stack direction="row" alignItems="center" alignSelf="start">
             {isResep ? (
-              <Timer />
+              <Timer time={time} />
             ) : (
               <>
                 <Typography

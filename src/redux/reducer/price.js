@@ -19,9 +19,12 @@ const totalPriceReducer = createSlice({
     reset: (state) => {
       state.totalPrice = 0;
     },
+    time: (state, action) => {
+      state.time = action.payload;
+    },
   },
 });
 
-export const { price, cumulatedPrice, reset } = totalPriceReducer.actions;
+export const { price, cumulatedPrice, reset, time } = totalPriceReducer.actions;
 
 export default totalPriceReducer.reducer;

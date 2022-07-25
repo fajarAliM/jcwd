@@ -3,20 +3,20 @@ import { Box } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { CgFormatSlash } from "react-icons/cg";
+import { useSelector } from "react-redux";
 
-const Timer = ({ timer }) => {
+const Timer = ({ time }) => {
+  const timeSelector = useSelector((state) => state.price);
   const [timeOut, setTimeOut] = useState(false);
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
-  // console.log(timer);
-  // console.log(moment(timer).add(5, "minutes").format("MM/DD/YYYY, hh:mm:ss"));
-  const time = moment(timer).add(5, "minutes").format("MM/DD/YYYY, hh:mm:ss");
-  // console.log(timer);
 
   useEffect(() => {
-    const target = new Date(time);
+    const target = new Date(
+      `${timeSelector.time}, 24:00:00` || `${time}, 24:00:00`
+    );
     const interval = setInterval(() => {
       const now = new Date();
       const difference = target.getTime() - now.getTime();

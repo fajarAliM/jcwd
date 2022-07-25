@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { addToCart } from "redux/reducer/cart";
 import moment from "moment";
-import { cumulatedPrice, price } from "../../redux/reducer/price";
+import { cumulatedPrice, price, time } from "../../redux/reducer/price";
 
 const CheckOut = () => {
   const priceSelector = useSelector((state) => state.price);
@@ -76,6 +76,7 @@ const CheckOut = () => {
 
       dispatch(addToCart(CartData.data));
       dispatch(cumulatedPrice(totalHarga));
+      dispatch(time(moment(res.data.data.createdAt).format("MM/DD/YYYY")));
 
       localStorage.clear();
       router.push(`detail-transaksi/${res.data.data.id}`);
