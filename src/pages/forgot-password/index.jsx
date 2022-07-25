@@ -8,6 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import Page from "components/Page";
 import axiosInstance from "config/api";
 import { useFormik } from "formik";
 import { useRouter } from "next/router";
@@ -60,61 +61,63 @@ const ForgotPassword = () => {
   });
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      sx={{ my: "100px" }}
-    >
-      <Stack width="500px" boxShadow={2} borderRadius="8px" p={4} spacing={2}>
-        <Typography variant="h4" fontWeight="bold">
-          Enter New Password
-        </Typography>
-        <FormControl fullWidth error={newPasswordFormik.errors.newPassword}>
-          <FormLabel>New Password</FormLabel>
-          <OutlinedInput
-            type="password"
-            autoFocus
-            onChange={(e) =>
-              newPasswordFormik.setFieldValue("newPassword", e.target.value)
-            }
-          />
-          {newPasswordFormik.errors.newPassword && (
-            <FormHelperText>
-              {newPasswordFormik.errors.newPassword}
-            </FormHelperText>
-          )}
-        </FormControl>
-        <FormControl
-          fullWidth
-          error={newPasswordFormik.errors.repeatNewPassword}
-        >
-          <FormLabel>Repeat Password</FormLabel>
-          <OutlinedInput
-            type="password"
-            onChange={(e) =>
-              newPasswordFormik.setFieldValue(
-                "repeatNewPassword",
-                e.target.value
-              )
-            }
-          />
-          {newPasswordFormik.errors.repeatNewPassword && (
-            <FormHelperText>
-              {newPasswordFormik.errors.repeatNewPassword}
-            </FormHelperText>
-          )}
-        </FormControl>
-        <Button
-          variant="contained"
-          sx={{ height: "45px" }}
-          onClick={newPasswordFormik.handleSubmit}
-          disabled={newPasswordFormik.isSubmitting}
-        >
-          Submit
-        </Button>
-      </Stack>
-    </Box>
+    <Page title="Reset Password">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ my: "100px" }}
+      >
+        <Stack width="500px" boxShadow={2} borderRadius="8px" p={4} spacing={2}>
+          <Typography variant="h4" fontWeight="bold">
+            Enter New Password
+          </Typography>
+          <FormControl fullWidth error={newPasswordFormik.errors.newPassword}>
+            <FormLabel>New Password</FormLabel>
+            <OutlinedInput
+              type="password"
+              autoFocus
+              onChange={(e) =>
+                newPasswordFormik.setFieldValue("newPassword", e.target.value)
+              }
+            />
+            {newPasswordFormik.errors.newPassword && (
+              <FormHelperText>
+                {newPasswordFormik.errors.newPassword}
+              </FormHelperText>
+            )}
+          </FormControl>
+          <FormControl
+            fullWidth
+            error={newPasswordFormik.errors.repeatNewPassword}
+          >
+            <FormLabel>Repeat Password</FormLabel>
+            <OutlinedInput
+              type="password"
+              onChange={(e) =>
+                newPasswordFormik.setFieldValue(
+                  "repeatNewPassword",
+                  e.target.value
+                )
+              }
+            />
+            {newPasswordFormik.errors.repeatNewPassword && (
+              <FormHelperText>
+                {newPasswordFormik.errors.repeatNewPassword}
+              </FormHelperText>
+            )}
+          </FormControl>
+          <Button
+            variant="contained"
+            sx={{ height: "45px" }}
+            onClick={newPasswordFormik.handleSubmit}
+            disabled={newPasswordFormik.isSubmitting}
+          >
+            Submit
+          </Button>
+        </Stack>
+      </Box>
+    </Page>
   );
 };
 

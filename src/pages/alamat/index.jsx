@@ -19,6 +19,7 @@ import * as yup from "yup";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Page from "components/Page";
 
 const RoundedInput = styled(OutlinedInput)({
   borderRadius: "8px",
@@ -176,182 +177,188 @@ const Alamat = () => {
     }
   }, [selectedProvinsi, selectedKota]);
   return (
-    <Box
-      justifyContent="center"
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      my={{ xs: "40px", md: "80px" }}
-    >
-      <Box width={{ xs: "100%", md: "50%" }} p={4}>
-        <Typography variant="h4" component="h5" fontWeight="bold">
-          Alamat Pengiriman
-        </Typography>
-        <Box mt="50px">
-          <Box>
-            <Box display="flex" alignItems="baseline" mb="16px">
-              <Typography variant="h6" mr="6px" fontWeight="bold">
-                Label Alamat
-              </Typography>
-              <Typography ml="6px" fontSize="14px" color="#B4B9C7">
-                Contoh: Apartemen
-              </Typography>
+    <Page title="Add Address">
+      <Box
+        justifyContent="center"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        my={{ xs: "40px", md: "80px" }}
+      >
+        <Box width={{ xs: "100%", md: "50%" }} p={4}>
+          <Typography variant="h4" component="h5" fontWeight="bold">
+            Alamat Pengiriman
+          </Typography>
+          <Box mt="50px">
+            <Box>
+              <Box display="flex" alignItems="baseline" mb="16px">
+                <Typography variant="h6" mr="6px" fontWeight="bold">
+                  Label Alamat
+                </Typography>
+                <Typography ml="6px" fontSize="14px" color="#B4B9C7">
+                  Contoh: Apartemen
+                </Typography>
+              </Box>
+              <RoundedInput
+                fullWidth
+                autoFocus
+                name="label"
+                onChange={inputHandler}
+              />
             </Box>
-            <RoundedInput
-              fullWidth
-              autoFocus
-              name="label"
-              onChange={inputHandler}
+            <Box mt="52px">
+              <Typography variant="h6" fontWeight="bold">
+                Info Penerima
+              </Typography>
+              <Box display="flex" flexDirection={{ xs: "column", md: "row" }}>
+                <Box
+                  mt="36px"
+                  width={{ xs: "100%", md: "50%" }}
+                  paddingRight={{ xs: 0, md: "15px" }}
+                >
+                  <Typography fontSize="14px" color="#737A8D" mb="16px">
+                    Nama Depan
+                  </Typography>
+                  <RoundedInput
+                    fullWidth
+                    name="namaDepan"
+                    onChange={inputHandler}
+                  />
+                </Box>
+                <Box mt="36px" width={{ xs: "100%", md: "50%" }}>
+                  <Typography fontSize="14px" color="#737A8D" mb="16px">
+                    Nama Belakang
+                  </Typography>
+                  <RoundedInput
+                    fullWidth
+                    name="namaBelakang"
+                    onChange={inputHandler}
+                  />
+                </Box>
+              </Box>
+              <Box mt="36px">
+                <Typography fontSize="14px" color="#737A8D" mb="16px">
+                  Nomor HP
+                </Typography>
+                <RoundedInput
+                  onChange={inputHandler}
+                  fullWidth
+                  name="nomorHp"
+                  startAdornment={
+                    <InputAdornment position="start">+62</InputAdornment>
+                  }
+                />
+              </Box>
+              <Box display="flex" flexDirection={{ xs: "column", md: "row" }}>
+                <Box
+                  mt="36px"
+                  width={{ xs: "100%", md: "50%" }}
+                  paddingRight={{ xs: 0, md: "15px" }}
+                >
+                  <Typography fontSize="14px" color="#737A8D" mb="16px">
+                    Provinsi
+                  </Typography>
+                  <Select
+                    onChange={provinsiHandler}
+                    fullWidth
+                    sx={{ borderRadius: "8px" }}
+                  >
+                    {renderProvinsiList()}
+                  </Select>
+                </Box>
+                <Box mt="36px" width={{ xs: "100%", md: "50%" }}>
+                  <Typography fontSize="14px" color="#737A8D" mb="16px">
+                    Kota/Kabupaten
+                  </Typography>
+                  <Select
+                    onChange={kotaHandler}
+                    fullWidth
+                    sx={{ borderRadius: "8px" }}
+                    disabled={selectedProvinsi ? false : true}
+                  >
+                    {renderKotaList()}
+                  </Select>
+                </Box>
+              </Box>
+              <Box
+                mt="36px"
+                width={{ xs: "100%", md: "70%" }}
+                paddingRight={{ xs: 0, md: "15px" }}
+              >
+                <Typography fontSize="14px" color="#737A8D" mb="16px">
+                  Kecamatan
+                </Typography>
+                <RoundedInput
+                  onChange={inputHandler}
+                  name="kecamatan"
+                  fullWidth
+                />
+              </Box>
+              <Box mt="36px">
+                <Typography fontSize="14px" color="#737A8D" mb="16px">
+                  Alamat
+                </Typography>
+                <RoundedInput fullWidth name="alamat" onChange={inputHandler} />
+              </Box>
+              <Box
+                mt="36px"
+                width={{ xs: "100%", md: "50%" }}
+                paddingRight={{ xs: 0, md: "15px" }}
+              >
+                <Typography fontSize="14px" color="#737A8D" mb="16px">
+                  Kode Pos
+                </Typography>
+                <RoundedInput
+                  fullWidth
+                  name="kodePos"
+                  onChange={inputHandler}
+                />
+              </Box>
+            </Box>
+          </Box>
+          <Box mt="36px">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={checked}
+                  onChange={handleChange}
+                  defaultChecked
+                  color="default"
+                />
+              }
+              label="Simpan sebagai alamat utama"
             />
           </Box>
-          <Box mt="52px">
-            <Typography variant="h6" fontWeight="bold">
-              Info Penerima
-            </Typography>
-            <Box display="flex" flexDirection={{ xs: "column", md: "row" }}>
-              <Box
-                mt="36px"
-                width={{ xs: "100%", md: "50%" }}
-                paddingRight={{ xs: 0, md: "15px" }}
-              >
-                <Typography fontSize="14px" color="#737A8D" mb="16px">
-                  Nama Depan
-                </Typography>
-                <RoundedInput
-                  fullWidth
-                  name="namaDepan"
-                  onChange={inputHandler}
-                />
-              </Box>
-              <Box mt="36px" width={{ xs: "100%", md: "50%" }}>
-                <Typography fontSize="14px" color="#737A8D" mb="16px">
-                  Nama Belakang
-                </Typography>
-                <RoundedInput
-                  fullWidth
-                  name="namaBelakang"
-                  onChange={inputHandler}
-                />
-              </Box>
-            </Box>
-            <Box mt="36px">
-              <Typography fontSize="14px" color="#737A8D" mb="16px">
-                Nomor HP
-              </Typography>
-              <RoundedInput
-                onChange={inputHandler}
-                fullWidth
-                name="nomorHp"
-                startAdornment={
-                  <InputAdornment position="start">+62</InputAdornment>
-                }
-              />
-            </Box>
-            <Box display="flex" flexDirection={{ xs: "column", md: "row" }}>
-              <Box
-                mt="36px"
-                width={{ xs: "100%", md: "50%" }}
-                paddingRight={{ xs: 0, md: "15px" }}
-              >
-                <Typography fontSize="14px" color="#737A8D" mb="16px">
-                  Provinsi
-                </Typography>
-                <Select
-                  onChange={provinsiHandler}
-                  fullWidth
-                  sx={{ borderRadius: "8px" }}
-                >
-                  {renderProvinsiList()}
-                </Select>
-              </Box>
-              <Box mt="36px" width={{ xs: "100%", md: "50%" }}>
-                <Typography fontSize="14px" color="#737A8D" mb="16px">
-                  Kota/Kabupaten
-                </Typography>
-                <Select
-                  onChange={kotaHandler}
-                  fullWidth
-                  sx={{ borderRadius: "8px" }}
-                  disabled={selectedProvinsi ? false : true}
-                >
-                  {renderKotaList()}
-                </Select>
-              </Box>
-            </Box>
-            <Box
-              mt="36px"
-              width={{ xs: "100%", md: "70%" }}
-              paddingRight={{ xs: 0, md: "15px" }}
-            >
-              <Typography fontSize="14px" color="#737A8D" mb="16px">
-                Kecamatan
-              </Typography>
-              <RoundedInput
-                onChange={inputHandler}
-                name="kecamatan"
-                fullWidth
-              />
-            </Box>
-            <Box mt="36px">
-              <Typography fontSize="14px" color="#737A8D" mb="16px">
-                Alamat
-              </Typography>
-              <RoundedInput fullWidth name="alamat" onChange={inputHandler} />
-            </Box>
-            <Box
-              mt="36px"
-              width={{ xs: "100%", md: "50%" }}
-              paddingRight={{ xs: 0, md: "15px" }}
-            >
-              <Typography fontSize="14px" color="#737A8D" mb="16px">
-                Kode Pos
-              </Typography>
-              <RoundedInput fullWidth name="kodePos" onChange={inputHandler} />
-            </Box>
-          </Box>
-        </Box>
-        <Box mt="36px">
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={checked}
-                onChange={handleChange}
-                defaultChecked
-                color="default"
-              />
-            }
-            label="Simpan sebagai alamat utama"
-          />
-        </Box>
-        <Box display="flex" mt="68px">
-          <Button
-            variant="outlined"
-            sx={{
-              width: "50%",
-              height: "52px",
-              marginRight: "8px",
-            }}
-          >
-            Batalkan
-          </Button>
-          <Link href="checkout">
+          <Box display="flex" mt="68px">
             <Button
-              onClick={() => {
-                handleSubmit();
-              }}
-              variant="contained"
+              variant="outlined"
               sx={{
                 width: "50%",
                 height: "52px",
-                marginLeft: "8px",
+                marginRight: "8px",
               }}
             >
-              Simpan Alamat
+              Batalkan
             </Button>
-          </Link>
+            <Link href="checkout">
+              <Button
+                onClick={() => {
+                  handleSubmit();
+                }}
+                variant="contained"
+                sx={{
+                  width: "50%",
+                  height: "52px",
+                  marginLeft: "8px",
+                }}
+              >
+                Simpan Alamat
+              </Button>
+            </Link>
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </Page>
   );
 };
 

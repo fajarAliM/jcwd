@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "redux/reducer/cart";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import * as gtag from "../../lib/gtag";
 
 const Image = styled("img")({
   maxWidth: "100%",
@@ -50,6 +51,13 @@ const ProductCard = ({
       const cartInfo = addProductToCart.data;
 
       dispatch(addToCart(cartInfo.data));
+
+      gtag.gaEvent({
+        action: "add_to_cart",
+        label: `atc product: ${nama_produk}`,
+        value: `${nama_produk}`,
+        category: "cart",
+      });
 
       enqueueSnackbar(cartInfo.message, {
         variant: "success",

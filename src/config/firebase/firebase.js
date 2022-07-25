@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { getAuth } from "firebase/auth";
@@ -12,9 +13,22 @@ const firebaseConfig = {
   storageBucket: "pharmacy-pwdk.appspot.com",
   messagingSenderId: "620056565106",
   appId: "1:620056565106:web:621617a130457dae21b9eb",
+  measurementId: "G-87X0W4263Y",
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-// eslint-disable-next-line import/prefer-default-export
-export const auth = getAuth(app);
+// eslint-disable-next-line import/no-mutable-exports
+let analytics;
+// eslint-disable-next-line import/no-mutable-exports
+let auth;
+if (firebaseConfig?.projectId) {
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+
+  if (app.name && typeof window !== "undefined") {
+    analytics = getAnalytics(app);
+    auth = getAuth(app);
+  }
+}
+
+export { analytics, auth };

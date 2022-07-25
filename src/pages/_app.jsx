@@ -12,11 +12,27 @@ import AuthProvider from "components/AuthProvider";
 import "moment/locale/id";
 import AdminProvider from "components/AdminProvider";
 import CartProvider from "components/CartProvider";
+import { useEffect } from "react";
+import GoogleAnalytics from "components/GoogleAnalystics";
 import { store } from "../redux/store";
 import theme from "../theme";
+import * as gtag from "../lib/gtag";
 
 const MyApp = ({ Component, pageProps }) => {
   const router = useRouter();
+
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      gtag.pageView(url);
+    };
+
+    router.events.on("routeChangeComplete", handleRouteChange);
+
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
+
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
@@ -34,6 +50,7 @@ const MyApp = ({ Component, pageProps }) => {
                 </AdminProvider>
               ) : (
                 <>
+                  <GoogleAnalytics />
                   <CartProvider>
                     <AuthProvider>
                       <Nav />

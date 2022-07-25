@@ -36,6 +36,7 @@ import axiosInstance from "config/api";
 import jsCookie from "js-cookie";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "config/firebase/firebase";
+import Page from "components/Page";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState("false");
@@ -150,125 +151,244 @@ const LoginPage = () => {
 
   return (
     <>
-      <Grid container columns={{ xs: 4, md: 12 }}>
-        <Grid item display={{ xs: "none", md: "block" }} xs={0} md={6}>
-          <Box>
-            <Image src={Frame} layout="fixed" />
-          </Box>
-        </Grid>
-        <Grid item xs={4} md={6}>
-          <Box
-            px={{ xs: "35px", sm: "96px" }}
-            py="30px"
-            height="100vh"
-            overflow="scroll"
-          >
-            <Box display="flex" justifyContent="flex-end">
-              <ButtonGroup
-                sx={{ marginBottom: "50px" }}
-                variant="root"
-                disableElevation
-              >
-                <Button
-                  sx={{ backgroundColor: "#f5f0f1", color: "Brand.500" }}
-                  variant="contained"
-                >
-                  EN
-                </Button>
-                <Button
-                  sx={{ color: "white", backgroundColor: "Brand.500" }}
-                  variant="contained"
-                >
-                  ID
-                </Button>
-              </ButtonGroup>
+      <Page title="Login">
+        <Grid container columns={{ xs: 4, md: 12 }}>
+          <Grid item display={{ xs: "none", md: "block" }} xs={0} md={6}>
+            <Box>
+              <Image src={Frame} layout="fixed" />
             </Box>
-            <Typography
-              sx={{ marginBottom: "36px" }}
-              fontWeight="bold"
-              variant="h4"
-              component="h4"
+          </Grid>
+          <Grid item xs={4} md={6}>
+            <Box
+              px={{ xs: "35px", sm: "96px" }}
+              py="30px"
+              height="100vh"
+              overflow="scroll"
             >
-              Masuk
-            </Typography>
-            <form>
-              <FormControl
-                fullWidth
-                error={formik.errors.credential}
-                // sx={{ mt: "16px" }}
+              <Box display="flex" justifyContent="flex-end">
+                <ButtonGroup
+                  sx={{ marginBottom: "50px" }}
+                  variant="root"
+                  disableElevation
+                >
+                  <Button
+                    sx={{ backgroundColor: "#f5f0f1", color: "Brand.500" }}
+                    variant="contained"
+                  >
+                    EN
+                  </Button>
+                  <Button
+                    sx={{ color: "white", backgroundColor: "Brand.500" }}
+                    variant="contained"
+                  >
+                    ID
+                  </Button>
+                </ButtonGroup>
+              </Box>
+              <Typography
+                sx={{ marginBottom: "36px" }}
+                fontWeight="bold"
+                variant="h4"
+                component="h4"
               >
-                <FormLabel>Email or Username</FormLabel>
-                <OutlinedInput
-                  autoFocus
-                  onChange={(e) =>
-                    formik.setFieldValue("credential", e.target.value)
-                  }
-                  placeholder="JohnDoe@gmail.com"
-                  startAdornment={
-                    <MailIcon
-                      sx={{ marginRight: "17px" }}
-                      htmlColor="#02114f"
-                    />
-                  }
+                Masuk
+              </Typography>
+              <form>
+                <FormControl
                   fullWidth
-                  sx={{ borderRadius: "10px" }}
-                />
-                {formik.errors.credential && (
-                  <FormHelperText>{formik.errors.credential}</FormHelperText>
-                )}
-              </FormControl>
-              <FormControl
-                fullWidth
-                error={formik.errors.password}
-                sx={{ my: "16px" }}
-              >
-                <FormLabel>Password</FormLabel>
-                <OutlinedInput
-                  onChange={(e) =>
-                    formik.setFieldValue("password", e.target.value)
-                  }
-                  type={showPassword ? "password" : "text"}
-                  placeholder="Password123@"
-                  startAdornment={
-                    <LockIcon
-                      sx={{ marginRight: "17px" }}
-                      htmlColor="#02114f"
-                    />
-                  }
+                  error={formik.errors.credential}
+                  // sx={{ mt: "16px" }}
+                >
+                  <FormLabel>Email or Username</FormLabel>
+                  <OutlinedInput
+                    autoFocus
+                    onChange={(e) =>
+                      formik.setFieldValue("credential", e.target.value)
+                    }
+                    placeholder="JohnDoe@gmail.com"
+                    startAdornment={
+                      <MailIcon
+                        sx={{ marginRight: "17px" }}
+                        htmlColor="#02114f"
+                      />
+                    }
+                    fullWidth
+                    sx={{ borderRadius: "10px" }}
+                  />
+                  {formik.errors.credential && (
+                    <FormHelperText>{formik.errors.credential}</FormHelperText>
+                  )}
+                </FormControl>
+                <FormControl
                   fullWidth
-                  sx={{ borderRadius: "10px" }}
-                  endAdornment={
-                    <IconButton onClick={() => setShowPassword(!showPassword)}>
-                      {showPassword ? (
-                        <VisibilityIcon htmlColor="#02114f" sx={{}} />
-                      ) : (
-                        <VisibilityOffIcon htmlColor="#02114f" />
-                      )}
-                    </IconButton>
-                  }
-                />
-                {formik.errors.password && (
-                  <FormHelperText>{formik.errors.password}</FormHelperText>
-                )}
-              </FormControl>
-              <Stack direction="row" justifyContent="space-between">
-                <FormControlLabel
-                  sx={{ marginTop: "-10px" }}
-                  control={<Checkbox />}
-                  label="Ingat Saya"
-                />
-                <Typography
-                  onClick={() => setOpenModal(true)}
-                  color="#c7bfaf"
-                  sx={{
-                    "&:hover": {
-                      cursor: "pointer",
-                    },
+                  error={formik.errors.password}
+                  sx={{ my: "16px" }}
+                >
+                  <FormLabel>Password</FormLabel>
+                  <OutlinedInput
+                    onChange={(e) =>
+                      formik.setFieldValue("password", e.target.value)
+                    }
+                    type={showPassword ? "password" : "text"}
+                    placeholder="Password123@"
+                    startAdornment={
+                      <LockIcon
+                        sx={{ marginRight: "17px" }}
+                        htmlColor="#02114f"
+                      />
+                    }
+                    fullWidth
+                    sx={{ borderRadius: "10px" }}
+                    endAdornment={
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <VisibilityIcon htmlColor="#02114f" sx={{}} />
+                        ) : (
+                          <VisibilityOffIcon htmlColor="#02114f" />
+                        )}
+                      </IconButton>
+                    }
+                  />
+                  {formik.errors.password && (
+                    <FormHelperText>{formik.errors.password}</FormHelperText>
+                  )}
+                </FormControl>
+                <Stack direction="row" justifyContent="space-between">
+                  <FormControlLabel
+                    sx={{ marginTop: "-10px" }}
+                    control={<Checkbox />}
+                    label="Ingat Saya"
+                  />
+                  <Typography
+                    onClick={() => setOpenModal(true)}
+                    color="#c7bfaf"
+                    sx={{
+                      "&:hover": {
+                        cursor: "pointer",
+                      },
+                    }}
+                  >
+                    Lupa Kata Sandi ?
+                  </Typography>
+                </Stack>
+                <Modal
+                  open={openModal}
+                  onClose={() => {
+                    setOpenModal(false);
                   }}
                 >
-                  Lupa Kata Sandi ?
-                </Typography>
-              </Stack>
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      width: "500px",
+                      height: "360px",
+                      bgcolor: "white",
+                      borderRadius: 2,
+                      boxShadow: 24,
+                      p: 4,
+                    }}
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                  >
+                    <Typography variant="h5">Forgot Your Password?</Typography>
+                    <Typography
+                      marginTop="30px"
+                      color="#C7C6C1"
+                      textAlign="center"
+                    >
+                      Enter your email below to recieve an email to reset your
+                      password
+                    </Typography>
+                    <FormControl
+                      fullWidth
+                      sx={{ mt: "30px" }}
+                      error={forgotPasswordFormik.errors.email}
+                    >
+                      <OutlinedInput
+                        autoFocus
+                        onChange={(e) => {
+                          forgotPasswordFormik.setFieldValue(e.target.value);
+                        }}
+                        placeholder="JohnDoe@gmail.com"
+                        startAdornment={
+                          <MailIcon
+                            sx={{ marginRight: "17px" }}
+                            htmlColor="#02114f"
+                          />
+                        }
+                        fullWidth
+                      />
+                      {forgotPasswordFormik.errors.email && (
+                        <FormHelperText>
+                          {forgotPasswordFormik.errors.email}
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      sx={{ mt: "30px", height: "48px" }}
+                      onClick={() => {
+                        forgotPasswordFormik.handleSubmit();
+                      }}
+                    >
+                      Send
+                    </Button>
+                  </Box>
+                </Modal>
+                <Button
+                  sx={{
+                    marginTop: "20px",
+                    marginBottom: "48px",
+                    minHeight: "48px",
+                    textTransform: "initial",
+                  }}
+                  variant="contained"
+                  fullWidth
+                  onClick={() => formik.handleSubmit()}
+                  disabled={formik.isSubmitting}
+                  type="submit"
+                >
+                  Masuk
+                </Button>
+              </form>
+              <Divider sx={{ marginBottom: "56px" }}>Atau Masuk Dengan</Divider>
+              <Button
+                fullWidth
+                startIcon={<Image src={GoogleIcon} />}
+                variant="contained"
+                sx={{
+                  marginBottom: "48px",
+                  backgroundColor: "white",
+                  color: "black",
+                  fontWeight: "bold",
+                  height: "48px",
+                  border: "2px solid #c7bfaf",
+                  boxShadow: "none",
+                  ":hover": { backgroundColor: "#c7bfaf", border: "unset" },
+                }}
+                onClick={signInWithGoogle}
+              >
+                Masuk dengan Google
+              </Button>
+              <Typography textAlign="center">
+                Belum Punya Akun ?{" "}
+                <Link href="/register">
+                  <Typography
+                    sx={{ ":hover": { cursor: "pointer" } }}
+                    component="span"
+                    color="Brand.500"
+                  >
+                    Daftar
+                  </Typography>
+                </Link>
+              </Typography>
               <Modal
                 open={openModal}
                 onClose={() => {
@@ -309,7 +429,10 @@ const LoginPage = () => {
                     <OutlinedInput
                       autoFocus
                       onChange={(e) => {
-                        forgotPasswordFormik.setFieldValue(e.target.value);
+                        forgotPasswordFormik.setFieldValue(
+                          "email",
+                          e.target.value
+                        );
                       }}
                       placeholder="JohnDoe@gmail.com"
                       startAdornment={
@@ -330,131 +453,17 @@ const LoginPage = () => {
                     variant="contained"
                     fullWidth
                     sx={{ mt: "30px", height: "48px" }}
-                    onClick={() => {
-                      forgotPasswordFormik.handleSubmit();
-                    }}
+                    onClick={forgotPasswordFormik.handleSubmit}
+                    disabled={forgotPasswordFormik.isSubmitting}
                   >
                     Send
                   </Button>
                 </Box>
               </Modal>
-              <Button
-                sx={{
-                  marginTop: "20px",
-                  marginBottom: "48px",
-                  minHeight: "48px",
-                  textTransform: "initial",
-                }}
-                variant="contained"
-                fullWidth
-                onClick={() => formik.handleSubmit()}
-                disabled={formik.isSubmitting}
-                type="submit"
-              >
-                Masuk
-              </Button>
-            </form>
-            <Divider sx={{ marginBottom: "56px" }}>Atau Masuk Dengan</Divider>
-            <Button
-              fullWidth
-              startIcon={<Image src={GoogleIcon} />}
-              variant="contained"
-              sx={{
-                marginBottom: "48px",
-                backgroundColor: "white",
-                color: "black",
-                fontWeight: "bold",
-                height: "48px",
-                border: "2px solid #c7bfaf",
-                boxShadow: "none",
-                ":hover": { backgroundColor: "#c7bfaf", border: "unset" },
-              }}
-              onClick={signInWithGoogle}
-            >
-              Masuk dengan Google
-            </Button>
-            <Typography textAlign="center">
-              Belum Punya Akun ?{" "}
-              <Link href="/register">
-                <Typography
-                  sx={{ ":hover": { cursor: "pointer" } }}
-                  component="span"
-                  color="Brand.500"
-                >
-                  Daftar
-                </Typography>
-              </Link>
-            </Typography>
-            <Modal
-              open={openModal}
-              onClose={() => {
-                setOpenModal(false);
-              }}
-            >
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  width: "500px",
-                  height: "360px",
-                  bgcolor: "white",
-                  borderRadius: 2,
-                  boxShadow: 24,
-                  p: 4,
-                }}
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-              >
-                <Typography variant="h5">Forgot Your Password?</Typography>
-                <Typography marginTop="30px" color="#C7C6C1" textAlign="center">
-                  Enter your email below to recieve an email to reset your
-                  password
-                </Typography>
-                <FormControl
-                  fullWidth
-                  sx={{ mt: "30px" }}
-                  error={forgotPasswordFormik.errors.email}
-                >
-                  <OutlinedInput
-                    autoFocus
-                    onChange={(e) => {
-                      forgotPasswordFormik.setFieldValue(
-                        "email",
-                        e.target.value
-                      );
-                    }}
-                    placeholder="JohnDoe@gmail.com"
-                    startAdornment={
-                      <MailIcon
-                        sx={{ marginRight: "17px" }}
-                        htmlColor="#02114f"
-                      />
-                    }
-                    fullWidth
-                  />
-                  {forgotPasswordFormik.errors.email && (
-                    <FormHelperText>
-                      {forgotPasswordFormik.errors.email}
-                    </FormHelperText>
-                  )}
-                </FormControl>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  sx={{ mt: "30px", height: "48px" }}
-                  onClick={forgotPasswordFormik.handleSubmit}
-                  disabled={forgotPasswordFormik.isSubmitting}
-                >
-                  Send
-                </Button>
-              </Box>
-            </Modal>
-          </Box>
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
+      </Page>
     </>
   );
 };

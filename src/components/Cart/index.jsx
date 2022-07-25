@@ -93,6 +93,7 @@ const UserCart = ({ checked = false, setCartChecked, val, indexInRedux }) => {
         `${val.product.nama_produk} berhasil di hapus dari keranjang`,
         { variant: "success" }
       );
+      handleCloseModal();
     } catch (err) {
       enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
     }
@@ -117,7 +118,7 @@ const UserCart = ({ checked = false, setCartChecked, val, indexInRedux }) => {
 
   useEffect(() => {
     fetchProductData();
-  });
+  }, []);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", mt: "28px" }}>
@@ -254,6 +255,7 @@ const UserCart = ({ checked = false, setCartChecked, val, indexInRedux }) => {
                 "&:hover": {
                   border: 0,
                 },
+                padding: "10px 10% !important",
               }}
               disabled={totalStock() === formik.values.quantity}
             >

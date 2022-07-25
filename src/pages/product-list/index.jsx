@@ -16,6 +16,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import Page from "components/Page";
 import ProductCard from "components/ProductCard";
 import Sidebar from "components/Sidebar";
 import axiosInstance from "config/api";
@@ -223,159 +224,165 @@ const ProductList = () => {
   };
 
   return (
-    <Grid container sx={{ mt: "44px" }}>
-      <Grid item sm={0} md={3} order={{ xs: 2, md: 1 }}>
-        <Stack sx={{ ml: { xs: "10px", md: "90px" } }}>
-          <Box sx={{ display: "flex", flexDirection: "column", mt: 2, mr: 8 }}>
-            <Box sx={{ mb: 5 }} display={{ xs: "none", sm: "block" }}>
-              <Breadcrumbs
-                sx={{ "&:hover": { cursor: "pointer" } }}
-                display={{ xs: "none", md: "block" }}
-              >
-                <Link underline="hover" href="/">
-                  <Typography
-                    sx={{
-                      color: router.pathname === "/" ? "Brand.500" : "#213360",
-                      fontWeight: router.pathname === "/" ? 700 : 400,
-                    }}
-                  >
-                    Beranda
-                  </Typography>
-                </Link>
-                <Link underline="hover" href="/">
-                  <Typography
-                    sx={{
-                      color: router.pathname === "/" ? "Brand.500" : "#213360",
-                      fontWeight: router.pathname === "/" ? 700 : 400,
-                    }}
-                  >
-                    Kategori
-                  </Typography>
-                </Link>
-                <Link underline="hover" href="/product-list">
-                  <Typography
-                    sx={{
-                      color:
-                        router.pathname === "/product-list"
-                          ? "Brand.500"
-                          : "#213360",
-                      fontWeight:
-                        router.pathname === "/product-list" ? 700 : 400,
-                    }}
-                  >
-                    Obat
-                  </Typography>
-                </Link>
-              </Breadcrumbs>
+    <Page title="Product Page">
+      <Grid container sx={{ mt: "44px" }}>
+        <Grid item sm={0} md={3} order={{ xs: 2, md: 1 }}>
+          <Stack sx={{ ml: { xs: "10px", md: "90px" } }}>
+            <Box
+              sx={{ display: "flex", flexDirection: "column", mt: 2, mr: 8 }}
+            >
+              <Box sx={{ mb: 5 }} display={{ xs: "none", sm: "block" }}>
+                <Breadcrumbs
+                  sx={{ "&:hover": { cursor: "pointer" } }}
+                  display={{ xs: "none", md: "block" }}
+                >
+                  <Link underline="hover" href="/">
+                    <Typography
+                      sx={{
+                        color:
+                          router.pathname === "/" ? "Brand.500" : "#213360",
+                        fontWeight: router.pathname === "/" ? 700 : 400,
+                      }}
+                    >
+                      Beranda
+                    </Typography>
+                  </Link>
+                  <Link underline="hover" href="/">
+                    <Typography
+                      sx={{
+                        color:
+                          router.pathname === "/" ? "Brand.500" : "#213360",
+                        fontWeight: router.pathname === "/" ? 700 : 400,
+                      }}
+                    >
+                      Kategori
+                    </Typography>
+                  </Link>
+                  <Link underline="hover" href="/product-list">
+                    <Typography
+                      sx={{
+                        color:
+                          router.pathname === "/product-list"
+                            ? "Brand.500"
+                            : "#213360",
+                        fontWeight:
+                          router.pathname === "/product-list" ? 700 : 400,
+                      }}
+                    >
+                      Obat
+                    </Typography>
+                  </Link>
+                </Breadcrumbs>
+              </Box>
             </Box>
-          </Box>
-          <Sidebar
-            setHargaMaksimum={setHargaMaksimum}
-            setHargaMinimum={setHargaMinimum}
-            setPage={setPage}
-            setKategoriTerpilih={setKategoriTerpilih}
-          />
-        </Stack>
-      </Grid>
-      <Grid item sm={12} md={9} order={{ xs: 1, md: 2 }}>
-        <Stack sx={{ mr: "96px", ml: "48px" }}>
-          <Box
-            sx={{
-              width: "100%",
-              borderBottom: "1px solid #D5D7DD",
-              mb: "34px",
-            }}
-          >
-            <Typography
-              sx={{ fontWeight: 700, fontSize: "24px", paddingY: "16px" }}
+            <Sidebar
+              setHargaMaksimum={setHargaMaksimum}
+              setHargaMinimum={setHargaMinimum}
+              setPage={setPage}
+              setKategoriTerpilih={setKategoriTerpilih}
+            />
+          </Stack>
+        </Grid>
+        <Grid item sm={12} md={9} order={{ xs: 1, md: 2 }}>
+          <Stack sx={{ mr: "96px", ml: "48px" }}>
+            <Box
+              sx={{
+                width: "100%",
+                borderBottom: "1px solid #D5D7DD",
+                mb: "34px",
+              }}
             >
-              Obat
-            </Typography>
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography
-              sx={{ fontSize: "14px", fontWeight: 400, color: "#737A8D" }}
-            >
-              {jumlahProduk} Produk di Vitamin & Suplemen
-            </Typography>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: 400,
-                  color: "#737A8D",
-                  mr: "17px",
-                }}
+                sx={{ fontWeight: 700, fontSize: "24px", paddingY: "16px" }}
               >
-                Urutkan
+                Obat
               </Typography>
-              <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                <Select
-                  onChange={sortInputHandler}
-                  defaultValue={sortDefaultValue()}
-                >
-                  <MenuItem value="">None</MenuItem>
-                  <MenuItem value="Highest Price">Termahal</MenuItem>
-                  <MenuItem value="Lowest Price">Termurah</MenuItem>
-                  <MenuItem value="name_ASC">A - Z</MenuItem>
-                  <MenuItem value="name_DESC">Z - A</MenuItem>
-                </Select>
-              </FormControl>
-              <Button variant="contained" onClick={sortButton}>
-                Cari
-              </Button>
             </Box>
-          </Box>
-          <Box
-            display="flex"
-            flexDirection="row"
-            justifyContent="flex-end"
-            sx={{ mt: 3 }}
-          >
-            <Box display="flex" flexDirection="row" alignContent="center">
-              <Typography sx={{ marginRight: "5px" }}>
-                Transaksi per halaman
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography
+                sx={{ fontSize: "14px", fontWeight: 400, color: "#737A8D" }}
+              >
+                {jumlahProduk} Produk di Vitamin & Suplemen
               </Typography>
-              <FormControl sx={{ marginRight: "30px" }}>
-                <Select
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Typography
                   sx={{
-                    borderRadius: "5px",
-                    minWidth: "68px",
-                    height: "28px",
-                    backgroundColor: "white",
-                    borderColor: "Brand.500",
+                    fontSize: "14px",
+                    fontWeight: 400,
+                    color: "#737A8D",
+                    mr: "17px",
                   }}
-                  onChange={handleChangeRowsPerPage}
-                  defaultValue={8}
-                  size="small"
                 >
-                  <MenuItem value={2}>2</MenuItem>
-                  <MenuItem value={4}>4</MenuItem>
-                  <MenuItem value={8}>8</MenuItem>
-                </Select>
-              </FormControl>
-              <Stack spacing={2}>
-                <Pagination
-                  defaultPage={page}
-                  siblingCount={0}
-                  count={ceil(dataCount / rowPerPage)}
-                  page={page}
-                  onChange={handleChangePage}
-                  color="primary"
-                />
-              </Stack>
+                  Urutkan
+                </Typography>
+                <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                  <Select
+                    onChange={sortInputHandler}
+                    defaultValue={sortDefaultValue()}
+                  >
+                    <MenuItem value="">None</MenuItem>
+                    <MenuItem value="Highest Price">Termahal</MenuItem>
+                    <MenuItem value="Lowest Price">Termurah</MenuItem>
+                    <MenuItem value="name_ASC">A - Z</MenuItem>
+                    <MenuItem value="name_DESC">Z - A</MenuItem>
+                  </Select>
+                </FormControl>
+                <Button variant="contained" onClick={sortButton}>
+                  Cari
+                </Button>
+              </Box>
             </Box>
-          </Box>
-          <Grid
-            container
-            rowSpacing="24px"
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-          >
-            {renderProductList()}
-          </Grid>
-        </Stack>
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="flex-end"
+              sx={{ mt: 3 }}
+            >
+              <Box display="flex" flexDirection="row" alignContent="center">
+                <Typography sx={{ marginRight: "5px" }}>
+                  Transaksi per halaman
+                </Typography>
+                <FormControl sx={{ marginRight: "30px" }}>
+                  <Select
+                    sx={{
+                      borderRadius: "5px",
+                      minWidth: "68px",
+                      height: "28px",
+                      backgroundColor: "white",
+                      borderColor: "Brand.500",
+                    }}
+                    onChange={handleChangeRowsPerPage}
+                    defaultValue={8}
+                    size="small"
+                  >
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={4}>4</MenuItem>
+                    <MenuItem value={8}>8</MenuItem>
+                  </Select>
+                </FormControl>
+                <Stack spacing={2}>
+                  <Pagination
+                    defaultPage={page}
+                    siblingCount={0}
+                    count={ceil(dataCount / rowPerPage)}
+                    page={page}
+                    onChange={handleChangePage}
+                    color="primary"
+                  />
+                </Stack>
+              </Box>
+            </Box>
+            <Grid
+              container
+              rowSpacing="24px"
+              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            >
+              {renderProductList()}
+            </Grid>
+          </Stack>
+        </Grid>
       </Grid>
-    </Grid>
+    </Page>
   );
 };
 

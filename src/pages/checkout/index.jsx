@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { addToCart } from "redux/reducer/cart";
 import moment from "moment";
+import Page from "components/Page";
 import { cumulatedPrice, price, time } from "../../redux/reducer/price";
 
 const CheckOut = () => {
@@ -162,257 +163,264 @@ const CheckOut = () => {
   }, [total]);
 
   return (
-    <Container sx={{ mt: "56px" }}>
-      <Grid container spacing={2} columns={{ xs: 6, md: 12 }}>
-        <Grid item xs={6} md={8}>
-          <Box
-            sx={{
-              border: "1px solid white",
-              borderRadius: 3,
-              boxShadow: "0 0 15px -10px black",
-              p: 2,
-              mb: "26px",
-            }}
-          >
-            <Typography
-              sx={{
-                borderBottom: "2px solid #F5F6F9",
-                color: "#213360",
-                fontWeight: 700,
-                fontSize: "20px",
-                paddingBottom: 1,
-              }}
-            >
-              Alamat Pengiriman
-            </Typography>
-            {selectedAddress?.nama_penerima || alamatUtama?.nama_penerima ? (
-              <>
-                <Box
-                  sx={{
-                    display: "flex",
-                    mt: "16px",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Box sx={{ display: "flex" }}>
-                    <Typography
-                      sx={{ mr: "2px", fontWeight: 700, fontSize: "14px" }}
-                    >
-                      {selectedAddress?.nama_penerima ||
-                        alamatUtama?.nama_penerima}
-                      {selectedAddress?.nama_penerima ||
-                      alamatUtama?.nama_penerima
-                        ? ","
-                        : null}
-                    </Typography>
-                    <Typography sx={{ fontWeight: 700, fontSize: "14px" }}>
-                      {selectedAddress?.no_telepon_penerima ||
-                        alamatUtama?.no_telepon_penerima}
-                    </Typography>
-                  </Box>
-                  <Button
-                    onClick={handleOpenAlamat}
-                    sx={{
-                      color: "Brand.500",
-                      fontWeight: 700,
-                      fontSize: "12px",
-                    }}
-                  >
-                    Pilih Alamat Lain
-                  </Button>
-                  <ModalAlamat
-                    open={openAlamat}
-                    handleClose={handleCloseAlamat}
-                    setSelectedAddress={setSelectedAddress}
-                  />
-                </Box>
-                <Stack>
-                  <Typography sx={{ fontSize: "14px", color: "#213360" }}>
-                    {selectedAddress?.label_alamat || alamatUtama?.label_alamat}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      fontSize: "14px",
-                      color: "#4F618E",
-                      borderBottom: "2px solid #F5F6F9",
-                      paddingBottom: 2,
-                    }}
-                  >
-                    {selectedAddress?.alamat_lengkap ||
-                      alamatUtama?.alamat_lengkap}
-                  </Typography>
-                </Stack>
-              </>
-            ) : null}
-            <Link href="/alamat">
-              <Button
-                startIcon={<AddBoxIcon />}
-                sx={{ color: "Brand.500", fontWeight: 700, mt: "11px" }}
-              >
-                Tambahkan Alamat Baru
-              </Button>
-            </Link>
-          </Box>
-          <Stack
-            sx={{
-              border: "1px solid white",
-              borderRadius: 3,
-              boxShadow: "0 0 15px -10px black",
-              p: 2,
-            }}
-          >
-            <Typography
-              sx={{
-                color: "#213360",
-                fontWeight: 700,
-                fontSize: "20px",
-                borderBottom: "2px solid #F5F6F9",
-                mb: "15px",
-              }}
-            >
-              Ringkasan Order
-            </Typography>
-            {renderCart()}
+    <Page title="Checkout">
+      <Container sx={{ mt: "56px" }}>
+        <Grid container spacing={2} columns={{ xs: 6, md: 12 }}>
+          <Grid item xs={6} md={8}>
             <Box
               sx={{
-                display: "flex",
-                justifyContent: "end",
+                border: "1px solid white",
+                borderRadius: 3,
+                boxShadow: "0 0 15px -10px black",
+                p: 2,
+                mb: "26px",
               }}
             >
+              <Typography
+                sx={{
+                  borderBottom: "2px solid #F5F6F9",
+                  color: "#213360",
+                  fontWeight: 700,
+                  fontSize: "20px",
+                  paddingBottom: 1,
+                }}
+              >
+                Alamat Pengiriman
+              </Typography>
+              {selectedAddress?.nama_penerima || alamatUtama?.nama_penerima ? (
+                <>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      mt: "16px",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Box sx={{ display: "flex" }}>
+                      <Typography
+                        sx={{ mr: "2px", fontWeight: 700, fontSize: "14px" }}
+                      >
+                        {selectedAddress?.nama_penerima ||
+                          alamatUtama?.nama_penerima}
+                        {selectedAddress?.nama_penerima ||
+                        alamatUtama?.nama_penerima
+                          ? ","
+                          : null}
+                      </Typography>
+                      <Typography sx={{ fontWeight: 700, fontSize: "14px" }}>
+                        {selectedAddress?.no_telepon_penerima ||
+                          alamatUtama?.no_telepon_penerima}
+                      </Typography>
+                    </Box>
+                    <Button
+                      onClick={handleOpenAlamat}
+                      sx={{
+                        color: "Brand.500",
+                        fontWeight: 700,
+                        fontSize: "12px",
+                      }}
+                    >
+                      Pilih Alamat Lain
+                    </Button>
+                    <ModalAlamat
+                      open={openAlamat}
+                      handleClose={handleCloseAlamat}
+                      setSelectedAddress={setSelectedAddress}
+                    />
+                  </Box>
+                  <Stack>
+                    <Typography sx={{ fontSize: "14px", color: "#213360" }}>
+                      {selectedAddress?.label_alamat ||
+                        alamatUtama?.label_alamat}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: "14px",
+                        color: "#4F618E",
+                        borderBottom: "2px solid #F5F6F9",
+                        paddingBottom: 2,
+                      }}
+                    >
+                      {selectedAddress?.alamat_lengkap ||
+                        alamatUtama?.alamat_lengkap}
+                    </Typography>
+                  </Stack>
+                </>
+              ) : null}
+              <Link href="/alamat">
+                <Button
+                  startIcon={<AddBoxIcon />}
+                  sx={{ color: "Brand.500", fontWeight: 700, mt: "11px" }}
+                >
+                  Tambahkan Alamat Baru
+                </Button>
+              </Link>
+            </Box>
+            <Stack
+              sx={{
+                border: "1px solid white",
+                borderRadius: 3,
+                boxShadow: "0 0 15px -10px black",
+                p: 2,
+              }}
+            >
+              <Typography
+                sx={{
+                  color: "#213360",
+                  fontWeight: 700,
+                  fontSize: "20px",
+                  borderBottom: "2px solid #F5F6F9",
+                  mb: "15px",
+                }}
+              >
+                Ringkasan Order
+              </Typography>
+              {renderCart()}
               <Box
                 sx={{
                   display: "flex",
-                  borderTop: "3px solid #F5F6F9",
+                  justifyContent: "end",
                 }}
               >
-                <Typography sx={{ color: "#213360", mr: 2, mt: 2 }}>
-                  Sub Total
-                </Typography>
-                <Typography sx={{ fontWeight: 700, mt: 2 }}>
-                  Rp {parseInt(hargaProducts).toLocaleString()}
-                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    borderTop: "3px solid #F5F6F9",
+                  }}
+                >
+                  <Typography sx={{ color: "#213360", mr: 2, mt: 2 }}>
+                    Sub Total
+                  </Typography>
+                  <Typography sx={{ fontWeight: 700, mt: 2 }}>
+                    Rp {parseInt(hargaProducts).toLocaleString()}
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
-          </Stack>
-        </Grid>
-        <Grid item xs={6} md={4}>
-          <Box
-            width={{ xs: "100%", md: "100%" }}
-            sx={{
-              border: "1px solid white",
-              borderRadius: 3,
-              boxShadow: "0 0 15px -10px black",
-              p: 2,
-            }}
-          >
-            <Typography sx={{ mb: "32px" }}>Total</Typography>
-            <Grid
-              container
-              rowSpacing={2}
-              sx={{ mb: 1, borderBottom: "2px solid #F5F6F9" }}
-            >
-              <Grid item xs={4}>
-                <Typography sx={{ fontSize: "14px" }}>Sub Total</Typography>
-              </Grid>
-              <Grid item xs={8} sx={{ textAlign: "right" }}>
-                <Typography sx={{ fontWeight: 700, fontSize: "14px" }}>
-                  Rp {parseInt(hargaProducts).toLocaleString()}
-                </Typography>
-              </Grid>
-              <Grid item xs={4} sx={{ mb: "24px" }}>
-                <Typography sx={{ fontSize: "14px" }}>Pengiriman</Typography>
-              </Grid>
-              <Grid item xs={8} sx={{ textAlign: "right" }}>
-                <Typography sx={{ fontWeight: 700, fontSize: "14px" }}>
-                  Rp {ongkir?.toLocaleString()}
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid
-              container
-              rowSpacing={2}
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <Box
+              width={{ xs: "100%", md: "100%" }}
               sx={{
-                mb: 1,
-                borderBottom: "2px solid #F5F6F9",
-                paddingBottom: "24px",
-                paddingTop: "20px",
+                border: "1px solid white",
+                borderRadius: 3,
+                boxShadow: "0 0 15px -10px black",
+                p: 2,
               }}
             >
-              <Grid item xs={4}>
-                <Typography sx={{ fontSize: "16px", fontWeight: 700 }}>
-                  Total
-                </Typography>
+              <Typography sx={{ mb: "32px" }}>Total</Typography>
+              <Grid
+                container
+                rowSpacing={2}
+                sx={{ mb: 1, borderBottom: "2px solid #F5F6F9" }}
+              >
+                <Grid item xs={4}>
+                  <Typography sx={{ fontSize: "14px" }}>Sub Total</Typography>
+                </Grid>
+                <Grid item xs={8} sx={{ textAlign: "right" }}>
+                  <Typography sx={{ fontWeight: 700, fontSize: "14px" }}>
+                    Rp {parseInt(hargaProducts).toLocaleString()}
+                  </Typography>
+                </Grid>
+                <Grid item xs={4} sx={{ mb: "24px" }}>
+                  <Typography sx={{ fontSize: "14px" }}>Pengiriman</Typography>
+                </Grid>
+                <Grid item xs={8} sx={{ textAlign: "right" }}>
+                  <Typography sx={{ fontWeight: 700, fontSize: "14px" }}>
+                    Rp {ongkir?.toLocaleString()}
+                  </Typography>
+                </Grid>
               </Grid>
-              <Grid item xs={8} sx={{ textAlign: "right" }}>
+              <Grid
+                container
+                rowSpacing={2}
+                sx={{
+                  mb: 1,
+                  borderBottom: "2px solid #F5F6F9",
+                  paddingBottom: "24px",
+                  paddingTop: "20px",
+                }}
+              >
+                <Grid item xs={4}>
+                  <Typography sx={{ fontSize: "16px", fontWeight: 700 }}>
+                    Total
+                  </Typography>
+                </Grid>
+                <Grid item xs={8} sx={{ textAlign: "right" }}>
+                  <Typography
+                    sx={{
+                      fontWeight: 700,
+                      fontSize: "16px",
+                      color: "Brand.500",
+                    }}
+                  >
+                    Rp {total().toLocaleString()}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <Stack sx={{ mt: "24px" }}>
+                <Typography sx={{ fontSize: "20px", fontWeight: 700 }}>
+                  Metode Pembayaran
+                </Typography>
                 <Typography
-                  sx={{ fontWeight: 700, fontSize: "16px", color: "Brand.500" }}
+                  sx={{
+                    fontSize: "14px",
+                    fontWeight: 400,
+                    color: "#4F618E",
+                    mt: "8px",
+                  }}
                 >
-                  Rp {total().toLocaleString()}
+                  Silahkan pilih metode pembayaran anda disini
                 </Typography>
-              </Grid>
-            </Grid>
-            <Stack sx={{ mt: "24px" }}>
-              <Typography sx={{ fontSize: "20px", fontWeight: 700 }}>
-                Metode Pembayaran
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: "14px",
-                  fontWeight: 400,
-                  color: "#4F618E",
-                  mt: "8px",
-                }}
-              >
-                Silahkan pilih metode pembayaran anda disini
-              </Typography>
-              <Button
-                disabled={!priceSelector.totalPrice}
-                variant="contained"
-                onClick={handleOpen}
-                sx={{
-                  boxShadow: 0,
-                  mt: "24px",
-                  height: "52px",
-                  fontWeight: 700,
-                  fontSize: "14px",
-                  "&:hover": {
-                    border: 0,
+                <Button
+                  disabled={!priceSelector.totalPrice}
+                  variant="contained"
+                  onClick={handleOpen}
+                  sx={{
                     boxShadow: 0,
-                  },
-                }}
-              >
-                Pilih Metode Pembayaran
-              </Button>
-              <ModalIsi
-                open={open}
-                handleClose={handleClose}
-                total={total}
-                setMethod={setMethod}
-              />
-              <Button
-                onClick={addNewTransaction}
-                disabled={!method}
-                variant="contained"
-                sx={{
-                  boxShadow: 0,
-                  mt: "10px",
-                  height: "45px",
-                  fontWeight: 700,
-                  fontSize: "14px",
-                  "&:hover": {
-                    border: 0,
+                    mt: "24px",
+                    height: "52px",
+                    fontWeight: 700,
+                    fontSize: "14px",
+                    "&:hover": {
+                      border: 0,
+                      boxShadow: 0,
+                    },
+                  }}
+                >
+                  Pilih Metode Pembayaran
+                </Button>
+                <ModalIsi
+                  open={open}
+                  handleClose={handleClose}
+                  total={total}
+                  setMethod={setMethod}
+                />
+                <Button
+                  onClick={addNewTransaction}
+                  disabled={!method}
+                  variant="contained"
+                  sx={{
                     boxShadow: 0,
-                  },
-                }}
-              >
-                Check Out
-              </Button>
-            </Stack>
-          </Box>
+                    mt: "10px",
+                    height: "45px",
+                    fontWeight: 700,
+                    fontSize: "14px",
+                    "&:hover": {
+                      border: 0,
+                      boxShadow: 0,
+                    },
+                  }}
+                >
+                  Check Out
+                </Button>
+              </Stack>
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </Page>
   );
 };
 
