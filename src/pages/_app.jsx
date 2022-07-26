@@ -23,7 +23,9 @@ const MyApp = ({ Component, pageProps }) => {
 
   useEffect(() => {
     const handleRouteChange = (url) => {
-      gtag.pageView(url);
+      if (router.pathname.startsWith("/admin")) {
+        gtag.pageView(url);
+      }
     };
 
     router.events.on("routeChangeComplete", handleRouteChange);
