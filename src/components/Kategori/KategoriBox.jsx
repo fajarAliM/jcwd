@@ -16,10 +16,10 @@ const KategoriBox = ({ imgUrl, imgAlt, title, id }) => {
         height: "119px",
         borderRadius: "16px",
         mx: "8px",
-        ":hover": { cursor: "pointer" },
+        ":hover": { cursor: "pointer", backgroundColor: "Brand.200" },
       }}
     >
-      <Image width="64px" height="64px" src={imgUrl} alt={imgAlt} />
+      <Image width="60px" height="60px" src={imgUrl} alt={imgAlt} />
       <Typography mt="12px" variant="subtitle2" fontWeight="bold">
         {title}
       </Typography>

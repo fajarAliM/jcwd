@@ -262,7 +262,16 @@ const ProductPage = ({ productDetail, stock }) => {
                   src={productImagePreview || productImageShown}
                 />
               </Card>
-              <Box display="flex" width="100%" overflow="scroll">
+              <Box
+                display="flex"
+                width="100%"
+                sx={{
+                  overflow: "auto",
+                  "::-webkit-scrollbar": {
+                    display: "none",
+                  },
+                }}
+              >
                 {renderProductImage()}
               </Box>
               <Box sx={{ mt: 2 }} display={{ xs: "none", md: "block" }}>
@@ -336,7 +345,6 @@ const ProductPage = ({ productDetail, stock }) => {
                 {productDetail?.diskon
                   ? hargaJual.toLocaleString()
                   : productDetail?.harga?.toLocaleString()}
-                ,-
               </Typography>
               <Typography sx={{ ml: 2, fontSize: "14px" }}>
                 / {productDetail.satuan}
@@ -358,7 +366,7 @@ const ProductPage = ({ productDetail, stock }) => {
                   }}
                   display={productDetail.diskon === "0" ? "none" : "block"}
                 >
-                  Rp {productDetail.harga_jual?.toLocaleString()},-
+                  Rp {productDetail.harga_jual?.toLocaleString()}
                 </Typography>
                 <Box
                   sx={{
@@ -434,7 +442,10 @@ const ProductPage = ({ productDetail, stock }) => {
                           border: 0,
                         },
                       }}
-                      disabled={totalStock() === formik.values.quantity}
+                      disabled={
+                        totalStock() === formik.values.quantity ||
+                        formik.values.quantity === 10
+                      }
                     >
                       +
                     </Button>
@@ -577,9 +588,11 @@ const ProductPage = ({ productDetail, stock }) => {
             sx={{
               // ml: 14,
               display: "flex",
-              overflow: "visible",
+              overflow: "scroll",
+              "::-webkit-scrollbar": {
+                display: "none",
+              },
               width: "calc(~'100vh - 150px')",
-              overflowX: "scroll",
             }}
           >
             {listProdukTerkait?.map((val) => {
@@ -590,6 +603,7 @@ const ProductPage = ({ productDetail, stock }) => {
                   diskon={val?.diskon}
                   produk_image={val?.produk_image_url[0]}
                   id={val?.id}
+                  stocks={val?.stocks}
                 />
               );
             })}

@@ -100,7 +100,7 @@ const Sidebar = ({
           boxShadow: "0 0 15px -10px black",
           mb: { xs: 0, md: "32px" },
           display: "flex",
-          height: "75px",
+          height: "auto",
         }}
         flexDirection={{ xs: "row", md: "column" }}
       >
@@ -153,7 +153,7 @@ const Sidebar = ({
           border: "1px solid white",
           borderRadius: 3,
           boxShadow: "0 0 15px -10px black",
-          height: "75px",
+          height: "auto",
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>

@@ -11,6 +11,8 @@ import axiosInstance from "config/api";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Page from "components/Page";
+import programhamil from "../public/Images/programhamil.png";
+import kebutuhanidulfitri from "../public/Images/kebutuhanidulfitri.png";
 import kejardiskon from "../public/Images/kejardiskon.png";
 
 const Home = () => {
@@ -81,10 +83,13 @@ const Home = () => {
           <Divider sx={{ marginY: "30px" }} />
           <Box maxWidth="100vw">
             <Box display="flex" justifyContent="space-between">
-              <Typography variant="h5">Kejar Diskon Hari Ini</Typography>
+              <Typography variant="h5" fontWeight="bold">
+                Kejar Diskon Hari Ini
+              </Typography>
               <Link href="/product-list">
                 <Typography
                   color="Brand.500"
+                  fontWeight="bold"
                   sx={{
                     ":hover": {
                       cursor: "pointer",
@@ -104,20 +109,21 @@ const Home = () => {
                   display: "none",
                 },
                 maxWidth: "100vw",
+                position: "relative",
               }}
             >
               <Image
                 width="301px"
                 height="395px"
-                position="relative"
+                position="absolute"
                 src={kejardiskon}
               />
               <Box
                 sx={{
                   display: "flex",
-                  position: "relative",
-                  ml: "100px",
+                  position: "absolute",
                   width: "100%",
+                  ml: "100px",
                 }}
               >
                 {renderProductWithDiscount()}
@@ -125,12 +131,20 @@ const Home = () => {
             </Box>
           </Box>
           <Divider sx={{ marginY: "30px" }} />
+          <Box height="212px" display="flex">
+            <Image src={programhamil} marginRight="10px" />
+            <Image src={kebutuhanidulfitri} />
+          </Box>
+          <Divider sx={{ marginY: "30px" }} />
           <Box>
             <Box display="flex" justifyContent="space-between">
-              <Typography variant="h5">Popular Product</Typography>
+              <Typography variant="h5" fontWeight="bold">
+                Popular Product
+              </Typography>
               <Link href="/product-list">
                 <Typography
                   color="Brand.500"
+                  fontWeight="bold"
                   sx={{
                     ":hover": {
                       cursor: "pointer",

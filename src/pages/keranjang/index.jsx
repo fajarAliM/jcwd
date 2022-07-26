@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {
   Box,
   Button,
@@ -11,7 +10,6 @@ import {
   Typography,
 } from "@mui/material";
 import UserCart from "components/Cart";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
@@ -34,7 +32,7 @@ const KeranjangPage = () => {
   }, [cartSelector.items]);
 
   const totalPrice = () => {
-    return cartItems.reduce((init, obj, idx) => {
+    return cartItems.reduce((init, obj) => {
       if (!checkedItems.includes(obj.id)) {
         return init;
       }
@@ -48,10 +46,10 @@ const KeranjangPage = () => {
   };
 
   useEffect(() => {
-    if (!authSelector.id) {
+    if (!authSelector.id || !cartItems.length) {
       router.push("/");
     }
-  }, []);
+  }, [cartItems]);
 
   const buttonHandler = () => {
     localStorage.setItem("selectedItems", JSON.stringify(checkedItems));

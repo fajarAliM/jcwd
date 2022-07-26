@@ -15,6 +15,7 @@ import {
 import Image from "next/image";
 import { BsSearch } from "react-icons/bs";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useSnackbar } from "notistack";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,9 +24,11 @@ import { logout } from "redux/reducer/auth";
 import jsCookie from "js-cookie";
 import Router, { useRouter } from "next/router";
 import { search } from "../../redux/reducer/search";
-import shopee from "../../public/Images/shopee.png";
+import healthymed from "../../public/Images/healthymed.png";
 
 const Nav = () => {
+  const { enqueueSnackbar } = useSnackbar();
+
   const userSelector = useSelector((state) => state.auth);
   const cartSelector = useSelector((state) => state.cart);
   const dispatch = useDispatch();
@@ -90,9 +93,9 @@ const Nav = () => {
         background: "rgb(255, 255, 255, 0.9)",
       }}
     >
-      <Box display={{ xs: "none", md: "block" }}>
+      <Box mr="20px" display={{ xs: "none", md: "block" }}>
         <Link href="/">
-          <Image src={shopee} height="80px" width="210px" />
+          <Image src={healthymed} height="60px" width="210px" />
         </Link>
       </Box>
       <FormControl
@@ -128,8 +131,15 @@ const Nav = () => {
       {userSelector.id ? (
         <>
           <IconButton
-            onClick={() => router.push("/keranjang")}
-            disabled={!cartSelector.items.length}
+            onClick={
+              !cartSelector.items.length
+                ? () => {
+                    enqueueSnackbar("Isi keranjang terlebih dahulu!", {
+                      variant: "info",
+                    });
+                  }
+                : () => router.push("/keranjang")
+            }
             sx={{ ml: "50px" }}
           >
             <Badge

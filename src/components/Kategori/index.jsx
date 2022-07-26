@@ -13,10 +13,13 @@ const Kategori = () => {
   return (
     <Box mt="44px">
       <Box display="flex" justifyContent="space-between">
-        <Typography variant="h5">Kategori</Typography>
+        <Typography variant="h5" fontWeight="bold">
+          Kategori
+        </Typography>
         <Link href="/product-list">
           <Typography
             color="Brand.500"
+            fontWeight="bold"
             sx={{
               ":hover": {
                 cursor: "pointer",

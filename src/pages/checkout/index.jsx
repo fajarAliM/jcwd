@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import CheckOutCard from "components/CheckOut";

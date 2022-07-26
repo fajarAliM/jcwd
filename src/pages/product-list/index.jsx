@@ -340,7 +340,7 @@ const ProductList = () => {
             >
               <Box display="flex" flexDirection="row" alignContent="center">
                 <Typography sx={{ marginRight: "5px" }}>
-                  Transaksi per halaman
+                  Item per halaman
                 </Typography>
                 <FormControl sx={{ marginRight: "30px" }}>
                   <Select

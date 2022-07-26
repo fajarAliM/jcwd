@@ -8,7 +8,7 @@ import imageCarousel from "public/Images/imageCarousel.png";
 const CarouselCard = () => {
   const items = [
     {
-      name: "Selamat Datang di ShopeeMed",
+      name: "Selamat Datang di Healthymed",
       description: "APOTEK ONLINE TERPERCAYA",
       subDescription: "100% Asli, Produk BPOM, Uang Dijamin Kembali",
       image: imageCarousel,
@@ -26,10 +26,18 @@ const CarouselCard = () => {
         width: "100%",
         height: "100%",
         my: 5,
+        backgroundColor: "#92C3D1",
         borderRadius: "16px",
       }}
       NextIcon={<MdOutlineNavigateNext />}
       PrevIcon={<MdNavigateBefore />}
+      indicatorContainerProps={{
+        style: {
+          zIndex: 1,
+          marginTop: "-10px",
+          position: "relative",
+        },
+      }}
     >
       {items.map((val) => (
         <Item
@@ -50,7 +58,6 @@ const Item = ({ name, description, image, subDescription }) => {
         display: "flex",
         justifyContent: "space-between",
         flexDirection: "row",
-        backgroundColor: "#92C3D1",
         height: "232px",
       }}
     >
@@ -66,7 +73,7 @@ const Item = ({ name, description, image, subDescription }) => {
         </Typography>
       </Box>
       <Box sx={{ height: "100%", marginRight: "-55px" }}>
-        <Image style={{ objectFit: "cover" }} src={image} />
+        <Image style={{ objectFit: "contain" }} height="263px" src={image} />
       </Box>
     </Box>
   );

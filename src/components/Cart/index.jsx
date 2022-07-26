@@ -257,7 +257,10 @@ const UserCart = ({ checked = false, setCartChecked, val, indexInRedux }) => {
                 },
                 padding: "10px 10% !important",
               }}
-              disabled={totalStock() === formik.values.quantity}
+              disabled={
+                totalStock() === formik.values.quantity ||
+                formik.values.quantity === 10
+              }
             >
               +
             </Button>

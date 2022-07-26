@@ -10,7 +10,6 @@ const AuthProvider = ({ children }) => {
   // eslint-disable-next-line no-unused-expressions
   const manggil = async () => {
     const userToken = jsCookie.get("user_auth_token");
-    // TODO masih nembak 2kali ke backend
     if (userToken) {
       try {
         const res = await axiosInstance.get("/auth/refresh-token");

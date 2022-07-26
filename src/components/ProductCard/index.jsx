@@ -97,6 +97,7 @@ const ProductCard = ({
         "&:hover": {
           transform: "translateY(-5px)",
           boxShadow: "0px 12px 20px -12px black",
+          cursor: "pointer",
         },
         backgroundColor: totalStock() > 0 ? "white" : "#EFEFEF",
       }}
