@@ -18,7 +18,7 @@ import axiosInstance from "config/api";
 import { useRouter } from "next/router";
 import { styled } from "@mui/material/styles";
 import moment from "moment";
-import ModalUploadPembayaran from "components/ModalUploadPembayaran";
+import ModalUploadPembayaran from "components/modalUploadPembayaran";
 import Page from "components/Page";
 
 const Image = styled("img")({
@@ -70,15 +70,13 @@ const DetailTransaksiPage = () => {
   };
 
   const renderTime = () => {
-    return cart?.map((valo) => {
-      const time = new Date(valo?.createdAt);
-      return (
-        <Timer
-          time={moment(time).add(1, "day").format("MM/DD/YYYY, HH:mm:ss")}
-          id={valo?.id}
-        />
-      );
-    });
+    const time = new Date(transaction?.createdAt);
+    return (
+      <Timer
+        time={moment(time).add(1, "day").format("MM/DD/YYYY, HH:mm:ss")}
+        id={transactionId}
+      />
+    );
   };
 
   const copyVABtnHandler = () => {
@@ -138,7 +136,7 @@ const DetailTransaksiPage = () => {
                 Batas Akhir Pembayaran
               </Typography>
               <Typography sx={{ fontWeight: 700, fontSize: "16px", mt: "8px" }}>
-                {moment(router.query.createdAt)
+                {moment(transaction.createdAt)
                   .add(1, "day")
                   .format("dddd, DD MMMM YYYY, HH:mm ")}
               </Typography>
@@ -191,7 +189,7 @@ const DetailTransaksiPage = () => {
                     Sub Total
                   </Typography>
                   <Typography sx={{ fontWeight: 700, mt: 2 }}>
-                    Rp {transaction.total_price?.toLocaleString()}
+                    Rp {transaction.total_price?.toLocaleString("id")}
                   </Typography>
                 </Box>
               </Box>
@@ -233,7 +231,7 @@ const DetailTransaksiPage = () => {
                   <Typography
                     sx={{ fontWeight: 400, fontSize: "14px", color: "#737A8D" }}
                   >
-                    Nomor Virtual Account
+                    Nomor Rekening
                   </Typography>
                   <Typography sx={{ fontWeight: 700, fontSize: "24px" }}>
                     80777082261130123
@@ -269,7 +267,7 @@ const DetailTransaksiPage = () => {
                     Total Pembayaran
                   </Typography>
                   <Typography sx={{ fontWeight: 700, fontSize: "24px" }}>
-                    Rp {transaction.total_price?.toLocaleString()}
+                    Rp {transaction.total_price?.toLocaleString("id")}
                   </Typography>
                 </Stack>
                 <Button

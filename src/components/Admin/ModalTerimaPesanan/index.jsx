@@ -175,7 +175,8 @@ const ModalTerimaPesanan = ({
                     {val?.product?.nama_produk}
                   </Typography>
                   <Typography sx={{ fontSize: "12px", color: "gray" }}>
-                    {val?.quantity} x {val?.price_when_sold?.toLocaleString()}
+                    {val?.quantity} x{" "}
+                    {val?.price_when_sold?.toLocaleString("id")}
                   </Typography>
                 </Box>
               );
@@ -223,7 +224,7 @@ const ModalTerimaPesanan = ({
                     marginRight: "8px",
                   }}
                 >
-                  Rp {totalHarga.toLocaleString()}
+                  Rp {totalHarga.toLocaleString("id")}
                 </Typography>
               </Box>
             </Box>

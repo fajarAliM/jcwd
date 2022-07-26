@@ -46,7 +46,7 @@ const CheckOutCard = ({
                   }}
                 >
                   {product_diskon !== "0"
-                    ? `Rp ${(produk_price * produk_qty).toLocaleString()}`
+                    ? `Rp ${(produk_price * produk_qty).toLocaleString("id")}`
                     : ""}
                 </Typography>
                 <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>
@@ -55,7 +55,7 @@ const CheckOutCard = ({
                     produk_price * produk_qty -
                     (parseInt(product_diskon) / 100) *
                       (produk_price * produk_qty)
-                  ).toLocaleString()}
+                  ).toLocaleString("id")}
                 </Typography>
               </>
             )}

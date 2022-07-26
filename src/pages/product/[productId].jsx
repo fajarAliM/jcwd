@@ -343,8 +343,8 @@ const ProductPage = ({ productDetail, stock }) => {
               <Typography sx={{ fontWeight: 500, fontSize: "24px" }}>
                 Rp{" "}
                 {productDetail?.diskon
-                  ? hargaJual.toLocaleString()
-                  : productDetail?.harga?.toLocaleString()}
+                  ? hargaJual.toLocaleString("id")
+                  : productDetail?.harga?.toLocaleString("id")}
               </Typography>
               <Typography sx={{ ml: 2, fontSize: "14px" }}>
                 / {productDetail.satuan}
@@ -366,7 +366,7 @@ const ProductPage = ({ productDetail, stock }) => {
                   }}
                   display={productDetail.diskon === "0" ? "none" : "block"}
                 >
-                  Rp {productDetail.harga_jual?.toLocaleString()}
+                  Rp {productDetail.harga_jual?.toLocaleString("id")}
                 </Typography>
                 <Box
                   sx={{

@@ -249,7 +249,7 @@ const LabaDanRugiPage = () => {
             kategori={[
               {
                 kategoriName: "Penjualan Barang",
-                value: income?.toLocaleString(),
+                value: income?.toLocaleString("id"),
               },
               { kategoriName: "Total Service", value: 0 },
               { kategoriName: "Total Embalance", value: 0 },
@@ -258,14 +258,14 @@ const LabaDanRugiPage = () => {
               { kategoriName: "Retur Penjualan", value: 0 },
             ]}
             footer="Penjualan Bersih"
-            footerValue={income?.toLocaleString()}
+            footerValue={income?.toLocaleString("id")}
           />
           <IncomeStatement
             title1="Harga Pokok Penjualan"
             kategori={[
               {
                 kategoriName: "Persediaan Awal",
-                value: outcome?.toLocaleString(),
+                value: outcome?.toLocaleString("id"),
               },
               { kategoriName: "Pembelian Kotor", value: 0 },
               { kategoriName: "Retur Pembelian Kotor", value: 0 },
@@ -274,7 +274,7 @@ const LabaDanRugiPage = () => {
               { kategoriName: "Persediaan Akhir", value: 0 },
             ]}
             footer="Harga Pokok Penjualan"
-            footerValue={outcome?.toLocaleString()}
+            footerValue={outcome?.toLocaleString("id")}
           />
           <IncomeStatement
             title1="Pengeluaran Operasional"
@@ -309,7 +309,7 @@ const LabaDanRugiPage = () => {
               { kategoriName: "Pendapatan Lainnya", value: 0 },
             ]}
             footer="Laba Bersih"
-            footerValue={(income - outcome).toLocaleString()}
+            footerValue={(income - outcome).toLocaleString("id")}
           />
         </Box>
       </Box>

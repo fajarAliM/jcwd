@@ -168,7 +168,7 @@ const ModalIsi = ({ open, handleClose, total, setMethod }) => {
               Total Harga
             </Typography>
             <Typography sx={{ fontWeight: 700, fontSize: "20px" }}>
-              Rp {total().toLocaleString()}
+              Rp {total().toLocaleString("id")}
             </Typography>
           </Stack>
           <Button

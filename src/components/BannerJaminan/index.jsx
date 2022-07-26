@@ -8,7 +8,15 @@ const BannerJaminan = () => {
   return (
     <Box mt="48px" mb="110px">
       <Typography variant="h5">Jaminan Untuk Anda</Typography>
-      <Box display="flex" mt="32px">
+      <Box
+        sx={{
+          mt: "32px",
+          display: {
+            xs: "block",
+            md: "flex",
+          },
+        }}
+      >
         <BannerJaminanBox
           imgUrl={Meds}
           imgAlt="Meds"

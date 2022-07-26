@@ -41,7 +41,7 @@ const Timer = ({ time, id }) => {
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [time]);
   return (
     <Box
       sx={{

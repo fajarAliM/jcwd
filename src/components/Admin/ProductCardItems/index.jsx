@@ -59,7 +59,7 @@ const ProductCardItems = ({
         ) : null}
         {!isObatResep ? (
           <Typography sx={{ fontSize: "14px", color: "gray" }}>
-            {jumlah} x Rp {harga?.toLocaleString()}
+            {jumlah} x Rp {harga?.toLocaleString("id")}
           </Typography>
         ) : null}
       </Grid>

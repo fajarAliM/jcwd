@@ -5,7 +5,6 @@ const BannerJaminanBox = ({ imgUrl, imgAlt, title, caption }) => {
   return (
     <Paper
       sx={{
-        width: "33%",
         mx: "8px",
         height: "181px",
         backgroundColor: "#F6FAFB",

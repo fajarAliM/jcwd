@@ -168,7 +168,7 @@ const UserCart = ({ checked = false, setCartChecked, val, indexInRedux }) => {
               >
                 {`Rp ${(
                   val.product.harga_jual * formik.values.quantity
-                ).toLocaleString()}`}
+                ).toLocaleString("id")}`}
               </Typography>
               <Typography sx={{ fontSize: "16px", fontWeight: "bold" }}>
                 Rp{" "}
@@ -177,7 +177,7 @@ const UserCart = ({ checked = false, setCartChecked, val, indexInRedux }) => {
                   (parseInt(val.product.diskon) / 100) *
                     val.product.harga_jual *
                     formik.values.quantity
-                ).toLocaleString()}
+                ).toLocaleString("id")}
               </Typography>
             </Stack>
           </Box>

@@ -72,7 +72,6 @@ const Home = () => {
     fetchProductWithDiscount();
   }, []);
 
-  console.log(popularProduct);
   return (
     <Page title="Homepage">
       <Box>
@@ -131,7 +130,15 @@ const Home = () => {
             </Box>
           </Box>
           <Divider sx={{ marginY: "30px" }} />
-          <Box height="212px" display="flex">
+          <Box
+            sx={{
+              display: {
+                xs: "block",
+                md: "flex",
+              },
+              height: "212px",
+            }}
+          >
             <Image src={programhamil} marginRight="10px" />
             <Image src={kebutuhanidulfitri} />
           </Box>

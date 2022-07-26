@@ -62,7 +62,7 @@ const CardWithCircularBar = ({
             )}
             <Typography sx={{ fontSize: "10px", marginLeft: "4px" }}>
               {notation}
-              {value.toLocaleString()}
+              {value.toLocaleString("id")}
             </Typography>
           </Box>
         </Box>

@@ -9,7 +9,17 @@ import OVO from "../../public/Images/OVO.png";
 import PermataBank from "../../public/Images/PermataBank.png";
 const MetodePembayaran = () => {
   return (
-    <Box height="160px" sx={{ backgroundColor: "#F6FAFB", color: "#213360" }}>
+    <Box
+      height="160px"
+      sx={{
+        backgroundColor: "#F6FAFB",
+        color: "#213360",
+        display: {
+          xs: "none",
+          md: "block",
+        },
+      }}
+    >
       <Typography
         fontWeight={700}
         textAlign="center"

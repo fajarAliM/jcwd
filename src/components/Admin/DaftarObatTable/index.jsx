@@ -103,7 +103,7 @@ const TableData = ({
           <TableCell align="center">{val.stok || "-"}</TableCell>
           <TableCell align="center">{val.satuan || "-"}</TableCell>
           <TableCell align="center">
-            Rp. {val.nilaiJual.toLocaleString() || "-"}
+            Rp. {val.nilaiJual.toLocaleString("id") || "-"}
           </TableCell>
           <TableCell align="center">
             <IconButton

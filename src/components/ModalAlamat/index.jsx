@@ -13,6 +13,7 @@ const ModalAlamat = ({ open, handleClose, setSelectedAddress }) => {
       const dataAlamat = await axiosInstance.get("/address/get-all-address");
       setAlamat(dataAlamat.data.result.rows);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
   };

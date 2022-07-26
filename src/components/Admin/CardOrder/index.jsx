@@ -1,7 +1,18 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-else-return */
 /* eslint-disable no-nested-ternary */
-import { Grid, Box, Typography, Button, Tooltip } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Typography,
+  Button,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+} from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ChatIcon from "@mui/icons-material/Chat";
 import ReceiptIcon from "@mui/icons-material/Receipt";
@@ -10,6 +21,7 @@ import moment from "moment";
 import "moment/locale/id";
 import ProductCardItems from "components/Admin/ProductCardItems";
 import ModalTerimaPesanan from "components/Admin/ModalTerimaPesanan";
+import { useSnackbar } from "notistack";
 import axiosInstance from "config/api";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
@@ -40,6 +52,8 @@ const CardOrder = ({
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [showAllProduct, setShowAllProduct] = useState(false);
+  const [decline, setDecline] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const declineTransaction = async (transactionId) => {
     try {
@@ -65,6 +79,7 @@ const CardOrder = ({
 
   const declineHandler = (value) => {
     declineTransaction(value);
+    enqueueSnackbar("Pesanan Telah Ditolak", { variant: "success" });
   };
 
   const deliveryHandler = (value) => {
@@ -371,7 +386,7 @@ const CardOrder = ({
                 marginRight: "8px",
               }}
             >
-              Rp {totalPrice.toLocaleString()}
+              Rp {totalPrice.toLocaleString("id")}
             </Typography>
           </Box>
         )}
@@ -459,14 +474,38 @@ const CardOrder = ({
             ) : status === 1 ? (
               <>
                 <Button
-                  onClick={async () => {
-                    await declineHandler(transaksiId);
-                    reRender();
-                  }}
+                  onClick={() => setDecline(true)}
                   sx={{ color: "Brand.500" }}
                 >
                   Tolak Pesanan
                 </Button>
+                <Dialog open={decline} onClose={() => setDecline(false)}>
+                  <DialogTitle>Alert!</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Apakah anda yakin Menolak Pesanan?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      variant="outlined"
+                      onClick={() => setDecline(false)}
+                    >
+                      Kembali
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={async () => {
+                        await declineHandler(transaksiId);
+                        reRender();
+                        setDecline(false);
+                      }}
+                      autoFocus
+                    >
+                      Yakin
+                    </Button>
+                  </DialogActions>
+                </Dialog>
                 {(isObatResep && !productAdded && !detail.proof_of_payment) ||
                 !detail.proof_of_payment ? (
                   <Tooltip title="Menunggu Pembayaran" placement="top">

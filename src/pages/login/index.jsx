@@ -66,28 +66,24 @@ const LoginPage = () => {
           "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
         ),
     }),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       // ini nanti bedasarkan fetchingan dari API, hrus ada alamat and no tlpon
-      setTimeout(async () => {
-        try {
-          const res = await axiosInstance.post("/auth/login", {
-            credential: values.credential,
-            password: values.password,
-          });
 
-          const userResponse = res.data.result;
-          jsCookie.set("user_auth_token", userResponse.token);
+      try {
+        const res = await axiosInstance.post("/auth/login", {
+          credential: values.credential,
+          password: values.password,
+        });
 
-          dispatch(login(userResponse.user));
-          enqueueSnackbar(res?.data?.message, { variant: "success" });
+        const userResponse = res.data.result;
+        jsCookie.set("user_auth_token", userResponse.token);
 
-          formik.setSubmitting(false);
-        } catch (err) {
-          // eslint-disable-next-line no-console
-          enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
-          formik.setSubmitting(false);
-        }
-      }, 3000);
+        dispatch(login(userResponse.user));
+        enqueueSnackbar(res?.data?.message, { variant: "success" });
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        enqueueSnackbar(err?.response?.data?.message, { variant: "error" });
+      }
     },
     validateOnChange: false,
   });
@@ -163,7 +159,12 @@ const LoginPage = () => {
               px={{ xs: "35px", sm: "96px" }}
               py="30px"
               height="100vh"
-              overflow="scroll"
+              sx={{
+                overflow: "scroll",
+                "::-webkit-scrollbar": {
+                  display: "none",
+                },
+              }}
             >
               <Box display="flex" justifyContent="flex-end">
                 <ButtonGroup
@@ -351,7 +352,10 @@ const LoginPage = () => {
                   }}
                   variant="contained"
                   fullWidth
-                  onClick={() => formik.handleSubmit()}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    formik.handleSubmit();
+                  }}
                   disabled={formik.isSubmitting}
                   type="submit"
                 >

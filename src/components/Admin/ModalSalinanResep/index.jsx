@@ -712,7 +712,7 @@ const ModalSalinanResep = ({
                         <Grid item xs={2}>
                           <Typography sx={{ fontSize: "12px", color: "gray" }}>
                             {val.kuantitasObat} x{" "}
-                            {val.harga_jual.toLocaleString()}
+                            {val.harga_jual.toLocaleString("id")}
                           </Typography>
                         </Grid>
                         <Grid item xs={2}>
@@ -772,7 +772,7 @@ const ModalSalinanResep = ({
                         marginRight: "8px",
                       }}
                     >
-                      Rp {totalPrice().toLocaleString()}
+                      Rp {totalPrice().toLocaleString("id")}
                     </Typography>
                   </Box>
                 </Box>

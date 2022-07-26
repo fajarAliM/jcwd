@@ -261,12 +261,12 @@ const DashboardPage = () => {
             <CardWithCircularBar
               title="Revenue Hari Ini"
               amount={`Rp. ${
-                todayRevenue?.todayRevenue?.result?.toLocaleString() || 0
+                todayRevenue?.todayRevenue?.result?.toLocaleString("id") || 0
               }`}
               value={Math.abs(
                 todayRevenue?.todayRevenue?.result -
                   todayRevenue?.yesterdayRevenue?.result
-              ).toLocaleString()}
+              ).toLocaleString("id")}
               percentage={
                 isNaN(
                   Math.abs(

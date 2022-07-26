@@ -100,7 +100,7 @@ const ProsesPemesanan = () => {
             setDummy(!dummy);
             setPage(1);
           }}
-          time={moment(time).add(1, "day").format("MM/DD/YYYY, hh:mm:ss")}
+          time={moment(time).add(1, "day").format("MM/DD/YYYY, HH:mm:ss")}
           id={val?.id}
         />
       );
@@ -158,7 +158,17 @@ const ProsesPemesanan = () => {
 
   return (
     <Page title="Transaction">
-      <Grid container sx={{ mt: "56px", ml: "96px" }}>
+      <Grid
+        container
+        sx={{
+          mt: "56px",
+          ml: "96px",
+          mb: {
+            xs: "100px",
+            md: 0,
+          },
+        }}
+      >
         <Grid item xs={3}>
           <Stack
             sx={{

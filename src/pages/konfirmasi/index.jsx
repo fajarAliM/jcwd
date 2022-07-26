@@ -20,7 +20,7 @@ import axiosInstance from "config/api";
 import { useRouter } from "next/router";
 import { styled } from "@mui/material/styles";
 import moment from "moment";
-import ModalUploadPembayaran from "components/ModalUploadPembayaran";
+import ModalUploadPembayaran from "components/modalUploadPembayaran";
 import Page from "components/Page";
 
 const Image = styled("img")({
@@ -214,7 +214,7 @@ const Konfirmasi = () => {
                     Sub Total
                   </Typography>
                   <Typography sx={{ fontWeight: 700, mt: 2 }}>
-                    Rp {priceSelector?.totalPrice.toLocaleString()}
+                    Rp {priceSelector?.totalPrice.toLocaleString("id")}
                   </Typography>
                 </Box>
               </Box>
@@ -292,7 +292,7 @@ const Konfirmasi = () => {
                     Total Pembayaran
                   </Typography>
                   <Typography sx={{ fontWeight: 700, fontSize: "24px" }}>
-                    Rp {priceSelector?.totalPrice.toLocaleString()}
+                    Rp {priceSelector?.totalPrice.toLocaleString("id")}
                   </Typography>
                 </Stack>
                 <Button
