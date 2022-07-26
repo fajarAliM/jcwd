@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { Box } from "@mui/material";
+import axiosInstance from "config/api";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { CgFormatSlash } from "react-icons/cg";
 import { useSelector } from "react-redux";
 
-const Timer = ({ time }) => {
-  const timeSelector = useSelector((state) => state.price);
+const Timer = ({ time, id }) => {
   const [timeOut, setTimeOut] = useState(false);
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
@@ -14,9 +14,7 @@ const Timer = ({ time }) => {
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
-    const target = new Date(
-      `${timeSelector.time}, 24:00:00` || `${time}, 24:00:00`
-    );
+    const target = new Date(`${time}`);
     const interval = setInterval(() => {
       const now = new Date();
       const difference = target.getTime() - now.getTime();
@@ -37,6 +35,9 @@ const Timer = ({ time }) => {
 
       if (d <= 0 && h <= 0 && m <= 0 && s <= 0) {
         setTimeOut(true);
+        axiosInstance.post("/admin/decline-transaction", {
+          id,
+        });
       }
     }, 1000);
     return () => clearInterval(interval);

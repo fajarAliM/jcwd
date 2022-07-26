@@ -69,6 +69,18 @@ const DetailTransaksiPage = () => {
     });
   };
 
+  const renderTime = () => {
+    return cart?.map((valo) => {
+      const time = new Date(valo?.createdAt);
+      return (
+        <Timer
+          time={moment(time).add(1, "day").format("MM/DD/YYYY, HH:mm:ss")}
+          id={valo?.id}
+        />
+      );
+    });
+  };
+
   const copyVABtnHandler = () => {
     navigator.clipboard.writeText("80777082261130123");
 
@@ -138,7 +150,7 @@ const DetailTransaksiPage = () => {
                 alignItems: "center",
               }}
             >
-              <Timer />
+              {renderTime()}
             </Box>
           </Box>
           <Box sx={{ mt: "41px" }}>

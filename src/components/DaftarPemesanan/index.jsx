@@ -18,6 +18,7 @@ const DaftarPemesanan = ({
   transaksiId,
   reRender,
   time,
+  id,
 }) => {
   const router = useRouter();
   const [uploadPembayaran, setUploadPembayaran] = useState(false);
@@ -30,6 +31,7 @@ const DaftarPemesanan = ({
           produk_price={detail.total_price}
           isResep={detail.is_resep}
           time={time}
+          id={id}
         />
       );
     }
@@ -43,6 +45,7 @@ const DaftarPemesanan = ({
           produk_qty={valo?.quantity}
           product_diskon={valo?.product?.diskon}
           time={time}
+          id={id}
         />
       );
     });

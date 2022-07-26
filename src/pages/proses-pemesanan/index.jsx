@@ -85,6 +85,7 @@ const ProsesPemesanan = () => {
 
   const renderTransactionList = () => {
     return contentList?.map((val) => {
+      const time = new Date(val?.createdAt);
       return (
         <DaftarPemesanan
           status={val?.payment_status?.status}
@@ -99,7 +100,8 @@ const ProsesPemesanan = () => {
             setDummy(!dummy);
             setPage(1);
           }}
-          time={moment(val?.createdAt).format("MM/DD/YYYY")}
+          time={moment(time).add(1, "day").format("MM/DD/YYYY, hh:mm:ss")}
+          id={val?.id}
         />
       );
     });
