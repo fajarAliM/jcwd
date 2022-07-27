@@ -13,6 +13,16 @@ const Timer = ({ time, id }) => {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
+  const declineTransaction = async (transactionId) => {
+    try {
+      await axiosInstance.post("/admin/decline-transaction", {
+        transactionId,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     const target = new Date(`${time}`);
     const interval = setInterval(() => {
@@ -35,9 +45,7 @@ const Timer = ({ time, id }) => {
 
       if (d <= 0 && h <= 0 && m <= 0 && s <= 0) {
         setTimeOut(true);
-        axiosInstance.post("/admin/decline-transaction", {
-          id,
-        });
+        declineTransaction(id);
       }
     }, 1000);
     return () => clearInterval(interval);

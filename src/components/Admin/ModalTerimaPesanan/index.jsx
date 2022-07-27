@@ -97,7 +97,7 @@ const ModalTerimaPesanan = ({
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: "792px",
-            height: "407px",
+            maxHeight: "700px",
             bgcolor: "white",
             borderRadius: 2,
             boxShadow: 24,
