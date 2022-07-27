@@ -60,7 +60,7 @@ const KartuStok = () => {
             nomor: idx + rowPerPage * (page - 1) + 1,
             createdAt: val?.createdAt,
             aktivitas: val?.aktivitas,
-            expDate: val?.stock?.exp_date,
+            expDate: val?.exp_date,
             jumlahStok: val?.jumlah,
           };
         })

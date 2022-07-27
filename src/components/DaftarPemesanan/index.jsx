@@ -228,7 +228,7 @@ const DaftarPemesanan = ({
                 <Typography sx={{ color: "#4F618E", fontSize: "12px" }}>
                   {moment(detail?.createdAt)
                     .add(1, "day")
-                    .format("dddd, DD MMMM YYYY, HH:MM")}
+                    .format("dddd, DD MMMM YYYY, HH:mm")}
                 </Typography>
               </Stack>
               <Button

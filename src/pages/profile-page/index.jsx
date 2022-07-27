@@ -380,7 +380,17 @@ const ProfilePage = () => {
                 </Box>
               </Grid>
               <Grid item xs={7}>
-                <Box height="500px" p="16px" overflow="scroll" pt="20px">
+                <Box
+                  height="500px"
+                  p="16px"
+                  pt="20px"
+                  sx={{
+                    overflow: "auto",
+                    "::-webkit-scrollbar": {
+                      display: "none",
+                    },
+                  }}
+                >
                   <Typography variant="h4" sx={{ mt: "4px", mb: "40px" }}>
                     Personal Data
                   </Typography>

@@ -1,13 +1,11 @@
 import Image from "next/image";
 import Frame from "public/Images/Frame.png";
-import GoogleIcon from "public/Images/google-icon.png";
 import {
   FormLabel,
   OutlinedInput,
   Box,
   Stack,
   Button,
-  Divider,
   FormControlLabel,
   Checkbox,
   IconButton,
@@ -21,7 +19,6 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -176,36 +173,6 @@ const LoginPage = () => {
               Masuk
             </Button>
           </form>
-          <Divider sx={{ marginBottom: "56px" }}>Atau Masuk Dengan</Divider>
-          <Button
-            fullWidth
-            startIcon={<Image src={GoogleIcon} />}
-            variant="contained"
-            sx={{
-              marginBottom: "48px",
-              backgroundColor: "white",
-              color: "black",
-              fontWeight: "bold",
-              height: "48px",
-              border: "2px solid #c7bfaf",
-              boxShadow: "none",
-              ":hover": { backgroundColor: "#c7bfaf", border: "unset" },
-            }}
-          >
-            Masuk dengan Google
-          </Button>
-          <Typography textAlign="center">
-            Belum Punya Akun ?{" "}
-            <Link href="/register">
-              <Typography
-                sx={{ ":hover": { cursor: "pointer" } }}
-                component="span"
-                color="Brand.500"
-              >
-                Daftar
-              </Typography>
-            </Link>{" "}
-          </Typography>
         </Box>
       </Stack>
     </Page>
