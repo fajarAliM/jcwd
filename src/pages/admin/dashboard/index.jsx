@@ -9,6 +9,7 @@ import CardStatistik from "components/Admin/CardStatistik";
 import requiresAdmin from "config/requireAdmin";
 import axiosInstance from "config/api";
 import moment from "moment";
+import Page from "components/Page";
 
 const DashboardPage = () => {
   const [pemesanan, setPemesanan] = useState([]);
@@ -240,323 +241,330 @@ const DashboardPage = () => {
   }, [profitData]);
 
   return (
-    <Grid container>
-      {/* Container 1 */}
-      <Grid container sx={{ marginBottom: "32px" }}>
-        <Grid item>
-          <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
-            Analisis Produk & Toko
-          </Typography>
-          <Typography sx={{ color: "Sidebar.500", fontSize: "14px" }}>
-            Update terakhir:{" "}
-            <Typography
-              component="span"
-              sx={{ fontSize: "14px", fontWeight: "bold" }}
-            >
-              {moment(lastUpdated).format("LLL")}
+    <Page title="Dashboard">
+      <Grid container>
+        {/* Container 1 */}
+        <Grid container sx={{ marginBottom: "32px" }}>
+          <Grid item>
+            <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
+              Analisis Produk & Toko
             </Typography>
-          </Typography>
+            <Typography sx={{ color: "Sidebar.500", fontSize: "14px" }}>
+              Update terakhir:{" "}
+              <Typography
+                component="span"
+                sx={{ fontSize: "14px", fontWeight: "bold" }}
+              >
+                {moment(lastUpdated).format("LLL")}
+              </Typography>
+            </Typography>
 
-          <Grid container spacing={2}>
-            <CardWithCircularBar
-              title="Revenue Hari Ini"
-              amount={`Rp. ${
-                todayRevenue?.todayRevenue?.result?.toLocaleString("id") || 0
-              }`}
-              value={Math.abs(
-                todayRevenue?.todayRevenue?.result -
-                  todayRevenue?.yesterdayRevenue?.result
-              ).toLocaleString("id")}
-              percentage={
-                isNaN(
-                  Math.abs(
-                    ((todayRevenue?.todayRevenue?.result -
-                      todayRevenue?.yesterdayRevenue?.result) /
-                      todayRevenue?.yesterdayRevenue?.result) *
-                      100
-                  ).toFixed(1)
-                )
-                  ? 0
-                  : Math.abs(
+            <Grid container spacing={2}>
+              <CardWithCircularBar
+                title="Revenue Hari Ini"
+                amount={`Rp. ${
+                  todayRevenue?.todayRevenue?.result?.toLocaleString("id") || 0
+                }`}
+                value={Math.abs(
+                  todayRevenue?.todayRevenue?.result -
+                    todayRevenue?.yesterdayRevenue?.result
+                ).toLocaleString("id")}
+                percentage={
+                  isNaN(
+                    Math.abs(
                       ((todayRevenue?.todayRevenue?.result -
                         todayRevenue?.yesterdayRevenue?.result) /
                         todayRevenue?.yesterdayRevenue?.result) *
                         100
                     ).toFixed(1)
-              }
-              notation={
-                todayRevenue?.todayRevenue?.result -
-                  todayRevenue?.yesterdayRevenue?.result <
-                0
-                  ? "-"
-                  : "+"
-              }
-            />
-            <CardWithCircularBar
-              title="Total Pemesanan Hari Ini"
-              amount={todayTransaction.todayOrder}
-              value={Math.abs(
-                todayTransaction.todayOrder - todayTransaction.yesterdayOrder
-              )}
-              percentage={
-                isNaN(
-                  Math.abs(
-                    ((todayTransaction.todayOrder -
-                      todayTransaction.yesterdayOrder) /
-                      todayTransaction.yesterdayOrder) *
-                      100
-                  ).toFixed(1)
-                )
-                  ? 0
-                  : Math.abs(
+                  )
+                    ? 0
+                    : Math.abs(
+                        ((todayRevenue?.todayRevenue?.result -
+                          todayRevenue?.yesterdayRevenue?.result) /
+                          todayRevenue?.yesterdayRevenue?.result) *
+                          100
+                      ).toFixed(1)
+                }
+                notation={
+                  todayRevenue?.todayRevenue?.result -
+                    todayRevenue?.yesterdayRevenue?.result <
+                  0
+                    ? "-"
+                    : "+"
+                }
+              />
+              <CardWithCircularBar
+                title="Total Pemesanan Hari Ini"
+                amount={todayTransaction.todayOrder}
+                value={Math.abs(
+                  todayTransaction.todayOrder - todayTransaction.yesterdayOrder
+                )}
+                percentage={
+                  isNaN(
+                    Math.abs(
                       ((todayTransaction.todayOrder -
                         todayTransaction.yesterdayOrder) /
                         todayTransaction.yesterdayOrder) *
                         100
                     ).toFixed(1)
-              }
-              notation={
-                todayTransaction.todayOrder - todayTransaction.yesterdayOrder <
-                0
-                  ? "-"
-                  : "+"
-              }
-            />
-            <CardWithCircularBar
-              title="Sisa Stok Hari Ini"
-              amount={todayStok.todayStok}
-              value={Math.abs(todayStok.todayStok - todayStok.yesterdayStok)}
-              percentage={
-                isNaN(
-                  Math.abs(
-                    ((todayStok.todayStok - todayStok.yesterdayStok) /
-                      todayStok.yesterdayStok) *
-                      100
-                  ).toFixed(1)
-                )
-                  ? 0
-                  : Math.abs(
+                  )
+                    ? 0
+                    : Math.abs(
+                        ((todayTransaction.todayOrder -
+                          todayTransaction.yesterdayOrder) /
+                          todayTransaction.yesterdayOrder) *
+                          100
+                      ).toFixed(1)
+                }
+                notation={
+                  todayTransaction.todayOrder -
+                    todayTransaction.yesterdayOrder <
+                  0
+                    ? "-"
+                    : "+"
+                }
+              />
+              <CardWithCircularBar
+                title="Sisa Stok Hari Ini"
+                amount={todayStok.todayStok}
+                value={Math.abs(todayStok.todayStok - todayStok.yesterdayStok)}
+                percentage={
+                  isNaN(
+                    Math.abs(
                       ((todayStok.todayStok - todayStok.yesterdayStok) /
                         todayStok.yesterdayStok) *
                         100
                     ).toFixed(1)
-              }
-              notation={
-                todayStok.todayStok - todayStok.yesterdayStok < 0 ? "-" : "+"
-              }
-            />
+                  )
+                    ? 0
+                    : Math.abs(
+                        ((todayStok.todayStok - todayStok.yesterdayStok) /
+                          todayStok.yesterdayStok) *
+                          100
+                      ).toFixed(1)
+                }
+                notation={
+                  todayStok.todayStok - todayStok.yesterdayStok < 0 ? "-" : "+"
+                }
+              />
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
 
-      {/* Container 2 */}
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
-            Penting Hari Ini
-          </Typography>
-          <Typography sx={{ color: "Sidebar.500", fontSize: "14px" }}>
-            Aktivitas yang perlu kamu ketahui untuk menjaga kepuasan pelanggan
-          </Typography>
-          <Grid
-            spacing={2}
-            container
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-            }}
-          >
-            <CardCategory
-              title="Menunggu Pembayaran"
-              value={pemesanan.reduce((init, val) => {
-                if (val.paymentStatusId === 1) {
-                  return init + val.count;
-                }
-
-                return init;
-              }, 0)}
-              column={4}
-            />
-            <CardCategory
-              title="Pesanan Baru"
-              value={pemesanan.reduce((init, val) => {
-                if (val.paymentStatusId === 2) {
-                  return init + val.count;
-                }
-
-                return init;
-              }, 0)}
-              column={4}
-            />
-            <CardCategory
-              title="Dikirim"
-              value={pemesanan.reduce((init, val) => {
-                if (val.paymentStatusId === 3) {
-                  return init + val.count;
-                }
-
-                return init;
-              }, 0)}
-              column={4}
-            />
-            <CardCategory
-              title="Selesai"
-              value={pemesanan.reduce((init, val) => {
-                if (val.paymentStatusId === 4) {
-                  return init + val.count;
-                }
-
-                return init;
-              }, 0)}
-              column={4}
-            />
-            <CardCategory
-              title="Dibatalkan"
-              value={pemesanan.reduce((init, val) => {
-                if (val.paymentStatusId === 5) {
-                  return init + val.count;
-                }
-
-                return init;
-              }, 0)}
-              column={4}
-            />
-            {/* <CardCategory title="Chat Baru" value={0} column={4} /> */}
-          </Grid>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
-            Kedaluwarsa Obat
-          </Typography>
-          <Typography sx={{ color: "Sidebar.500", fontSize: "14px" }}>
-            Cek tanggal kedaluwarsa untuk mengorganisir stok obat
-          </Typography>
-          <Grid
-            xs={7}
-            item
-            sx={{ marginRight: "16px", marginTop: "16px", maxHeight: "198px" }}
-          >
-            <Box
+        {/* Container 2 */}
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
+              Penting Hari Ini
+            </Typography>
+            <Typography sx={{ color: "Sidebar.500", fontSize: "14px" }}>
+              Aktivitas yang perlu kamu ketahui untuk menjaga kepuasan pelanggan
+            </Typography>
+            <Grid
+              spacing={2}
+              container
               sx={{
-                backgroundColor: "white",
-                paddingX: "16px",
-                paddingY: "38px",
-                boxShadow: 2,
-                borderRadius: "5px",
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <CardCategory
+                title="Menunggu Pembayaran"
+                value={pemesanan.reduce((init, val) => {
+                  if (val.paymentStatusId === 1) {
+                    return init + val.count;
+                  }
+
+                  return init;
+                }, 0)}
+                column={4}
+              />
+              <CardCategory
+                title="Pesanan Baru"
+                value={pemesanan.reduce((init, val) => {
+                  if (val.paymentStatusId === 2) {
+                    return init + val.count;
+                  }
+
+                  return init;
+                }, 0)}
+                column={4}
+              />
+              <CardCategory
+                title="Dikirim"
+                value={pemesanan.reduce((init, val) => {
+                  if (val.paymentStatusId === 3) {
+                    return init + val.count;
+                  }
+
+                  return init;
+                }, 0)}
+                column={4}
+              />
+              <CardCategory
+                title="Selesai"
+                value={pemesanan.reduce((init, val) => {
+                  if (val.paymentStatusId === 4) {
+                    return init + val.count;
+                  }
+
+                  return init;
+                }, 0)}
+                column={4}
+              />
+              <CardCategory
+                title="Dibatalkan"
+                value={pemesanan.reduce((init, val) => {
+                  if (val.paymentStatusId === 5) {
+                    return init + val.count;
+                  }
+
+                  return init;
+                }, 0)}
+                column={4}
+              />
+              {/* <CardCategory title="Chat Baru" value={0} column={4} /> */}
+            </Grid>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
+              Kedaluwarsa Obat
+            </Typography>
+            <Typography sx={{ color: "Sidebar.500", fontSize: "14px" }}>
+              Cek tanggal kedaluwarsa untuk mengorganisir stok obat
+            </Typography>
+            <Grid
+              xs={7}
+              item
+              sx={{
+                marginRight: "16px",
+                marginTop: "16px",
                 maxHeight: "198px",
               }}
             >
               <Box
                 sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  backgroundColor: "white",
+                  paddingX: "16px",
+                  paddingY: "38px",
+                  boxShadow: 2,
+                  borderRadius: "5px",
+                  maxHeight: "198px",
                 }}
               >
-                <Typography
+                <Box
                   sx={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  Telah Kadaluwarsa
-                </Typography>
-                <Typography
-                  sx={{ fontWeight: "bold", fontSize: "24px", color: "red" }}
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "16px",
+                    }}
+                  >
+                    Telah Kadaluwarsa
+                  </Typography>
+                  <Typography
+                    sx={{ fontWeight: "bold", fontSize: "24px", color: "red" }}
+                  >
+                    {expStok?.expStok?.sum || "-"}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
                 >
-                  {expStok?.expStok?.sum || "-"}
-                </Typography>
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "16px",
+                    }}
+                  >
+                    Kadaluwarsa Bulan Ini
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "24px",
+                      color: "#F4BB44",
+                    }}
+                  >
+                    {expStok?.expSoon?.sum || "-"}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "16px",
+                    }}
+                  >
+                    Kadaluwarsa 3 Bulan Ke Depan
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                      fontSize: "24px",
+                      color: "#21CDC0",
+                    }}
+                  >
+                    {expStok?.expIn3Months?.sum || "-"}
+                  </Typography>
+                </Box>
               </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                  }}
-                >
-                  Kadaluwarsa Bulan Ini
-                </Typography>
-                <Typography
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "24px",
-                    color: "#F4BB44",
-                  }}
-                >
-                  {expStok?.expSoon?.sum || "-"}
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                  }}
-                >
-                  Kadaluwarsa 3 Bulan Ke Depan
-                </Typography>
-                <Typography
-                  sx={{
-                    fontWeight: "bold",
-                    fontSize: "24px",
-                    color: "#21CDC0",
-                  }}
-                >
-                  {expStok?.expIn3Months?.sum || "-"}
-                </Typography>
-              </Box>
-            </Box>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
-      {/* Container 3 Graph */}
-      <Grid container spacing={2}>
-        {/* Statistik Profit */}
+        {/* Container 3 Graph */}
+        <Grid container spacing={2}>
+          {/* Statistik Profit */}
 
-        <CardStatistik
-          cardTitle="Profit"
-          column={6}
-          chartOption={profitOption}
-          chartSeries={profitSeries}
-          selectHandle={handleChangeProfit}
-          selectValue={sortProfit}
-          chartSort={[
-            { sortValue: "Mingguan", sortTitle: "Mingguan" },
-            { sortValue: "Bulanan", sortTitle: "Bulanan" },
-            { sortValue: "Tahunan", sortTitle: "Tahunan" },
-          ]}
-          chartType="bar"
-          showSelectOption={false}
-        />
+          <CardStatistik
+            cardTitle="Profit"
+            column={6}
+            chartOption={profitOption}
+            chartSeries={profitSeries}
+            selectHandle={handleChangeProfit}
+            selectValue={sortProfit}
+            chartSort={[
+              { sortValue: "Mingguan", sortTitle: "Mingguan" },
+              { sortValue: "Bulanan", sortTitle: "Bulanan" },
+              { sortValue: "Tahunan", sortTitle: "Tahunan" },
+            ]}
+            chartType="bar"
+            showSelectOption={false}
+          />
 
-        <CardStatistik
-          cardTitle="Penjualan Obat"
-          column={6}
-          chartOption={penjualanObatOption}
-          chartSeries={penjualanObatSeries}
-          selectHandle={handleChangePenjualan}
-          selectValue={sortPenjualan}
-          chartSort={[
-            { sortValue: "Mingguan", sortTitle: "Mingguan" },
-            { sortValue: "Bulanan", sortTitle: "Bulanan" },
-            { sortValue: "Tahunan", sortTitle: "Tahunan" },
-          ]}
-          chartType="line"
-        />
+          <CardStatistik
+            cardTitle="Penjualan Obat"
+            column={6}
+            chartOption={penjualanObatOption}
+            chartSeries={penjualanObatSeries}
+            selectHandle={handleChangePenjualan}
+            selectValue={sortPenjualan}
+            chartSort={[
+              { sortValue: "Mingguan", sortTitle: "Mingguan" },
+              { sortValue: "Bulanan", sortTitle: "Bulanan" },
+              { sortValue: "Tahunan", sortTitle: "Tahunan" },
+            ]}
+            chartType="line"
+          />
+        </Grid>
       </Grid>
-    </Grid>
+    </Page>
   );
 };
 

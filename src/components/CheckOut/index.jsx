@@ -18,6 +18,8 @@ const CheckOutCard = ({
   product_diskon,
   produk_satuan,
   time,
+  status,
+  buktiPembayaran,
 }) => {
   return (
     <Box sx={{ display: "flex", mb: "8px" }}>
@@ -34,7 +36,16 @@ const CheckOutCard = ({
           <Typography sx={{ fontSize: "16px" }}>{produk_name}</Typography>
           <Stack direction="row" alignItems="center" alignSelf="start">
             {isResep ? (
-              <Timer time={time} />
+              // eslint-disable-next-line react/jsx-no-useless-fragment
+              <>
+                {(status === "Menunggu" && buktiPembayaran) ||
+                status === "Diproses" ||
+                status === "Dikirim" ||
+                status === "Selesai" ||
+                status === "Dibatalkan" ? null : (
+                  <Timer time={time} />
+                )}
+              </>
             ) : (
               <>
                 <Typography

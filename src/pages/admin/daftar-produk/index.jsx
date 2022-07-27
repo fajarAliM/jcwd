@@ -22,6 +22,7 @@ import requiresAdmin from "config/requireAdmin";
 import TableData from "components/Admin/DaftarObatTable";
 import { useSnackbar } from "notistack";
 import axiosInstance from "config/api";
+import Page from "components/Page";
 
 const DaftarProduk = () => {
   const router = useRouter();
@@ -257,121 +258,127 @@ const DaftarProduk = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="flex-end">
-      <Box width="100%" height="100%">
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6" fontWeight="bold">
-            Daftar Obat
-          </Typography>
-          <Box display="flex">
-            <Button
-              sx={{ marginRight: "15px" }}
-              variant="outlined"
-              startIcon={<DownloadIcon />}
-            >
-              Unduh PDF
-            </Button>
-            <Button variant="outlined" startIcon={<InsertDriveFileIcon />}>
-              Excel
-            </Button>
-          </Box>
-        </Box>
-        <Box
-          paddingLeft="32px"
-          paddingY="32px"
-          width="100%"
-          height="100%"
-          marginTop="38px"
-          marginBottom="94px"
-          borderRadius="8px"
-          boxShadow="2"
-          sx={{
-            backgroundColor: "white",
-          }}
-        >
+    <Page title="Daftar Produk">
+      <Box display="flex" justifyContent="flex-end">
+        <Box width="100%" height="100%">
           <Box
             display="flex"
             justifyContent="space-between"
             alignItems="center"
-            marginBottom="35px"
-            marginRight="32px"
           >
-            <Box display="flex" alignItems="center">
-              <OutlinedInput
-                onChange={(e) => namaObatDebounce(e.target.value)}
-                placeholder="Cari nama obat"
-                sx={{ width: "300px", height: "55px", mr: 1 }}
-                defaultValue={router.query.nama_obat}
-                endAdornment={
-                  <InputAdornment>
-                    <SearchIcon />
-                  </InputAdornment>
-                }
-              />
-              <FormControl sx={{ m: 1, minWidth: 220 }} size="medium">
-                <InputLabel>Filter</InputLabel>
-                <Select
-                  label="Filter"
-                  onChange={(e) => filterDebounce(e.target.value)}
-                  defaultValue={router.query.filter_by_category}
-                >
-                  <MenuItem value="">None</MenuItem>
-                  {renderCategory()}
-                </Select>
-              </FormControl>
-              <FormControl sx={{ m: 1, minWidth: 120 }} size="medium">
-                <InputLabel>Sort</InputLabel>
-                <Select
-                  label="Sort"
-                  onChange={(e) => sortDebounce(e.target.value)}
-                  defaultValue={sortDefaultValue()}
-                >
-                  <MenuItem value="">None</MenuItem>
-                  <MenuItem value="Highest Price">Termahal</MenuItem>
-                  <MenuItem value="Lowest Price">Termurah</MenuItem>
-                  <MenuItem value="name_ASC">A - Z</MenuItem>
-                  <MenuItem value="name_DESC">Z - A</MenuItem>
-                </Select>
-              </FormControl>
+            <Typography variant="h6" fontWeight="bold">
+              Daftar Obat
+            </Typography>
+            <Box display="flex">
+              <Button
+                sx={{ marginRight: "15px" }}
+                variant="outlined"
+                startIcon={<DownloadIcon />}
+              >
+                Unduh PDF
+              </Button>
+              <Button variant="outlined" startIcon={<InsertDriveFileIcon />}>
+                Excel
+              </Button>
             </Box>
-            <Button
-              onClick={() => setTambahObat(true)}
-              variant="contained"
-              startIcon={<AddIcon />}
-              sx={{ width: "160px", height: "45px" }}
-            >
-              Tambah Obat
-            </Button>
-            <ModalTambahObat
-              addNewProduct={setAddNewData}
-              open={tambahObat}
-              handleClose={() => setTambahObat(false)}
-              categories={productCategory}
-            />
           </Box>
-          <Divider />
           <Box
+            paddingLeft="32px"
+            paddingY="32px"
+            width="100%"
+            height="100%"
+            marginTop="38px"
+            marginBottom="94px"
+            borderRadius="8px"
+            boxShadow="2"
             sx={{
-              height: "100%",
-              width: "100%",
-              marginTop: "32px",
+              backgroundColor: "white",
             }}
           >
-            <TableData
-              updateData={setUpdateData}
-              columns={columns}
-              rows={rows}
-              page={page}
-              rowPerPage={rowPerPage}
-              handleChangePage={handleChangePage}
-              handleChangeRowsPerPage={handleChangeRowsPerPage}
-              totalData={totalData}
-              categoriesData={productCategory}
-            />
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              marginBottom="35px"
+              marginRight="32px"
+            >
+              <Box display="flex" alignItems="center">
+                <OutlinedInput
+                  onChange={(e) => namaObatDebounce(e.target.value)}
+                  placeholder="Cari nama obat"
+                  sx={{ width: "300px", height: "55px", mr: 1 }}
+                  defaultValue={router.query.nama_obat}
+                  endAdornment={
+                    <InputAdornment>
+                      <SearchIcon />
+                    </InputAdornment>
+                  }
+                />
+                <FormControl sx={{ m: 1, minWidth: 220 }} size="medium">
+                  <InputLabel>Filter</InputLabel>
+                  <Select
+                    label="Filter"
+                    onChange={(e) => filterDebounce(e.target.value)}
+                    defaultValue={router.query.filter_by_category}
+                  >
+                    <MenuItem value="">None</MenuItem>
+                    {renderCategory()}
+                  </Select>
+                </FormControl>
+                <FormControl sx={{ m: 1, minWidth: 120 }} size="medium">
+                  <InputLabel>Sort</InputLabel>
+                  <Select
+                    label="Sort"
+                    onChange={(e) => sortDebounce(e.target.value)}
+                    defaultValue={sortDefaultValue()}
+                  >
+                    <MenuItem value="">None</MenuItem>
+                    <MenuItem value="Highest Price">Termahal</MenuItem>
+                    <MenuItem value="Lowest Price">Termurah</MenuItem>
+                    <MenuItem value="name_ASC">A - Z</MenuItem>
+                    <MenuItem value="name_DESC">Z - A</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Button
+                onClick={() => setTambahObat(true)}
+                variant="contained"
+                startIcon={<AddIcon />}
+                sx={{ width: "160px", height: "45px" }}
+              >
+                Tambah Obat
+              </Button>
+              <ModalTambahObat
+                addNewProduct={setAddNewData}
+                open={tambahObat}
+                handleClose={() => setTambahObat(false)}
+                categories={productCategory}
+              />
+            </Box>
+            <Divider />
+            <Box
+              sx={{
+                height: "100%",
+                width: "100%",
+                marginTop: "32px",
+              }}
+            >
+              <TableData
+                updateData={setUpdateData}
+                columns={columns}
+                rows={rows}
+                page={page}
+                rowPerPage={rowPerPage}
+                handleChangePage={handleChangePage}
+                handleChangeRowsPerPage={handleChangeRowsPerPage}
+                totalData={totalData}
+                categoriesData={productCategory}
+              />
+            </Box>
           </Box>
         </Box>
       </Box>
-    </Box>
+    </Page>
   );
 };
 

@@ -19,6 +19,7 @@ import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRange } from "react-date-range";
 import requiresAdmin from "config/requireAdmin";
+import Page from "components/Page";
 
 const columns = [
   { field: "id", headerName: "No", width: 70 },
@@ -132,124 +133,126 @@ const KartuStok = () => {
   }, [router.isReady]);
 
   return (
-    <Box paddingTop="38px" width="1186px" height="100%" paddingX="48px">
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h6" fontWeight="bold">
-          Buku Kas
-        </Typography>
-        <Box display="flex">
-          <Button
-            sx={{ marginRight: "15px" }}
-            variant="outlined"
-            startIcon={<DownloadIcon />}
-          >
-            Unduh PDF
-          </Button>
-          <Button variant="outlined" startIcon={<InsertDriveFileIcon />}>
-            Excel
-          </Button>
-        </Box>
-      </Box>
-      <Box
-        paddingLeft="32px"
-        paddingY="32px"
-        width="100%"
-        height="772px"
-        marginTop="38px"
-        marginBottom="94px"
-        borderRadius="8px"
-        boxShadow="2"
-        sx={{
-          backgroundColor: "white",
-        }}
-      >
-        <Box
-          display="flex"
-          alignItems="center"
-          marginBottom="35px"
-          marginRight="32px"
-        >
-          <Box
-            display="flex"
-            flexDirection="column"
-            // marginLeft="32px"
-            // mt="30px"
-            mr="24px"
-          >
-            <Typography sx={{ mb: "5px" }}>Akun Kas</Typography>
-            <Typography>BCA xxxxxxxxxxxx</Typography>
-          </Box>
-          <Box
-            display="flex"
-            flexDirection="column"
-            // marginLeft="32px"
-            // mt="30px"
-            mr="24px"
-          >
-            <Typography sx={{ mb: "5px" }}>Tanggal</Typography>
-            <OutlinedInput
-              onClick={handleClickOpen}
-              sx={{ width: "328px", height: "42px" }}
-              value={
-                dateRange[0].startDate
-                  ? `${moment(dateRange[0].startDate).format("l")} - ${moment(
-                      dateRange[0].endDate
-                    ).format("l")}`
-                  : undefined
-              }
-            />
-            <Dialog open={open} onClose={handleClose}>
-              <DialogContent>
-                <DateRange
-                  ranges={dateRange}
-                  editableDateInputs
-                  moveRangeOnFirstSelection={false}
-                  onChange={(date) => setDateRange([date.selection])}
-                />
-              </DialogContent>
-            </Dialog>
-          </Box>
-          <Box display="flex" flexDirection="column" justifyContent="end">
-            <Typography sx={{ mb: "5px" }}>&nbsp;</Typography>
-            <OutlinedInput
-              onChange={(e) => setNamaObatFilter(e.target.value)}
-              placeholder="Cari nama obat"
-              sx={{ width: "328px", height: "42px" }}
-              endAdornment={
-                <InputAdornment>
-                  <SearchIcon />
-                </InputAdornment>
-              }
-            />
-          </Box>
-          <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent="end"
-            marginLeft="18px"
-          >
-            <Typography sx={{ mb: "5px" }}>&nbsp;</Typography>
+    <Page title="Buku Kas">
+      <Box paddingTop="38px" width="1186px" height="100%" paddingX="48px">
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="h6" fontWeight="bold">
+            Buku Kas
+          </Typography>
+          <Box display="flex">
             <Button
-              variant="contained"
-              sx={{ width: "70px" }}
-              onClick={handleFilter}
+              sx={{ marginRight: "15px" }}
+              variant="outlined"
+              startIcon={<DownloadIcon />}
             >
-              Filter
+              Unduh PDF
+            </Button>
+            <Button variant="outlined" startIcon={<InsertDriveFileIcon />}>
+              Excel
             </Button>
           </Box>
         </Box>
-        <Divider />
         <Box
+          paddingLeft="32px"
+          paddingY="32px"
+          width="100%"
+          height="772px"
+          marginTop="38px"
+          marginBottom="94px"
+          borderRadius="8px"
+          boxShadow="2"
           sx={{
-            height: 400,
-            width: "100%",
-            marginTop: "32px",
+            backgroundColor: "white",
           }}
         >
-          <DataTable columns={columns} rows={rows} />
+          <Box
+            display="flex"
+            alignItems="center"
+            marginBottom="35px"
+            marginRight="32px"
+          >
+            <Box
+              display="flex"
+              flexDirection="column"
+              // marginLeft="32px"
+              // mt="30px"
+              mr="24px"
+            >
+              <Typography sx={{ mb: "5px" }}>Akun Kas</Typography>
+              <Typography>BCA xxxxxxxxxxxx</Typography>
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column"
+              // marginLeft="32px"
+              // mt="30px"
+              mr="24px"
+            >
+              <Typography sx={{ mb: "5px" }}>Tanggal</Typography>
+              <OutlinedInput
+                onClick={handleClickOpen}
+                sx={{ width: "328px", height: "42px" }}
+                value={
+                  dateRange[0].startDate
+                    ? `${moment(dateRange[0].startDate).format("l")} - ${moment(
+                        dateRange[0].endDate
+                      ).format("l")}`
+                    : undefined
+                }
+              />
+              <Dialog open={open} onClose={handleClose}>
+                <DialogContent>
+                  <DateRange
+                    ranges={dateRange}
+                    editableDateInputs
+                    moveRangeOnFirstSelection={false}
+                    onChange={(date) => setDateRange([date.selection])}
+                  />
+                </DialogContent>
+              </Dialog>
+            </Box>
+            <Box display="flex" flexDirection="column" justifyContent="end">
+              <Typography sx={{ mb: "5px" }}>&nbsp;</Typography>
+              <OutlinedInput
+                onChange={(e) => setNamaObatFilter(e.target.value)}
+                placeholder="Cari nama obat"
+                sx={{ width: "328px", height: "42px" }}
+                endAdornment={
+                  <InputAdornment>
+                    <SearchIcon />
+                  </InputAdornment>
+                }
+              />
+            </Box>
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="end"
+              marginLeft="18px"
+            >
+              <Typography sx={{ mb: "5px" }}>&nbsp;</Typography>
+              <Button
+                variant="contained"
+                sx={{ width: "70px" }}
+                onClick={handleFilter}
+              >
+                Filter
+              </Button>
+            </Box>
+          </Box>
+          <Divider />
+          <Box
+            sx={{
+              height: 400,
+              width: "100%",
+              marginTop: "32px",
+            }}
+          >
+            <DataTable columns={columns} rows={rows} />
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </Page>
   );
 };
 

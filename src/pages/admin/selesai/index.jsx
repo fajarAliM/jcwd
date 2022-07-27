@@ -26,6 +26,7 @@ import Group from "public/Images/Group.png";
 import requiresAdmin from "config/requireAdmin";
 import axiosInstance from "config/api";
 import { useRouter } from "next/router";
+import Page from "components/Page";
 
 const SelesaiPage = () => {
   const router = useRouter();
@@ -199,7 +200,7 @@ const SelesaiPage = () => {
   };
 
   return (
-    <>
+    <Page title="Pesanan Selesai">
       {order.length ? (
         <Grid container>
           {/* Heading Box */}
@@ -359,7 +360,7 @@ const SelesaiPage = () => {
           </Box>
         </Box>
       )}
-    </>
+    </Page>
   );
 };
 

@@ -44,6 +44,8 @@ const DaftarPemesanan = ({
           isResep={detail.is_resep}
           time={time}
           id={id}
+          status={status}
+          buktiPembayaran={detail.proof_of_payment}
         />
       );
     }
@@ -92,6 +94,7 @@ const DaftarPemesanan = ({
     declineTransaction(value);
     enqueueSnackbar("Pesanan Telah Dibatalkan", { variant: "success" });
   };
+
   return (
     <Stack>
       <Stack
@@ -115,7 +118,7 @@ const DaftarPemesanan = ({
           <Typography>
             {moment(detail?.createdAt)
               .locale("in")
-              .format("dddd, DD MMMM YYYY, HH:MM")}
+              .format("dddd, DD MMMM YYYY, HH:mm")}
           </Typography>
           {status === "Dikirim" ||
           status === "Selesai" ||

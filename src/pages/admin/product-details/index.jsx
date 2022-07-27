@@ -16,6 +16,7 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import CardStatistik from "components/Admin/CardStatistik";
 import moment from "moment";
+import Page from "components/Page";
 
 const ReportCart = ({ title, data = 0, percentange = "0", notation = "+" }) => {
   return (
@@ -234,144 +235,147 @@ const ProductDetails = () => {
   }, [revenueRawData]);
 
   return (
-    <Box>
-      <Typography variant="h4" marginBottom={4}>
-        Product Performance Report
-      </Typography>
-      <Box display="flex" justifyContent="space-between">
-        <Autocomplete
-          disablePortal
-          options={allProduct}
-          getOptionLabel={(val) => val.label}
-          sx={{ width: 300 }}
-          onChange={(event, value) => {
-            if (value) {
-              setSelectedProduct(value.id);
-            } else {
-              setSelectedProduct(null);
-            }
-          }}
-          renderInput={(params) => (
-            <TextField {...params} label="Select Product" />
-          )}
-        />
-        <Box>
-          <FormControl sx={{ width: "125px" }}>
-            <Select
-              sx={{ height: "25px" }}
-              onChange={handleChange}
-              defaultValue={sort}
-            >
-              <MenuItem value="Mingguan">Mingguan</MenuItem>
-              <MenuItem value="Bulanan">Bulanan</MenuItem>
-              <MenuItem value="Tahunan">Tahunan</MenuItem>
-            </Select>
-          </FormControl>
+    <Page title="Laporan Produk">
+      <Box>
+        <Typography variant="h4" marginBottom={4}>
+          Product Performance Report
+        </Typography>
+        <Box display="flex" justifyContent="space-between">
+          <Autocomplete
+            disablePortal
+            options={allProduct}
+            getOptionLabel={(val) => val.label}
+            sx={{ width: 300 }}
+            onChange={(event, value) => {
+              if (value) {
+                setSelectedProduct(value.id);
+              } else {
+                setSelectedProduct(null);
+              }
+            }}
+            renderInput={(params) => (
+              <TextField {...params} label="Select Product" />
+            )}
+          />
+          <Box>
+            <FormControl sx={{ width: "125px" }}>
+              <Select
+                sx={{ height: "25px" }}
+                onChange={handleChange}
+                defaultValue={sort}
+              >
+                <MenuItem value="Mingguan">Mingguan</MenuItem>
+                <MenuItem value="Bulanan">Bulanan</MenuItem>
+                <MenuItem value="Tahunan">Tahunan</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
         </Box>
-      </Box>
-      <Box marginTop={4} marginBottom={2}>
-        <Grid container spacing={4}>
-          <Grid item xs={4}>
-            <ReportCart
-              title="Quantity Sold"
-              data={qtySold.data}
-              percentange={
-                isNaN(
-                  Math.abs(
-                    ((qtySold.data - qtySold.prevData) / qtySold.prevData) * 100
-                  ).toFixed(1)
-                )
-                  ? 0
-                  : Math.abs(
+        <Box marginTop={4} marginBottom={2}>
+          <Grid container spacing={4}>
+            <Grid item xs={4}>
+              <ReportCart
+                title="Quantity Sold"
+                data={qtySold.data}
+                percentange={
+                  isNaN(
+                    Math.abs(
                       ((qtySold.data - qtySold.prevData) / qtySold.prevData) *
                         100
                     ).toFixed(1)
-              }
-              notation={qtySold.data - qtySold.prevData < 0 ? "-" : "+"}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <ReportCart
-              title="Item Viewed"
-              data={viewCount.data}
-              percentange={
-                isNaN(
-                  Math.abs(
-                    ((viewCount.data - viewCount.prevData) /
-                      viewCount.prevData) *
-                      100
-                  ).toFixed(1)
-                )
-                  ? 0
-                  : Math.abs(
+                  )
+                    ? 0
+                    : Math.abs(
+                        ((qtySold.data - qtySold.prevData) / qtySold.prevData) *
+                          100
+                      ).toFixed(1)
+                }
+                notation={qtySold.data - qtySold.prevData < 0 ? "-" : "+"}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <ReportCart
+                title="Item Viewed"
+                data={viewCount.data}
+                percentange={
+                  isNaN(
+                    Math.abs(
                       ((viewCount.data - viewCount.prevData) /
                         viewCount.prevData) *
                         100
                     ).toFixed(1)
-              }
-              notation={viewCount.data - viewCount.prevData < 0 ? "-" : "+"}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <ReportCart
-              title="Conversion Rate"
-              data={
-                isNaN((productSoldCount.data / viewCount.data) * 100)
-                  ? "0%"
-                  : `${Math.round(
-                      (productSoldCount.data / viewCount.data) * 100
-                    )}%`
-              }
-              percentange={
-                isNaN(
-                  Math.abs(
-                    ((productSoldCount.data / viewCount.data -
-                      productSoldCount.prevData / viewCount.prevData) /
-                      (productSoldCount.prevData / viewCount.prevData)) *
-                      100
-                  ).toFixed(1)
-                )
-                  ? 0
-                  : Math.abs(
-                      ((viewCount.data - viewCount.prevData) /
-                        viewCount.prevData) *
+                  )
+                    ? 0
+                    : Math.abs(
+                        ((viewCount.data - viewCount.prevData) /
+                          viewCount.prevData) *
+                          100
+                      ).toFixed(1)
+                }
+                notation={viewCount.data - viewCount.prevData < 0 ? "-" : "+"}
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <ReportCart
+                title="Conversion Rate"
+                data={
+                  isNaN((productSoldCount.data / viewCount.data) * 100)
+                    ? "0%"
+                    : `${Math.round(
+                        (productSoldCount.data / viewCount.data) * 100
+                      )}%`
+                }
+                percentange={
+                  isNaN(
+                    Math.abs(
+                      ((productSoldCount.data / viewCount.data -
+                        productSoldCount.prevData / viewCount.prevData) /
+                        (productSoldCount.prevData / viewCount.prevData)) *
                         100
                     ).toFixed(1)
-              }
-              notation={
-                productSoldCount.data / viewCount.data -
-                  productSoldCount.prevData / viewCount.prevData <
-                0
-                  ? "-"
-                  : "+"
-              }
-            />
+                  )
+                    ? 0
+                    : Math.abs(
+                        ((viewCount.data - viewCount.prevData) /
+                          viewCount.prevData) *
+                          100
+                      ).toFixed(1)
+                }
+                notation={
+                  productSoldCount.data / viewCount.data -
+                    productSoldCount.prevData / viewCount.prevData <
+                  0
+                    ? "-"
+                    : "+"
+                }
+              />
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
-      <Grid container spacing={2}>
-        {/* Statistik Profit */}
+        </Box>
+        <Grid container spacing={2}>
+          {/* Statistik Profit */}
 
-        <CardStatistik
-          cardTitle="Revenue"
-          column={12}
-          chartOption={penjualanObatOption}
-          chartSeries={penjualanObatSeries}
-          selectHandle={handleChange}
-          selectValue={sort}
-          chartSort={[
-            { sortValue: "Mingguan", sortTitle: "Mingguan" },
-            { sortValue: "Bulanan", sortTitle: "Bulanan" },
-            { sortValue: "Tahunan", sortTitle: "Tahunan" },
-          ]}
-          chartType="line"
-          showSelectOption={false}
-          chartHeight="258px"
-        />
-      </Grid>
-      {/* <Typography variant="h5">revenue of this product</Typography>
+          <CardStatistik
+            cardTitle="Revenue"
+            column={12}
+            chartOption={penjualanObatOption}
+            chartSeries={penjualanObatSeries}
+            selectHandle={handleChange}
+            selectValue={sort}
+            chartSort={[
+              { sortValue: "Mingguan", sortTitle: "Mingguan" },
+              { sortValue: "Bulanan", sortTitle: "Bulanan" },
+              { sortValue: "Tahunan", sortTitle: "Tahunan" },
+            ]}
+            chartType="line"
+            showSelectOption={false}
+            chartHeight="258px"
+          />
+        </Grid>
+        {/* <Typography variant="h5">revenue of this product</Typography>
         <Typography variant="h5">percentage of revenue</Typography> */}
-    </Box>
+      </Box>
+    </Page>
   );
 };
 

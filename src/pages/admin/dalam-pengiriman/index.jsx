@@ -26,6 +26,7 @@ import Group from "public/Images/Group.png";
 import requiresAdmin from "config/requireAdmin";
 import axiosInstance from "config/api";
 import { useRouter } from "next/router";
+import Page from "components/Page";
 
 const DalamPengirimanPage = () => {
   const router = useRouter();
@@ -199,7 +200,7 @@ const DalamPengirimanPage = () => {
   };
 
   return (
-    <>
+    <Page title="Dalam Pengiriman">
       {order.length ? (
         <Grid container>
           {/* Heading Box */}
@@ -359,7 +360,7 @@ const DalamPengirimanPage = () => {
           </Box>
         </Box>
       )}
-    </>
+    </Page>
   );
 };
 

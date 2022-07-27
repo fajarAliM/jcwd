@@ -80,56 +80,75 @@ const Home = () => {
           <UnggahResep />
           <Kategori />
           <Divider sx={{ marginY: "30px" }} />
-          <Box maxWidth="100vw">
-            <Box display="flex" justifyContent="space-between">
-              <Typography variant="h5" fontWeight="bold">
-                Kejar Diskon Hari Ini
-              </Typography>
-              <Link href="/product-list">
-                <Typography
-                  color="Brand.500"
-                  fontWeight="bold"
+          {productWithDiscount.length ? (
+            <>
+              <Box maxWidth="100vw">
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="h5" fontWeight="bold">
+                    Kejar Diskon Hari Ini
+                  </Typography>
+                  <Link href="/product-list">
+                    <Typography
+                      color="Brand.500"
+                      fontWeight="bold"
+                      sx={{
+                        ":hover": {
+                          cursor: "pointer",
+                        },
+                      }}
+                    >
+                      Lihat Semua
+                    </Typography>
+                  </Link>
+                </Box>
+                <Box
                   sx={{
-                    ":hover": {
-                      cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    overflow: "auto",
+                    "::-webkit-scrollbar": {
+                      display: "none",
                     },
+                    maxWidth: "100vw",
+                    position: "relative",
                   }}
                 >
-                  Lihat Semua
-                </Typography>
-              </Link>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                overflow: "auto",
-                "::-webkit-scrollbar": {
-                  display: "none",
-                },
-                maxWidth: "100vw",
-                position: "relative",
-              }}
-            >
-              <Image
-                width="301px"
-                height="395px"
-                position="absolute"
-                src={kejardiskon}
-              />
-              <Box
-                sx={{
-                  display: "flex",
-                  position: "absolute",
-                  width: "100%",
-                  ml: "100px",
-                }}
-              >
-                {renderProductWithDiscount()}
+                  <Image
+                    width="301px"
+                    height="395px"
+                    position="absolute"
+                    src={kejardiskon}
+                  />
+                  <Typography
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      fontWeight: "700",
+                      fontSize: "20px",
+                      width: "159px",
+                      height: "50px",
+                      m: 4,
+                      textAlign: "center",
+                    }}
+                  >
+                    Yuk Buruan Ikutan!
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      position: "absolute",
+                      width: "100%",
+                      ml: "100px",
+                    }}
+                  >
+                    {renderProductWithDiscount()}
+                  </Box>
+                </Box>
               </Box>
-            </Box>
-          </Box>
-          <Divider sx={{ marginY: "30px" }} />
+              <Divider sx={{ marginY: "30px" }} />
+            </>
+          ) : null}
           <Box
             sx={{
               display: {
@@ -143,38 +162,39 @@ const Home = () => {
             <Image src={kebutuhanidulfitri} />
           </Box>
           <Divider sx={{ marginY: "30px" }} />
-          <Box>
-            <Box display="flex" justifyContent="space-between">
-              <Typography variant="h5" fontWeight="bold">
-                Popular Product
-              </Typography>
-              <Link href="/product-list">
-                <Typography
-                  color="Brand.500"
-                  fontWeight="bold"
-                  sx={{
-                    ":hover": {
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  Lihat Semua
+          {popularProduct.length ? (
+            <Box>
+              <Box display="flex" justifyContent="space-between">
+                <Typography variant="h5" fontWeight="bold">
+                  Popular Product
                 </Typography>
-              </Link>
+                <Link href="/product-list">
+                  <Typography
+                    color="Brand.500"
+                    fontWeight="bold"
+                    sx={{
+                      ":hover": {
+                        cursor: "pointer",
+                      },
+                    }}
+                  >
+                    Lihat Semua
+                  </Typography>
+                </Link>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  overflow: "scroll",
+                  "::-webkit-scrollbar": {
+                    display: "none",
+                  },
+                }}
+              >
+                {renderPopularProduct()}
+              </Box>
             </Box>
-            <Box
-              sx={{
-                display: "flex",
-                overflow: "scroll",
-                "::-webkit-scrollbar": {
-                  display: "none",
-                },
-              }}
-            >
-              {renderPopularProduct()}
-            </Box>
-          </Box>
-
+          ) : null}
           <BannerJaminan />
           <MetodePembayaran />
         </Container>

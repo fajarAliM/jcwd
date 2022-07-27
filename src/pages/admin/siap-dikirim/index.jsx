@@ -27,6 +27,7 @@ import Group from "public/Images/Group.png";
 import requiresAdmin from "config/requireAdmin";
 import axiosInstance from "config/api";
 import { useRouter } from "next/router";
+import Page from "components/Page";
 
 const SiapDikirimPage = () => {
   // eslint-disable-next-line no-unused-vars
@@ -201,7 +202,7 @@ const SiapDikirimPage = () => {
   };
 
   return (
-    <>
+    <Page title="Siap Dikirim">
       {order.length ? (
         <Grid container>
           {/* Heading Box */}
@@ -361,7 +362,7 @@ const SiapDikirimPage = () => {
           </Box>
         </Box>
       )}
-    </>
+    </Page>
   );
 };
 

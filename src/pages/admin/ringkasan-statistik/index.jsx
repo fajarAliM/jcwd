@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import requiresAdmin from "config/requireAdmin";
 import axiosInstance from "config/api";
 import moment from "moment";
+import Page from "components/Page";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 const RingkasanStatistikPage = () => {
@@ -295,175 +296,177 @@ const RingkasanStatistikPage = () => {
   }, [cancelationData]);
 
   return (
-    <Grid container>
-      {/* Container 1 */}
+    <Page title="Ringkasan Statistik">
       <Grid container>
-        <Grid item xs={12}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Box>
-              <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
-                Ringkasan Statistik
-              </Typography>
-              <Typography sx={{ color: "Sidebar.500", fontSize: "14px" }}>
-                Update terakhir:{" "}
-                <Typography
-                  component="span"
-                  sx={{ fontSize: "14px", fontWeight: "bold" }}
-                >
-                  {moment(lastUpdated).format("LLL")}
-                </Typography>
-              </Typography>
-            </Box>
-            <FormControl>
-              <Select
-                sx={{ width: "161px", height: "24px" }}
-                onChange={handleChange}
-                value={ringkasanSort}
-              >
-                <MenuItem value="Harian">1 Hari Terakhir</MenuItem>
-                <MenuItem value="Mingguan">1 Minggu Terakhir</MenuItem>
-                <MenuItem value="Bulanan">1 Bulan Terakhir</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-          <Grid
-            container
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <CardCategory
-              title="Menunggu Pembayaran"
-              value={pemesanan.reduce((init, val) => {
-                if (val.paymentStatusId === 1) {
-                  return init + val.count;
-                }
-
-                return init;
-              }, 0)}
-              column={1.8}
-            />
-            <CardCategory
-              title="Pesanan Baru"
-              value={pemesanan.reduce((init, val) => {
-                if (val.paymentStatusId === 2) {
-                  return init + val.count;
-                }
-
-                return init;
-              }, 0)}
-              column={1.8}
-            />
-            <CardCategory
-              title="Dikirim"
-              value={pemesanan.reduce((init, val) => {
-                if (val.paymentStatusId === 3) {
-                  return init + val.count;
-                }
-
-                return init;
-              }, 0)}
-              column={1.8}
-            />
-            <CardCategory
-              title="Selesai"
-              value={pemesanan.reduce((init, val) => {
-                if (val.paymentStatusId === 4) {
-                  return init + val.count;
-                }
-
-                return init;
-              }, 0)}
-              column={1.8}
-            />
-            <CardCategory
-              title="Dibatalkan"
-              value={pemesanan.reduce((init, val) => {
-                if (val.paymentStatusId === 5) {
-                  return init + val.count;
-                }
-
-                return init;
-              }, 0)}
-              column={1.8}
-            />
-            <CardCategory title="Chat Baru" value={0} column={1.8} />
-          </Grid>
-        </Grid>
-      </Grid>
-
-      {/* Container 2 */}
-      <Grid container>
-        <Grid item xs={12} sx={{ marginTop: "16px" }}>
-          <Box
-            sx={{
-              paddingX: "16px",
-              paddingY: "32px",
-              backgroundColor: "white",
-              borderRadius: 2,
-              boxShadow: 2,
-            }}
-          >
+        {/* Container 1 */}
+        <Grid container>
+          <Grid item xs={12}>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Box>
                 <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
-                  Penjualan Obat{" "}
+                  Ringkasan Statistik
+                </Typography>
+                <Typography sx={{ color: "Sidebar.500", fontSize: "14px" }}>
+                  Update terakhir:{" "}
+                  <Typography
+                    component="span"
+                    sx={{ fontSize: "14px", fontWeight: "bold" }}
+                  >
+                    {moment(lastUpdated).format("LLL")}
+                  </Typography>
                 </Typography>
               </Box>
               <FormControl>
                 <Select
-                  sx={{ width: "141px", height: "24px" }}
-                  onChange={sortHandle}
-                  value={sort}
+                  sx={{ width: "161px", height: "24px" }}
+                  onChange={handleChange}
+                  value={ringkasanSort}
                 >
-                  <MenuItem value="Mingguan">Mingguan</MenuItem>
-                  <MenuItem value="Bulanan">Bulanan</MenuItem>
-                  <MenuItem value="Tahunan">Tahunan</MenuItem>
+                  <MenuItem value="Harian">1 Hari Terakhir</MenuItem>
+                  <MenuItem value="Mingguan">1 Minggu Terakhir</MenuItem>
+                  <MenuItem value="Bulanan">1 Bulan Terakhir</MenuItem>
                 </Select>
               </FormControl>
             </Box>
-            <Chart
-              height="218px"
-              options={penjualanObatOption}
-              series={penjualanObatSeries}
-            />
-          </Box>
+            <Grid
+              container
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <CardCategory
+                title="Menunggu Pembayaran"
+                value={pemesanan.reduce((init, val) => {
+                  if (val.paymentStatusId === 1) {
+                    return init + val.count;
+                  }
+
+                  return init;
+                }, 0)}
+                column={1.8}
+              />
+              <CardCategory
+                title="Pesanan Baru"
+                value={pemesanan.reduce((init, val) => {
+                  if (val.paymentStatusId === 2) {
+                    return init + val.count;
+                  }
+
+                  return init;
+                }, 0)}
+                column={1.8}
+              />
+              <CardCategory
+                title="Dikirim"
+                value={pemesanan.reduce((init, val) => {
+                  if (val.paymentStatusId === 3) {
+                    return init + val.count;
+                  }
+
+                  return init;
+                }, 0)}
+                column={1.8}
+              />
+              <CardCategory
+                title="Selesai"
+                value={pemesanan.reduce((init, val) => {
+                  if (val.paymentStatusId === 4) {
+                    return init + val.count;
+                  }
+
+                  return init;
+                }, 0)}
+                column={1.8}
+              />
+              <CardCategory
+                title="Dibatalkan"
+                value={pemesanan.reduce((init, val) => {
+                  if (val.paymentStatusId === 5) {
+                    return init + val.count;
+                  }
+
+                  return init;
+                }, 0)}
+                column={1.8}
+              />
+              <CardCategory title="Chat Baru" value={0} column={1.8} />
+            </Grid>
+          </Grid>
+        </Grid>
+
+        {/* Container 2 */}
+        <Grid container>
+          <Grid item xs={12} sx={{ marginTop: "16px" }}>
+            <Box
+              sx={{
+                paddingX: "16px",
+                paddingY: "32px",
+                backgroundColor: "white",
+                borderRadius: 2,
+                boxShadow: 2,
+              }}
+            >
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <Box>
+                  <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
+                    Penjualan Obat{" "}
+                  </Typography>
+                </Box>
+                <FormControl>
+                  <Select
+                    sx={{ width: "141px", height: "24px" }}
+                    onChange={sortHandle}
+                    value={sort}
+                  >
+                    <MenuItem value="Mingguan">Mingguan</MenuItem>
+                    <MenuItem value="Bulanan">Bulanan</MenuItem>
+                    <MenuItem value="Tahunan">Tahunan</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Chart
+                height="218px"
+                options={penjualanObatOption}
+                series={penjualanObatSeries}
+              />
+            </Box>
+          </Grid>
+        </Grid>
+
+        {/* Container 3 */}
+        <Grid container spacing={2}>
+          <CardStatistik
+            cardTitle="Tren Pendapatan"
+            column={6}
+            chartOption={pendapatanOption}
+            chartSeries={pendapatanSeries}
+            selectHandle={pendapatanHandle}
+            selectValue={sortPendapatan}
+            chartSort={[
+              { sortValue: "Mingguan", sortTitle: "Mingguan" },
+              { sortValue: "Bulanan", sortTitle: "Bulanan" },
+              { sortValue: "Tahunan", sortTitle: "Tahunan" },
+            ]}
+            showSelectOption={false}
+          />
+          <CardStatistik
+            cardTitle="Tren Pembatalan"
+            column={6}
+            chartOption={pembatalanOption}
+            chartSeries={pembatalanSeries}
+            selectHandle={pembatalanHandle}
+            selectValue={sortPembatalan}
+            chartSort={[
+              { sortValue: "Mingguan", sortTitle: "Mingguan" },
+              { sortValue: "Bulanan", sortTitle: "Bulanan" },
+              { sortValue: "Tahunan", sortTitle: "Tahunan" },
+            ]}
+          />
         </Grid>
       </Grid>
-
-      {/* Container 3 */}
-      <Grid container spacing={2}>
-        <CardStatistik
-          cardTitle="Tren Pendapatan"
-          column={6}
-          chartOption={pendapatanOption}
-          chartSeries={pendapatanSeries}
-          selectHandle={pendapatanHandle}
-          selectValue={sortPendapatan}
-          chartSort={[
-            { sortValue: "Mingguan", sortTitle: "Mingguan" },
-            { sortValue: "Bulanan", sortTitle: "Bulanan" },
-            { sortValue: "Tahunan", sortTitle: "Tahunan" },
-          ]}
-          showSelectOption={false}
-        />
-        <CardStatistik
-          cardTitle="Tren Pembatalan"
-          column={6}
-          chartOption={pembatalanOption}
-          chartSeries={pembatalanSeries}
-          selectHandle={pembatalanHandle}
-          selectValue={sortPembatalan}
-          chartSort={[
-            { sortValue: "Mingguan", sortTitle: "Mingguan" },
-            { sortValue: "Bulanan", sortTitle: "Bulanan" },
-            { sortValue: "Tahunan", sortTitle: "Tahunan" },
-          ]}
-        />
-      </Grid>
-    </Grid>
+    </Page>
   );
 };
 

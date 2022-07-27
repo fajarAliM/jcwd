@@ -21,6 +21,7 @@ import Link from "next/link";
 import StockHistoryTable from "components/Admin/StockHistoryTable";
 import axiosInstance from "config/api";
 import { useSnackbar } from "notistack";
+import Page from "components/Page";
 
 const KartuStok = () => {
   const [month, setMonth] = useState("");
@@ -52,8 +53,6 @@ const KartuStok = () => {
 
       const data = res.data.result.rows;
       setDataCount(res.data.result.count);
-
-      console.log(data);
 
       setDataTable(
         data.map((val, idx) => {
@@ -87,163 +86,165 @@ const KartuStok = () => {
   }, [router.query.productId, rowPerPage, page, year, month, activity]);
 
   return (
-    <Box
-      height="100vh"
-      sx={{
-        backgroundColor: "#D6F5F3",
-      }}
-    >
+    <Page title="Mutasi Stok">
       <Box
-        height="64px"
-        display="flex"
-        alignItems="center"
-        paddingX="20px"
-        paddingRight="40px"
-        paddingLeft="40px"
-        justifyContent="space-between"
-        boxShadow={1}
-        sx={{ backgroundColor: "#FFFFFF" }}
-      >
-        <Box display="flex" alignItems="center">
-          <Link href="/admin/daftar-produk">
-            <IconButton>
-              <ArrowBackIosNewIcon />
-            </IconButton>
-          </Link>
-          <Typography marginLeft="25px" fontWeight="bold" variant="h6">
-            Detail Obat: Actived
-          </Typography>
-        </Box>
-        <Button
-          variant="outlined"
-          sx={{ width: "105px", height: "40px" }}
-          startIcon={<InsertDriveFileIcon />}
-        >
-          Excel
-        </Button>
-      </Box>
-      <Box
+        height="100vh"
         sx={{
-          backgroundColor: "#FFFFFF",
+          backgroundColor: "#D6F5F3",
         }}
-        marginX="48px"
-        marginTop="60px"
-        marginBottom="124px"
-        borderRadius="16px"
-        paddingBottom="40px"
       >
-        <Box display="flex">
-          <Box
-            display="flex"
-            flexDirection="column"
-            marginLeft="32px"
-            mt="30px"
-            mr="24px"
-          >
-            <Typography sx={{ mb: "5px", fontWeight: "bold" }}>
-              Bulan
+        <Box
+          height="64px"
+          display="flex"
+          alignItems="center"
+          paddingX="20px"
+          paddingRight="40px"
+          paddingLeft="40px"
+          justifyContent="space-between"
+          boxShadow={1}
+          sx={{ backgroundColor: "#FFFFFF" }}
+        >
+          <Box display="flex" alignItems="center">
+            <Link href="/admin/daftar-produk">
+              <IconButton>
+                <ArrowBackIosNewIcon />
+              </IconButton>
+            </Link>
+            <Typography marginLeft="25px" fontWeight="bold" variant="h6">
+              Detail Obat: Actived
             </Typography>
-            <Select
-              size="small"
-              displayEmpty
-              value={month}
-              onChange={(e) => {
-                setMonth(e.target.value);
-                setPage(1);
-              }}
-            >
-              <MenuItem value="">None</MenuItem>
-              <MenuItem value={1}>January</MenuItem>
-              <MenuItem value={2}>February</MenuItem>
-              <MenuItem value={3}>March</MenuItem>
-              <MenuItem value={4}>April</MenuItem>
-              <MenuItem value={5}>May</MenuItem>
-              <MenuItem value={6}>June</MenuItem>
-              <MenuItem value={7}>July</MenuItem>
-              <MenuItem value={8}>August</MenuItem>
-              <MenuItem value={9}>September</MenuItem>
-              <MenuItem value={10}>October</MenuItem>
-              <MenuItem value={11}>November</MenuItem>
-              <MenuItem value={12}>Desember</MenuItem>
-            </Select>
           </Box>
-          <Box display="flex" flexDirection="column" mt="30px" mr="24px">
-            <Typography sx={{ mb: "5px", fontWeight: "bold" }}>
-              Tahun
-            </Typography>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                views={["year"]}
-                value={year || null}
-                onChange={(date) => {
-                  setYear(moment(date).format("YYYY"));
+          <Button
+            variant="outlined"
+            sx={{ width: "105px", height: "40px" }}
+            startIcon={<InsertDriveFileIcon />}
+          >
+            Excel
+          </Button>
+        </Box>
+        <Box
+          sx={{
+            backgroundColor: "#FFFFFF",
+          }}
+          marginX="48px"
+          marginTop="60px"
+          marginBottom="124px"
+          borderRadius="16px"
+          paddingBottom="40px"
+        >
+          <Box display="flex">
+            <Box
+              display="flex"
+              flexDirection="column"
+              marginLeft="32px"
+              mt="30px"
+              mr="24px"
+            >
+              <Typography sx={{ mb: "5px", fontWeight: "bold" }}>
+                Bulan
+              </Typography>
+              <Select
+                size="small"
+                displayEmpty
+                value={month}
+                onChange={(e) => {
+                  setMonth(e.target.value);
                   setPage(1);
                 }}
-                renderInput={(params) => (
-                  <TextField
-                    size="small"
-                    {...params}
-                    inputProps={{
-                      ...params.inputProps,
-                      placeholder: "Year",
-                    }}
-                  />
-                )}
-              />
-            </LocalizationProvider>
-          </Box>
-          <Box display="flex" flexDirection="column" mt="30px" mr="24px">
-            <Typography sx={{ mb: "5px", fontWeight: "bold" }}>
-              Aktivitas
-            </Typography>
-            <Select
-              size="small"
-              displayEmpty
-              value={activity}
-              onChange={(e) => {
-                setActivity(e.target.value);
-                setPage(1);
-              }}
-            >
-              <MenuItem value="">None</MenuItem>
-              <MenuItem value="Penerimaan Barang">Penerimaan Barang</MenuItem>
-              <MenuItem value="Penjualan Barang">Penjualan Barang</MenuItem>
-            </Select>
-          </Box>
-          {activity || month || year ? (
+              >
+                <MenuItem value="">None</MenuItem>
+                <MenuItem value={1}>January</MenuItem>
+                <MenuItem value={2}>February</MenuItem>
+                <MenuItem value={3}>March</MenuItem>
+                <MenuItem value={4}>April</MenuItem>
+                <MenuItem value={5}>May</MenuItem>
+                <MenuItem value={6}>June</MenuItem>
+                <MenuItem value={7}>July</MenuItem>
+                <MenuItem value={8}>August</MenuItem>
+                <MenuItem value={9}>September</MenuItem>
+                <MenuItem value={10}>October</MenuItem>
+                <MenuItem value={11}>November</MenuItem>
+                <MenuItem value={12}>Desember</MenuItem>
+              </Select>
+            </Box>
             <Box display="flex" flexDirection="column" mt="30px" mr="24px">
-              <Typography sx={{ mb: "5px" }}>&nbsp;</Typography>
-              <Button
-                size="medium"
-                variant="outlined"
-                onClick={() => {
-                  setActivity("");
-                  setMonth("");
-                  setYear("");
+              <Typography sx={{ mb: "5px", fontWeight: "bold" }}>
+                Tahun
+              </Typography>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  views={["year"]}
+                  value={year || null}
+                  onChange={(date) => {
+                    setYear(moment(date).format("YYYY"));
+                    setPage(1);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      size="small"
+                      {...params}
+                      inputProps={{
+                        ...params.inputProps,
+                        placeholder: "Year",
+                      }}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
+            </Box>
+            <Box display="flex" flexDirection="column" mt="30px" mr="24px">
+              <Typography sx={{ mb: "5px", fontWeight: "bold" }}>
+                Aktivitas
+              </Typography>
+              <Select
+                size="small"
+                displayEmpty
+                value={activity}
+                onChange={(e) => {
+                  setActivity(e.target.value);
+                  setPage(1);
                 }}
               >
-                Clear Filter
-              </Button>
+                <MenuItem value="">None</MenuItem>
+                <MenuItem value="Penerimaan Barang">Penerimaan Barang</MenuItem>
+                <MenuItem value="Penjualan Barang">Penjualan Barang</MenuItem>
+              </Select>
             </Box>
-          ) : null}
-        </Box>
-        <Divider
-          sx={{
-            marginY: "30px",
-          }}
-        />
-        <Box padding={5}>
-          <StockHistoryTable
-            rows={dataTable}
-            count={dataCount}
-            handleChangeRowsPerPage={handleChangeRowsPerPage}
-            handleChangePage={handleChangePage}
-            page={page}
-            rowPerPage={rowPerPage}
+            {activity || month || year ? (
+              <Box display="flex" flexDirection="column" mt="30px" mr="24px">
+                <Typography sx={{ mb: "5px" }}>&nbsp;</Typography>
+                <Button
+                  size="medium"
+                  variant="outlined"
+                  onClick={() => {
+                    setActivity("");
+                    setMonth("");
+                    setYear("");
+                  }}
+                >
+                  Clear Filter
+                </Button>
+              </Box>
+            ) : null}
+          </Box>
+          <Divider
+            sx={{
+              marginY: "30px",
+            }}
           />
+          <Box padding={5}>
+            <StockHistoryTable
+              rows={dataTable}
+              count={dataCount}
+              handleChangeRowsPerPage={handleChangeRowsPerPage}
+              handleChangePage={handleChangePage}
+              page={page}
+              rowPerPage={rowPerPage}
+            />
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </Page>
   );
 };
 
