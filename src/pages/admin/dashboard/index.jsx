@@ -263,7 +263,9 @@ const DashboardPage = () => {
               <CardWithCircularBar
                 title="Revenue Hari Ini"
                 amount={`Rp. ${
-                  todayRevenue?.todayRevenue?.result?.toLocaleString("id") || 0
+                  parseInt(todayRevenue?.todayRevenue?.result).toLocaleString(
+                    "id"
+                  ) || 0
                 }`}
                 value={Math.abs(
                   todayRevenue?.todayRevenue?.result -
@@ -281,8 +283,10 @@ const DashboardPage = () => {
                     ? 0
                     : Math.abs(
                         ((todayRevenue?.todayRevenue?.result -
-                          todayRevenue?.yesterdayRevenue?.result) /
-                          todayRevenue?.yesterdayRevenue?.result) *
+                          todayRevenue?.yesterdayRevenue?.result +
+                          1) /
+                          (todayRevenue?.yesterdayRevenue?.result + 1) -
+                          1) *
                           100
                       ).toFixed(1)
                 }
@@ -312,8 +316,10 @@ const DashboardPage = () => {
                     ? 0
                     : Math.abs(
                         ((todayTransaction.todayOrder -
-                          todayTransaction.yesterdayOrder) /
-                          todayTransaction.yesterdayOrder) *
+                          todayTransaction.yesterdayOrder +
+                          1) /
+                          (todayTransaction.yesterdayOrder + 1) -
+                          1) *
                           100
                       ).toFixed(1)
                 }
@@ -327,7 +333,7 @@ const DashboardPage = () => {
               />
               <CardWithCircularBar
                 title="Sisa Stok Hari Ini"
-                amount={todayStok.todayStok}
+                amount={parseInt(todayStok.todayStok).toLocaleString("id")}
                 value={Math.abs(todayStok.todayStok - todayStok.yesterdayStok)}
                 percentage={
                   isNaN(
@@ -339,8 +345,9 @@ const DashboardPage = () => {
                   )
                     ? 0
                     : Math.abs(
-                        ((todayStok.todayStok - todayStok.yesterdayStok) /
-                          todayStok.yesterdayStok) *
+                        ((todayStok.todayStok - todayStok.yesterdayStok + 1) /
+                          (todayStok.yesterdayStok + 1) -
+                          1) *
                           100
                       ).toFixed(1)
                 }
