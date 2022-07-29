@@ -228,10 +228,8 @@ const ProductDetails = () => {
   }, [selectedProduct, sort]);
 
   useEffect(() => {
-    if (revenueRawData.length) {
-      convertRevenueDataByMonth();
-      convertRevenueNotByMonth();
-    }
+    convertRevenueDataByMonth();
+    convertRevenueNotByMonth();
   }, [revenueRawData]);
 
   return (
@@ -276,7 +274,7 @@ const ProductDetails = () => {
             <Grid item xs={4}>
               <ReportCart
                 title="Quantity Sold"
-                data={qtySold.data}
+                data={qtySold.data || 0}
                 percentange={
                   isNaN(
                     Math.abs(

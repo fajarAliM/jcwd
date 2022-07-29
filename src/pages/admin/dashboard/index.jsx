@@ -263,9 +263,9 @@ const DashboardPage = () => {
               <CardWithCircularBar
                 title="Revenue Hari Ini"
                 amount={`Rp. ${
-                  parseInt(todayRevenue?.todayRevenue?.result).toLocaleString(
-                    "id"
-                  ) || 0
+                  parseInt(
+                    todayRevenue?.todayRevenue?.result || 0
+                  ).toLocaleString("id") || 0
                 }`}
                 value={Math.abs(
                   todayRevenue?.todayRevenue?.result -
@@ -333,7 +333,7 @@ const DashboardPage = () => {
               />
               <CardWithCircularBar
                 title="Sisa Stok Hari Ini"
-                amount={parseInt(todayStok.todayStok).toLocaleString("id")}
+                amount={parseInt(todayStok.todayStok || 0).toLocaleString("id")}
                 value={Math.abs(todayStok.todayStok - todayStok.yesterdayStok)}
                 percentage={
                   isNaN(
