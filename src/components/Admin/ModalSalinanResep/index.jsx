@@ -49,7 +49,8 @@ const ModalSalinanResep = ({
   kodeOrder,
   waktuOrder,
   fotoResep,
-  transaksiId = 1,
+  transaksiId,
+  addressDetail,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
 
@@ -57,6 +58,22 @@ const ModalSalinanResep = ({
   const [selesai, setSelesai] = useState(false);
   const [productData, setProductData] = useState([]);
   const [listObat, setListObat] = useState([]);
+  const [ongkir, setOngkir] = useState(null);
+
+  const fetchOngkir = async () => {
+    try {
+      const dataOngkir = await axiosInstance.post("/address/cost", {
+        origin: "153",
+        destination: addressDetail.kota_kabupaten_id,
+        weight: 200,
+        courier: "jne",
+      });
+      setOngkir(dataOngkir.data.result[0].costs[0].cost[0].value);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err);
+    }
+  };
 
   const isTerima = () => {
     setTerimaPesanan(true);
@@ -143,7 +160,7 @@ const ModalSalinanResep = ({
           transactionListId: transaksiId,
           nomor_resep: formik.values.nomorResep,
           price: val.harga_jual - val.harga_jual * (val.diskon / 100),
-          total_price: totalPrice(),
+          total_price: totalPrice() + ongkir,
         };
       });
 
@@ -170,6 +187,12 @@ const ModalSalinanResep = ({
       fetchProduct();
     }
   }, []);
+
+  useEffect(() => {
+    if (!ongkir) {
+      fetchOngkir();
+    }
+  }, [ongkir]);
 
   return (
     <Modal
@@ -712,7 +735,10 @@ const ModalSalinanResep = ({
                         <Grid item xs={2}>
                           <Typography sx={{ fontSize: "12px", color: "gray" }}>
                             {val.kuantitasObat} x{" "}
-                            {val.harga_jual.toLocaleString("id")}
+                            {(
+                              val.harga_jual -
+                              (val.harga_jual * val.diskon) / 100
+                            )?.toLocaleString("id")}
                           </Typography>
                         </Grid>
                         <Grid item xs={2}>

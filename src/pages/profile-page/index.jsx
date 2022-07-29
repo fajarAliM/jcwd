@@ -108,7 +108,7 @@ const ProfilePage = () => {
       DOB: Yup.date(),
     }),
     validateOnChange: false,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       try {
         const editedData = {
           nama: values.nama,
@@ -120,20 +120,9 @@ const ProfilePage = () => {
           DOB: values.DOB,
         };
 
-        axiosInstance.patch("/user/edit-profile", editedData);
-        dispatch(
-          login({
-            nama: values.nama,
-            username:
-              values.username === userSelectors.username
-                ? userSelectors.username
-                : values.username,
-            gender: values.gender,
-            DOB: values.DOB,
-            photo_profile: userSelectors.photo_profile,
-            email: userSelectors.email,
-          })
-        );
+        const res = await axiosInstance.patch("/user/edit-profile", editedData);
+
+        dispatch(login(res.data.result));
 
         enqueueSnackbar("Edit Profile Success!", { variant: "success" });
         setOpenModalEdit(false);

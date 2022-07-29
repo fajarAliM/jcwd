@@ -382,8 +382,6 @@ const ModalTambahObat = ({
                     {categories?.map((val) => {
                       return <MenuItem value={val.id}>{val.kategori}</MenuItem>;
                     })}
-                    {/* <MenuItem value="Obat Bebas">Obat Bebas</MenuItem>
-                          <MenuItem value="Obat Resep">Obat Resep</MenuItem> */}
                   </Select>
                 </Grid>
               </Grid>

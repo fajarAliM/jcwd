@@ -93,7 +93,11 @@ const Nav = () => {
         background: "rgb(255, 255, 255, 0.9)",
       }}
     >
-      <Box mr="20px" display={{ xs: "none", md: "block" }}>
+      <Box
+        mr="20px"
+        display={{ xs: "none", md: "block" }}
+        sx={{ ":hover": { cursor: "pointer" } }}
+      >
         <Link href="/">
           <Image src={healthymed} height="60px" width="210px" />
         </Link>
