@@ -11,13 +11,13 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use((config) => {
   const userToken = Cookies.get("user_auth_token");
-
+  const adminToken = Cookies.get("admin_auth_token");
   if (userToken) {
     config.headers.authorization = userToken || "";
-  } else {
-    config.headers.authorization = Cookies.get("admin_auth_token") || "";
   }
-
+  if (adminToken) {
+    config.headers.authorization = adminToken || "";
+  }
   return config;
 });
 
