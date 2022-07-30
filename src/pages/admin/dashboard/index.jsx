@@ -279,14 +279,18 @@ const DashboardPage = () => {
                         todayRevenue?.yesterdayRevenue?.result) *
                         100
                     ).toFixed(1)
+                  ) ||
+                  !isFinite(
+                    ((todayRevenue?.todayRevenue?.result -
+                      todayRevenue?.yesterdayRevenue?.result) /
+                      todayRevenue?.yesterdayRevenue?.result) *
+                      100
                   )
                     ? 0
                     : Math.abs(
                         ((todayRevenue?.todayRevenue?.result -
-                          todayRevenue?.yesterdayRevenue?.result +
-                          1) /
-                          (todayRevenue?.yesterdayRevenue?.result + 1) -
-                          1) *
+                          todayRevenue?.yesterdayRevenue?.result) /
+                          todayRevenue?.yesterdayRevenue?.result) *
                           100
                       ).toFixed(1)
                 }
@@ -312,14 +316,18 @@ const DashboardPage = () => {
                         todayTransaction.yesterdayOrder) *
                         100
                     ).toFixed(1)
+                  ) ||
+                  !isFinite(
+                    ((todayTransaction.todayOrder -
+                      todayTransaction.yesterdayOrder) /
+                      todayTransaction.yesterdayOrder) *
+                      100
                   )
                     ? 0
                     : Math.abs(
                         ((todayTransaction.todayOrder -
-                          todayTransaction.yesterdayOrder +
-                          1) /
-                          (todayTransaction.yesterdayOrder + 1) -
-                          1) *
+                          todayTransaction.yesterdayOrder) /
+                          todayTransaction.yesterdayOrder) *
                           100
                       ).toFixed(1)
                 }
@@ -342,12 +350,16 @@ const DashboardPage = () => {
                         todayStok.yesterdayStok) *
                         100
                     ).toFixed(1)
+                  ) ||
+                  !isFinite(
+                    ((todayStok.todayStok - todayStok.yesterdayStok) /
+                      todayStok.yesterdayStok) *
+                      100
                   )
                     ? 0
                     : Math.abs(
-                        ((todayStok.todayStok - todayStok.yesterdayStok + 1) /
-                          (todayStok.yesterdayStok + 1) -
-                          1) *
+                        ((todayStok.todayStok - todayStok.yesterdayStok) /
+                          todayStok.yesterdayStok) *
                           100
                       ).toFixed(1)
                 }

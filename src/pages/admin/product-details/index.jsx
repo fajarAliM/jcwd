@@ -281,12 +281,13 @@ const ProductDetails = () => {
                       ((qtySold.data - qtySold.prevData) / qtySold.prevData) *
                         100
                     ).toFixed(1)
+                  ) ||
+                  !isFinite(
+                    ((qtySold.data - qtySold.prevData) / qtySold.prevData) * 100
                   )
                     ? 0
                     : Math.abs(
-                        ((qtySold.data - qtySold.prevData + 1) /
-                          (qtySold.prevData + 1) -
-                          1) *
+                        ((qtySold.data - qtySold.prevData) / qtySold.prevData) *
                           100
                       ).toFixed(1)
                 }
@@ -304,12 +305,16 @@ const ProductDetails = () => {
                         viewCount.prevData) *
                         100
                     ).toFixed(1)
+                  ) ||
+                  !isFinite(
+                    ((viewCount.data - viewCount.prevData) /
+                      viewCount.prevData) *
+                      100
                   )
                     ? 0
                     : Math.abs(
-                        ((viewCount.data - viewCount.prevData + 1) /
-                          (viewCount.prevData + 1) -
-                          1) *
+                        ((viewCount.data - viewCount.prevData) /
+                          viewCount.prevData) *
                           100
                       ).toFixed(1)
                 }
@@ -330,25 +335,22 @@ const ProductDetails = () => {
                   isNaN(
                     Math.abs(
                       ((productSoldCount.data / viewCount.data -
-                        ((productSoldCount.prevData + 1) /
-                          (viewCount.prevData + 1) -
-                          1) +
-                        1) /
-                        ((productSoldCount.prevData + 1) /
-                          (viewCount.prevData + 1)) -
-                        1) *
+                        productSoldCount.prevData / viewCount.prevData) /
+                        (productSoldCount.prevData / viewCount.prevData)) *
                         100
                     ).toFixed(1)
+                  ) ||
+                  !isFinite(
+                    ((productSoldCount.data / viewCount.data -
+                      productSoldCount.prevData / viewCount.prevData) /
+                      (productSoldCount.prevData / viewCount.prevData)) *
+                      100
                   )
                     ? 0
                     : Math.abs(
                         ((productSoldCount.data / viewCount.data -
-                          ((productSoldCount.prevData + 1) /
-                            (viewCount.prevData + 1) -
-                            1) +
-                          1) /
-                          ((productSoldCount.prevData + 1) /
-                            (viewCount.prevData + 1)) -
+                          productSoldCount.prevData / viewCount.prevData) /
+                          (productSoldCount.prevData / viewCount.prevData) -
                           1) *
                           100
                       ).toFixed(1)
