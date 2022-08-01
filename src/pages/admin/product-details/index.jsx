@@ -325,7 +325,8 @@ const ProductDetails = () => {
               <ReportCart
                 title="Conversion Rate"
                 data={
-                  isNaN((productSoldCount.data / viewCount.data) * 100)
+                  isNaN((productSoldCount.data / viewCount.data) * 100) ||
+                  !isFinite((productSoldCount.data / viewCount.data) * 100)
                     ? "0%"
                     : `${Math.round(
                         (productSoldCount.data / viewCount.data) * 100

@@ -59,7 +59,7 @@ const DibatalkanPage = () => {
           statusTerpilih: 5,
           _page: parseInt(page),
           _sortBy: sortBy ? sortBy : undefined,
-          _sortDir: sortDir ? sortDir : "ASC",
+          _sortDir: sortDir ? sortDir : "DESC",
           username: namaUser,
           _limit: parseInt(rowPerPage),
         },

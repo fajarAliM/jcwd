@@ -135,9 +135,7 @@ const PesananBaruPage = () => {
           isObatResep={val?.is_resep}
           productOrderQty={val?.transaction_details.length}
           detail={val}
-          reRender={() => {
-            setDummy(!dummy);
-          }}
+          reRender={setDummy}
         />
       );
     });
