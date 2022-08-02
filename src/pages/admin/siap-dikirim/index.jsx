@@ -137,7 +137,9 @@ const SiapDikirimPage = () => {
           isObatResep={val?.is_resep}
           productOrderQty={val?.transaction_details.length}
           detail={val}
-          reRender={setDummy}
+          reRender={() => {
+            setDummy(!dummy);
+          }}
         />
       );
     });

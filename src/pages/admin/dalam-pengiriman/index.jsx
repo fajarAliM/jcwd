@@ -59,7 +59,7 @@ const DalamPengirimanPage = () => {
           statusTerpilih: 3,
           _page: parseInt(page),
           _sortBy: sortBy ? sortBy : undefined,
-          _sortDir: sortDir ? sortDir : "DESC",
+          _sortDir: sortDir ? sortDir : "ASC",
           username: namaUser,
           _limit: parseInt(rowPerPage),
         },

@@ -58,7 +58,7 @@ const SemuaPesananPage = () => {
         params: {
           _page: parseInt(page),
           _sortBy: sortBy ? sortBy : undefined,
-          _sortDir: sortDir ? sortDir : "DESC",
+          _sortDir: sortDir ? sortDir : "ASC",
           username: namaUser,
           _limit: parseInt(rowPerPage),
         },
@@ -134,7 +134,9 @@ const SemuaPesananPage = () => {
           isObatResep={val?.is_resep}
           productOrderQty={val?.transaction_details.length}
           detail={val}
-          reRender={setDummy}
+          reRender={() => {
+            setDummy(!dummy);
+          }}
         />
       );
     });
